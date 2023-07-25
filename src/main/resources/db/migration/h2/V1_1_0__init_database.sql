@@ -4,3 +4,36 @@ CREATE TABLE EXAMPLE (
                               LAST_NAME VARCHAR(250) NOT NULL,
                               CAREER VARCHAR(250) DEFAULT NULL
 );
+
+CREATE TABLE CATEGORIES (
+                          ID INT AUTO_INCREMENT PRIMARY KEY,
+                          PARENT_ID INT,
+                          NAME VARCHAR(100),
+                          DESCRIPTION VARCHAR(1000),
+                          ICON VARCHAR(45),
+                          IMAGE_PATH VARCHAR(100)
+);
+
+CREATE TABLE PRODUCTS (
+                         ID INT AUTO_INCREMENT PRIMARY KEY,
+                         NAME VARCHAR(45),
+                         SKU VARCHAR(45),
+                         REGULAR_PRICE DOUBLE,
+                         DISCOUNT_PRICE DOUBLE,
+                         DISCOUNT_PRICE_END_DATE DATETIME,
+                         LOWEST_PRICE DOUBLE,
+                         DESCRIPTION VARCHAR(4000),
+                         SHORT_DESCRIPTION VARCHAR(500),
+                         NOTE VARCHAR(100),
+                         PUBLISHED TINYINT,
+                         PRODUCTSCOL VARCHAR(45),
+                         QUANTITY INT
+);
+
+CREATE TABLE PRODUCTS_CATEGORIES (
+                                     PRODUCTS_ID INT NOT NULL,
+                                     CATEGORIES_ID INT NOT NULL,
+                                     PRIMARY KEY (PRODUCTS_ID, CATEGORIES_ID),
+                                     FOREIGN KEY (PRODUCTS_ID) REFERENCES PRODUCTS(ID),
+                                     FOREIGN KEY (CATEGORIES_ID) REFERENCES CATEGORIES(ID)
+);
