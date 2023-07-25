@@ -1,6 +1,14 @@
 package com.liftoff.project.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -49,7 +57,7 @@ public class Product {
     private String note;
 
     @Column(name = "PUBLISHED")
-    private Byte published;
+    private Boolean published;
 
     @Column(name = "PRODUCTSCOL")
     private String productscol;
@@ -57,10 +65,10 @@ public class Product {
     @Column(name = "QUANTITY")
     private Integer quantity;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany()
     @JoinTable(
             name = "PRODUCTS_CATEGORIES",
-            joinColumns = {@JoinColumn(name = "PRODUCTS_ID", referencedColumnName = "ID")},
-            inverseJoinColumns = {@JoinColumn(name = "CATEGORIES_ID", referencedColumnName = "ID")})
+            joinColumns = @JoinColumn(name = "PRODUCTS_ID"),
+            inverseJoinColumns = @JoinColumn(name = "CATEGORIES_ID"))
     private Set<Category> categories;
 }

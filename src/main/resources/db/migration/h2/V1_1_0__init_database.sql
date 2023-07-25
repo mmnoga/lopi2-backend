@@ -25,7 +25,7 @@ CREATE TABLE PRODUCTS (
                          DESCRIPTION VARCHAR(4000),
                          SHORT_DESCRIPTION VARCHAR(500),
                          NOTE VARCHAR(100),
-                         PUBLISHED TINYINT,
+                         PUBLISHED BOOLEAN,
                          PRODUCTSCOL VARCHAR(45),
                          QUANTITY INT
 );
