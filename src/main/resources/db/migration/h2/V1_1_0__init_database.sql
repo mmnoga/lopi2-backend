@@ -7,6 +7,7 @@ CREATE TABLE EXAMPLE (
 
 CREATE TABLE CATEGORIES (
                           ID INT AUTO_INCREMENT PRIMARY KEY,
+                          UID UUID NOT NULL,
                           PARENT_ID INT,
                           NAME VARCHAR(100),
                           DESCRIPTION VARCHAR(1000),
@@ -18,6 +19,7 @@ CREATE TABLE CATEGORIES (
 
 CREATE TABLE PRODUCTS (
                          ID INT AUTO_INCREMENT PRIMARY KEY,
+                         UID UUID NOT NULL,
                          NAME VARCHAR(45),
                          SKU VARCHAR(45),
                          REGULAR_PRICE DOUBLE,

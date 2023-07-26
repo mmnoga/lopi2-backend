@@ -19,6 +19,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "CATEGORIES")
@@ -26,11 +27,15 @@ import java.util.Set;
 @AllArgsConstructor
 @Data
 @Builder
+
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", unique = true)
     private Integer id;
+
+    @Column(name = "UID")
+    private UUID uId;
 
     @ManyToOne
     @JoinColumn(name = "PARENT_ID", referencedColumnName = "ID")

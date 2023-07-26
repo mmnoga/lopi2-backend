@@ -20,6 +20,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "PRODUCTS")
@@ -32,6 +33,9 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", unique = true)
     private Integer id;
+
+    @Column(name = "UID")
+    private UUID uId;
 
     @Column(name = "NAME")
     private String name;
