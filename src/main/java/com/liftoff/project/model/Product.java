@@ -13,7 +13,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SourceType;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -64,6 +68,14 @@ public class Product {
 
     @Column(name = "QUANTITY")
     private Integer quantity;
+
+    @CreationTimestamp(source = SourceType.DB)
+    @Column(name = "CREATED_AT")
+    private Instant createdAt;
+
+    @UpdateTimestamp(source = SourceType.DB)
+    @Column(name = "UPDATED_AT")
+    private Instant updatedAt;
 
     @ManyToMany()
     @JoinTable(

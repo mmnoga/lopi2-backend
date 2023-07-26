@@ -13,7 +13,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SourceType;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.Instant;
 import java.util.Set;
 
 @Entity
@@ -43,6 +47,14 @@ public class Category {
 
     @Column(name = "IMAGE_PATH")
     private String imagePath;
+
+    @CreationTimestamp(source = SourceType.DB)
+    @Column(name = "CREATED_AT")
+    private Instant createdAt;
+
+    @UpdateTimestamp(source = SourceType.DB)
+    @Column(name = "UPDATED_AT")
+    private Instant updatedAt;
 
     @ManyToMany(mappedBy = "categories")
     private Set<Product> products;

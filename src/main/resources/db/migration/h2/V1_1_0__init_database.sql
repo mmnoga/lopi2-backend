@@ -11,7 +11,9 @@ CREATE TABLE CATEGORIES (
                           NAME VARCHAR(100),
                           DESCRIPTION VARCHAR(1000),
                           ICON VARCHAR(45),
-                          IMAGE_PATH VARCHAR(100)
+                          IMAGE_PATH VARCHAR(100),
+                          CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                          UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE PRODUCTS (
@@ -27,7 +29,9 @@ CREATE TABLE PRODUCTS (
                          NOTE VARCHAR(100),
                          PUBLISHED BOOLEAN,
                          PRODUCTSCOL VARCHAR(45),
-                         QUANTITY INT
+                         QUANTITY INT,
+                         CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                         UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE PRODUCTS_CATEGORIES (
