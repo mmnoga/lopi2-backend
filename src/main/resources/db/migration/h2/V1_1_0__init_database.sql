@@ -50,7 +50,7 @@ CREATE TABLE APP_USER (
                                 LAST_NAME VARCHAR(250) NOT NULL,
                                 EMAIL VARCHAR(100) NOT NULL UNIQUE,
 
-                                USER_PASS VARCHAR(150),
+                                PASSWORD VARCHAR(150),
                                 CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                 UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                                 IS_ENABLED INTEGER DEFAULT 1,
