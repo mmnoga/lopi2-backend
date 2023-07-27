@@ -49,7 +49,7 @@ CREATE TABLE APP_USER (
                                 FIRST_NAME VARCHAR(250) NOT NULL,
                                 LAST_NAME VARCHAR(250) NOT NULL,
                                 EMAIL VARCHAR(100) NOT NULL UNIQUE,
-                                CAREER VARCHAR(250) DEFAULT NULL,
+
                                 USER_PASS VARCHAR(150),
                                 CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                 UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
