@@ -6,6 +6,7 @@ VALUES ('Bartosz', 'Stpiczynski', 'frontend dev'),
        ('Kamil', 'Chrzanowski', 'frontend dev'),
        ('Maciej', 'Marciniak', 'fullstack dev');
 
+
 INSERT INTO CATEGORIES (ID, UID, PARENT_ID, NAME, DESCRIPTION, ICON, IMAGE_PATH, CREATED_AT, UPDATED_AT)
 VALUES (1, '06e1899f-97c8-4d4e-aae3-712d31c45dd0', null, 'elektronika', 'opis kategorii elektronika', 'icon',
         'https://pixabay.com/photos/stock-iphone-business-mobile-phone-624712/', '2023-07-26 08:10:01.163454',

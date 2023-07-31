@@ -29,4 +29,5 @@ public class ExampleServiceImpl implements ExampleService {
                 .map(exampleMapper::mapEntityToResponse)
                 .collect(Collectors.toList());
     }
+
 }
