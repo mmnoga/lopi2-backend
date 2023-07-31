@@ -24,6 +24,9 @@ VALUES (1, '06e1899f-97c8-4d4e-aae3-712d31c45dd0', null, 'elektronika', 'opis ka
 INSERT INTO ROLE (ROLE_NAME) VALUES
 ('ROLE_USER'), ('ROLE_ADMIN');
 
+--INSERT INTO ROLE (ROLE_NAME) VALUES
+--(0), (1);
+
 INSERT INTO APP_USER (FIRST_NAME, LAST_NAME, EMAIL, PASSWORD) VALUES
 ('Jan', 'Kowalski', 'user123@example.com',   '$2a$10$e3DPMZhiMGdS4sgXmS4N/uG.9Ar.NUHKX3iktP3oFu//zqaa4Zn8.'), -- user
 ('John', 'Doe', 'john.doe@emailprovider.com',  '$2a$10$e3DPMZhiMGdS4sgXmS4N/uG.9Ar.NUHKX3iktP3oFu//zqaa4Zn8.'), -- user

@@ -1,0 +1,28 @@
+package com.liftoff.project.mapper.impl;
+
+
+import com.liftoff.project.configSecurity.UserDetailsSecurity;
+import com.liftoff.project.mapper.UserDetailsSecurityMapper;
+import com.liftoff.project.model.User;
+import org.springframework.stereotype.Component;
+
+@Component
+public class UserDetailsSecurityMapperImpl implements UserDetailsSecurityMapper {
+
+
+    public UserDetailsSecurity mapUserToUserSecurityDetails(User user) {
+
+        return UserDetailsSecurity.builder()
+                .withId(user.getId())
+                .withPassword(user.getPassword())
+                .withEmail(user.getEmail())
+                .withFirstName(user.getFirstName())
+                .withLastName(user.getLastName())
+                .withIsEnabled(user.isEnabled())
+                .withRoleList(user.getRoleList())
+                .withUsername(user.getEmail())
+                .withUuid(user.getUuid())
+                .build();
+    }
+
+}

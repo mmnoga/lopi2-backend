@@ -59,7 +59,8 @@ CREATE TABLE APP_USER (
 
 CREATE TABLE ROLE (
                                 ID BIGINT AUTO_INCREMENT  PRIMARY KEY,
-                                ROLE_NAME VARCHAR(50) NOT NULL,
+                               ROLE_NAME VARCHAR(50) NOT NULL,
+                                 --ROLE_NAME TINYINT NOT NULL,
                                 UUID UUID DEFAULT RANDOM_UUID()
 );
 CREATE TABLE APP_USER_ROLE (
