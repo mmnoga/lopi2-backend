@@ -1,13 +1,10 @@
 package com.liftoff.project.command;
-
 import com.liftoff.project.model.Example;
 import com.liftoff.project.repository.ExampleRepository;
 import jakarta.annotation.Priority;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
 
 @Component
 @Priority(1)

@@ -12,20 +12,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
+
     private UserRepository userRepository;
-    @Autowired
     private UserMapper userMapper;
-    @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, RoleRepository roleRepository) {
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+        this.roleRepository = roleRepository;
+    }
 
     public User addUser(SignupRequest signupRequest) {
 
         return userRepository.save(userMapper.mapSignupRequestToUser(signupRequest));
-
-
-
 
     }
 

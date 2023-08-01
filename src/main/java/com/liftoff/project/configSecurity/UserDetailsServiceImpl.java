@@ -15,21 +15,21 @@ import java.util.Optional;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private UserRepository userRepository;
+
+    private final UserRepository userRepository;
+
+
+    private final UserDetailsSecurityMapper userDetailsMapper;
 
     @Autowired
-    private UserDetailsSecurityMapper userDetailsMapper;
-
-    public UserDetailsServiceImpl(UserRepository userRepository) {
+    public UserDetailsServiceImpl(UserRepository userRepository, UserDetailsSecurityMapper userDetailsMapper) {
         this.userRepository = userRepository;
+        this.userDetailsMapper = userDetailsMapper;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        // metoda ta pośredniczy pomiędzy SecurityConfigiem a UserArch Repository
 
-        // todo throw if not exist
-        //return this.userArchRepository.findByUserName(username).get();
 
         Optional<User> myOptionalUser = userRepository.findByEmail(username);
 
@@ -40,8 +40,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }).orElseThrow(() -> {
             return new UsernameNotFoundException("User not found");
         });
-
-
 
         return userDetailsSecurity;
     }
