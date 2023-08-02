@@ -29,8 +29,16 @@ public class UserMapperImpl implements UserMapper {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    /**
+     * @param signupRequest
+     * @return
+     */
     @Override
     public User mapSignupRequestToUser(SignupRequest signupRequest){
+
+        if (signupRequest == null) {
+            return null;
+        }
 
         return User.builder()
                 .withFirstName(signupRequest.getFirstName())
@@ -45,7 +53,15 @@ public class UserMapperImpl implements UserMapper {
                 .build();
     }
 
+    /**
+     * @param user
+     * @return
+     */
     public UserResponse mapUserToUserResponse(User user){
+
+        if (user == null) {
+            return null;
+        }
 
         return UserResponse.builder()
                 .withFirstName(user.getFirstName())
