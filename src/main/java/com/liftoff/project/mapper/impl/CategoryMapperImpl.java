@@ -6,6 +6,7 @@ import com.liftoff.project.mapper.CategoryMapper;
 import com.liftoff.project.model.Category;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,18 +19,23 @@ public class CategoryMapperImpl implements CategoryMapper {
             return null;
         }
 
-        Set<CategoryResponseDTO> subcategories = category.getSubcategories()
-                .stream()
-                .map(this::mapEntityToResponse)
-                .collect(Collectors.toSet());
-
-        return CategoryResponseDTO.builder()
+        CategoryResponseDTO.CategoryResponseDTOBuilder builder = CategoryResponseDTO.builder()
                 .uId(category.getUId())
                 .name(category.getName())
-                .description(category.getDescription())
-                .subcategories(subcategories)
-                .build();
+                .description(category.getDescription());
+
+        if (category.containsSubcategories()) {
+            Set<CategoryResponseDTO> subcategories = category.getSubcategories().stream()
+                    .map(this::mapEntityToResponse)
+                    .collect(Collectors.toSet());
+            builder.subcategories(subcategories);
+        } else {
+            builder.subcategories(Collections.emptySet());
+        }
+
+        return builder.build();
     }
+
 
     @Override
     public Category mapRequestToEntity(CategoryRequestDTO categoryRequestDTO) {
