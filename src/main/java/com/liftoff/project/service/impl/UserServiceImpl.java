@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
 
         // RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
-        return new JwtResponseDTO(jwt,
+        return new JwtResponseDTO(jwt,"Bearer",
                 userDetails.getUuid(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),

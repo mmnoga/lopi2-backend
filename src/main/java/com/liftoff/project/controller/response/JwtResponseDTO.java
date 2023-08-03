@@ -1,11 +1,14 @@
 package com.liftoff.project.controller.response;
 
+import lombok.Builder;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.UUID;
 
 @Data
+//@Builder(setterPrefix = "with")
 public class JwtResponseDTO {
 
     private String token;
@@ -19,15 +22,17 @@ public class JwtResponseDTO {
     private UUID uuid;
 
 
-    public JwtResponseDTO(String accessToken, UUID uuid, String username, String email, List<String> roles, String firstName, String lastName) {
-        this.token = accessToken;
+    public JwtResponseDTO(String token, String type, UUID uuid, String username, String email, List<String> roles, String firstName, String lastName) {
+        this.token = token;
         //this.refreshToken = refreshToken;
+        this.type = "Bearer";
         this.uuid = uuid;
         this.username = username;
         this.email = email;
         this.roles = roles;
         this.firstName = firstName;
         this.lastName = lastName;
+
 
     }
 

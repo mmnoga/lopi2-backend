@@ -5,9 +5,11 @@ package com.liftoff.project.controller.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder(setterPrefix = "with")
 public class LoginRequestDTO {
 
 

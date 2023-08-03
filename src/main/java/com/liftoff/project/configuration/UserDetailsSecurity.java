@@ -30,7 +30,7 @@ public class UserDetailsSecurity implements org.springframework.security.core.us
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
         return this.getRoleList().stream().map(role->{
-          return  new SimpleGrantedAuthority(role.getRoleName().name());
+          return  new SimpleGrantedAuthority(role.getRoleName().toString());
         }).collect(Collectors.toList());
     }
 

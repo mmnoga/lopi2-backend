@@ -12,6 +12,10 @@ public class UserDetailsSecurityMapperImpl implements UserDetailsSecurityMapper 
 
     public UserDetailsSecurity mapUserToUserSecurityDetails(User user) {
 
+        if (user == null) {
+            return null;
+        }
+
         return UserDetailsSecurity.builder()
                 .withId(user.getId())
                 .withPassword(user.getPassword())

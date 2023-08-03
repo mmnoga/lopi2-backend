@@ -46,7 +46,7 @@ public class AuthController {
 
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
+    public ResponseEntity<JwtResponseDTO> authenticateUser(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequestDTO.getUsername(), loginRequestDTO.getUserPass()));
@@ -67,7 +67,7 @@ public class AuthController {
 
        // RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
-        return ResponseEntity.ok(new JwtResponseDTO(jwt,
+        return ResponseEntity.ok(new JwtResponseDTO(jwt, "Bearer",
                 userDetails.getUuid(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
