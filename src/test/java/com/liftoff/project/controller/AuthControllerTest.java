@@ -42,17 +42,13 @@ class AuthControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private UserService userService;
 
-
     @Mock
     private PasswordEncoder passwordEncoder;
-
     @Mock
     private RoleMapper roleMapper;
-
 
     @Mock
     private UserMapper userMapper;
