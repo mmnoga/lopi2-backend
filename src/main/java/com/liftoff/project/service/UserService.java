@@ -4,7 +4,6 @@ import com.liftoff.project.controller.request.LoginRequestDTO;
 import com.liftoff.project.controller.request.SignupRequestDTO;
 import com.liftoff.project.controller.response.JwtResponseDTO;
 import com.liftoff.project.controller.response.UserResponseDTO;
-import com.liftoff.project.model.User;
 
 public interface UserService {
 
@@ -16,7 +15,7 @@ public interface UserService {
      * @param signupRequestDTO The SignupRequestDTO object containing the details of the singup request (with new User to add).
      * @return The UserResponseDTO object representing the newly created User entity.
      */
-     UserResponseDTO addUser(SignupRequestDTO signupRequestDTO);
+    UserResponseDTO addUser(SignupRequestDTO signupRequestDTO);
 
 
     /**

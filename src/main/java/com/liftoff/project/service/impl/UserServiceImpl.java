@@ -11,7 +11,6 @@ import com.liftoff.project.model.User;
 import com.liftoff.project.repository.UserRepository;
 import com.liftoff.project.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -61,7 +60,7 @@ public class UserServiceImpl implements UserService {
 
         // RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
-        return new JwtResponseDTO(jwt,"Bearer",
+        return new JwtResponseDTO(jwt, "Bearer",
                 userDetails.getUuid(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),

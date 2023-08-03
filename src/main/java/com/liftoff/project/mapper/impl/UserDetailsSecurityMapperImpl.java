@@ -1,6 +1,4 @@
 package com.liftoff.project.mapper.impl;
-
-
 import com.liftoff.project.configuration.UserDetailsSecurity;
 import com.liftoff.project.mapper.UserDetailsSecurityMapper;
 import com.liftoff.project.model.User;
