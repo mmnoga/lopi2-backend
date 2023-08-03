@@ -1,7 +1,7 @@
 package com.liftoff.project.mapper;
 
-import com.liftoff.project.controller.request.SignupRequest;
-import com.liftoff.project.controller.response.UserResponse;
+import com.liftoff.project.controller.request.SignupRequestDTO;
+import com.liftoff.project.controller.response.UserResponseDTO;
 import com.liftoff.project.model.User;
 
 /**
@@ -13,10 +13,10 @@ public interface UserMapper {
     /**
      * Maps the SignupRequest to the User entity object.
      * This method is used to change DTO in endpoint on true entity User
-     * @param signupRequest
+     * @param signupRequestDTO
      * @return entity User
      */
-    User mapSignupRequestToUser(SignupRequest signupRequest);
+    User mapSignupRequestToUser(SignupRequestDTO signupRequestDTO);
 
     /**
      ** This method is used to prepare to send DTO on endpoint instead of true entity
@@ -24,7 +24,7 @@ public interface UserMapper {
      * @param user
      * @return UserResponse
      */
-     UserResponse mapUserToUserResponse(User user);
+     UserResponseDTO mapUserToUserResponse(User user);
 
 
 

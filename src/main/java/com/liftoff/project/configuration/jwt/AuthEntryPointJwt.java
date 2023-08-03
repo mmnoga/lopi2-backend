@@ -1,4 +1,4 @@
-package com.liftoff.project.configSecurity.jwt;
+package com.liftoff.project.configuration.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;

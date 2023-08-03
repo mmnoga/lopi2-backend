@@ -1,6 +1,6 @@
-package com.liftoff.project.configSecurity.jwt;
+package com.liftoff.project.configuration.jwt;
 
-import com.liftoff.project.configSecurity.UserDetailsSecurity;
+import com.liftoff.project.configuration.UserDetailsSecurity;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

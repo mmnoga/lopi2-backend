@@ -15,7 +15,7 @@ import java.util.List;
 @Builder(setterPrefix = "with")
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignupRequest {
+public class SignupRequestDTO {
 
 
     private String uuid;

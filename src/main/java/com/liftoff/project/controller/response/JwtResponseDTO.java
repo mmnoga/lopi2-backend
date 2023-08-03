@@ -6,12 +6,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-public class JwtResponse {
+public class JwtResponseDTO {
 
     private String token;
     private String type = "Bearer";
-    //private String refreshToken;
-    //private Long id;
+    //private String refreshToken; // we are still waiting for implementation of RefreshToken
     private String username;
     private String email;
     private List<String> roles;
@@ -20,7 +19,7 @@ public class JwtResponse {
     private UUID uuid;
 
 
-    public JwtResponse(String accessToken, UUID uuid, String username, String email, List<String> roles, String firstName, String lastName) {
+    public JwtResponseDTO(String accessToken, UUID uuid, String username, String email, List<String> roles, String firstName, String lastName) {
         this.token = accessToken;
         //this.refreshToken = refreshToken;
         this.uuid = uuid;

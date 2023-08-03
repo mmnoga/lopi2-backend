@@ -2,7 +2,6 @@ package com.liftoff.project.controller.response;
 
 
 
-import com.liftoff.project.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +14,7 @@ import java.util.UUID;
 @Builder(setterPrefix = "with")
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserResponse {
+public class UserResponseDTO {
 
     private String firstName;
 
@@ -33,7 +32,7 @@ public class UserResponse {
 
     private UUID uuid;
 
-    private List<RoleResponse> roleList;
+    private List<RoleResponseDTO> roleList;
 
 
 }

@@ -1,35 +1,41 @@
 package com.liftoff.project.mapper.impl;
 
-import com.liftoff.project.controller.request.SignupRequest;
-import com.liftoff.project.controller.response.UserResponse;
-import com.liftoff.project.model.Role;
-import com.liftoff.project.model.RoleName;
+import com.liftoff.project.controller.request.SignupRequestDTO;
+import com.liftoff.project.controller.response.UserResponseDTO;
+import com.liftoff.project.mapper.RoleMapper;
 import com.liftoff.project.model.User;
 import com.liftoff.project.repository.RoleRepository;
-import org.junit.Test;
+
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
  class UserMapperImplTest {
 
-
     @Mock
     private User user;
 
     @Mock
-    private SignupRequest signupRequest;
+    private SignupRequestDTO signupRequestDTO;
+
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private RoleMapper roleMapper;
 
 
     @Mock
@@ -42,6 +48,7 @@ import static org.junit.jupiter.api.Assertions.*;
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
+         userMapper = new UserMapperImpl(roleRepository,roleMapper, passwordEncoder);
     }
 
     @Test
@@ -51,7 +58,7 @@ import static org.junit.jupiter.api.Assertions.*;
         User user = null;
 
         // When
-        UserResponse responseDTO = userMapper.mapUserToUserResponse(user);
+        UserResponseDTO responseDTO = userMapper.mapUserToUserResponse(user);
 
         // Then
         assertNull(responseDTO);
@@ -65,14 +72,14 @@ import static org.junit.jupiter.api.Assertions.*;
                 .withFirstName("Maciej")
                 .withLastName("Marciniak")
                 .withEmail("genger@wp.pl")
-                .withPassword("ala ma kota")
+                .withPassword(passwordEncoder.encode("ala ma kota"))
                 .withIsEnabled(1)
-                .withUuid(UUID.fromString("DUPA"))
+                .withUuid(UUID.randomUUID())
                 .withRoleList(roleRepository.findAll()).build();
 
 
         // When
-        UserResponse responseDTO = userMapper.mapUserToUserResponse(user);
+        UserResponseDTO responseDTO = userMapper.mapUserToUserResponse(user);
 
         // Then
         assertEquals(user.getFirstName(), responseDTO.getFirstName());
@@ -91,10 +98,10 @@ import static org.junit.jupiter.api.Assertions.*;
     public void should_Return_Null_Object_For_Null_ResponseUser() {
         // Given
 
-        SignupRequest signupRequest = null;
+        SignupRequestDTO signupRequestDTO = null;
 
         // When
-        User user = userMapper.mapSignupRequestToUser(signupRequest);
+        User user = userMapper.mapSignupRequestToUser(signupRequestDTO);
 
         // Then
         assertNull(user);
@@ -109,24 +116,26 @@ import static org.junit.jupiter.api.Assertions.*;
                     roles.add("ROLE_USER");
                     roles.add("ROLE_ADMIN");
 
-        SignupRequest signupRequest = SignupRequest.builder()
+        SignupRequestDTO signupRequestDTO = SignupRequestDTO.builder()
                 .withFirstName("Maciej")
                 .withLastName("Marciniak")
                 .withEmail("genger@wp.pl")
-                .withPassword("ala ma kota")
-                .withUuid("DUPA")
+                //.withPassword("")
+                .withUuid("f97b6441-6ce0-4c95-93b7-9cf9aafa6712")
                 .withRoles(roles).build();
 
 
         // When
-        User user = userMapper.mapSignupRequestToUser(signupRequest);
+        User user = userMapper.mapSignupRequestToUser(signupRequestDTO);
+
+        user.setUuid(UUID.fromString("f97b6441-6ce0-4c95-93b7-9cf9aafa6712"));
 
         // Then
-        assertEquals(user.getFirstName(), signupRequest.getFirstName());
-        assertEquals(user.getLastName(), signupRequest.getLastName());
-        assertEquals(user.getPassword(), signupRequest.getPassword());
-        assertEquals(user.getUuid(), signupRequest.getUuid());
-        assertEquals(user.getRoleList().size(), signupRequest.getRoles().size());
+        assertEquals(user.getFirstName(), signupRequestDTO.getFirstName());
+        assertEquals(user.getLastName(), signupRequestDTO.getLastName());
+        assertEquals(user.getPassword(), signupRequestDTO.getPassword());
+        assertEquals(user.getUuid().toString(), signupRequestDTO.getUuid());
+        assertEquals(user.getRoleList().size(), signupRequestDTO.getRoles().size());
 
 
 

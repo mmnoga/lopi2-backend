@@ -1,15 +1,15 @@
 package com.liftoff.project.controller;
-import com.liftoff.project.configSecurity.UserDetailsSecurity;
-import com.liftoff.project.configSecurity.jwt.JwtUtils;
-import com.liftoff.project.controller.request.LoginRequest;
-import com.liftoff.project.controller.request.SignupRequest;
-import com.liftoff.project.controller.response.JwtResponse;
-import com.liftoff.project.controller.response.UserResponse;
+import com.liftoff.project.configuration.UserDetailsSecurity;
+import com.liftoff.project.configuration.jwt.JwtUtils;
+import com.liftoff.project.controller.request.LoginRequestDTO;
+import com.liftoff.project.controller.request.SignupRequestDTO;
+import com.liftoff.project.controller.response.JwtResponseDTO;
+import com.liftoff.project.controller.response.UserResponseDTO;
 import com.liftoff.project.mapper.UserMapper;
 import com.liftoff.project.service.UserService;
+import com.liftoff.project.service.impl.UserDetailsServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 public class AuthController {
 
 
-
     private AuthenticationManager authenticationManager;
     private PasswordEncoder encoder;
     private JwtUtils jwtUtils;
@@ -38,18 +37,19 @@ public class AuthController {
     private UserMapper userMapper;
 
 
-    @PostMapping("/signup")
-    public ResponseEntity<UserResponse> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 
-        return new ResponseEntity<>(userMapper.mapUserToUserResponse(userService.addUser(signUpRequest)), HttpStatus.CREATED);
+    @PostMapping("/signup")
+    public ResponseEntity<UserResponseDTO> registerUser(@Valid @RequestBody SignupRequestDTO signUpRequestDTO) {
+
+        return new ResponseEntity<>(userMapper.mapUserToUserResponse(userService.addUser(signUpRequestDTO)), HttpStatus.CREATED);
     }
 
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
 
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getUserPass()));
+                new UsernamePasswordAuthenticationToken(loginRequestDTO.getUsername(), loginRequestDTO.getUserPass()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
@@ -65,10 +65,9 @@ public class AuthController {
 //            refreshTokenService.deleteByUserId(userDetails.getId());
 //        }
 
-
        // RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
-        return ResponseEntity.ok(new JwtResponse(jwt,
+        return ResponseEntity.ok(new JwtResponseDTO(jwt,
                 userDetails.getUuid(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
@@ -78,9 +77,8 @@ public class AuthController {
         ));
     }
 
-
-
-
+//        return new ResponseEntity<>(userService.authenticateUser(loginRequestDTO), HttpStatus.OK);
+//    }
 
 
 }

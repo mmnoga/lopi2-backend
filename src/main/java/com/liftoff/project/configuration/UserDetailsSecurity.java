@@ -1,4 +1,4 @@
-package com.liftoff.project.configSecurity;
+package com.liftoff.project.configuration;
 
 
 import com.liftoff.project.model.Role;

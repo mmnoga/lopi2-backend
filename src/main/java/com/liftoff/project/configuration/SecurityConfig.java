@@ -1,6 +1,6 @@
-package com.liftoff.project.configSecurity;
-import com.liftoff.project.configSecurity.jwt.AuthEntryPointJwt;
-import com.liftoff.project.configSecurity.jwt.AuthTokenFilter;
+package com.liftoff.project.configuration;
+import com.liftoff.project.configuration.jwt.AuthEntryPointJwt;
+import com.liftoff.project.configuration.jwt.AuthTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -28,11 +28,8 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @RequiredArgsConstructor
 public class SecurityConfig  {
 
-    @Autowired
+
     private final UserDetailsService userDetailsService;
-
-
-    @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
 
     @Bean
