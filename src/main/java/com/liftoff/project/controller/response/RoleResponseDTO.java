@@ -1,7 +1,7 @@
 package com.liftoff.project.controller.response;
 
 
-import com.liftoff.project.model.RoleName;
+import com.liftoff.project.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,8 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class RoleResponseDTO {
 
-    private RoleName roleName;
+    private Role roleName;
 
-    private UUID uuid;
 
 }

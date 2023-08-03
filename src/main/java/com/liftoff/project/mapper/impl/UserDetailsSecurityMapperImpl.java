@@ -23,7 +23,7 @@ public class UserDetailsSecurityMapperImpl implements UserDetailsSecurityMapper 
                 .withFirstName(user.getFirstName())
                 .withLastName(user.getLastName())
                 .withIsEnabled(user.isEnabled())
-                .withRoleList(user.getRoleList())
+                .withRole(user.getRole())
                 .withUsername(user.getEmail())
                 .withUuid(user.getUuid())
                 .build();

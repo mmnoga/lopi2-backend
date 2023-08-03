@@ -20,7 +20,7 @@ public class UserDetailsSecurity implements org.springframework.security.core.us
     private String username;
     private String password;
     private boolean isEnabled;
-    private List<Role> roleList;
+    private Role role;
     private String firstName;
     private String lastName;
     private UUID uuid;
@@ -29,9 +29,12 @@ public class UserDetailsSecurity implements org.springframework.security.core.us
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        return this.getRoleList().stream().map(role->{
-          return  new SimpleGrantedAuthority(role.getRoleName().toString());
-        }).collect(Collectors.toList());
+        Role role1 = Optional.ofNullable(this.role)
+                .orElse(Role.ROLE_USER);
+
+        return Collections.singleton(new SimpleGrantedAuthority(role1.toString()));
+
+
     }
 
     @Override

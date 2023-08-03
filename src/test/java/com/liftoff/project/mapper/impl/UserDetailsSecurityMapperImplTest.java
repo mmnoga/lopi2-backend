@@ -1,9 +1,8 @@
 package com.liftoff.project.mapper.impl;
 
 import com.liftoff.project.configuration.UserDetailsSecurity;
-import com.liftoff.project.controller.response.UserResponseDTO;
+import com.liftoff.project.model.Role;
 import com.liftoff.project.model.User;
-import com.liftoff.project.repository.RoleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -27,12 +27,9 @@ class UserDetailsSecurityMapperImplTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
-    @Mock
-    private RoleRepository roleRepository;
 
     @InjectMocks
     private UserDetailsSecurityMapperImpl userDetailsSecurityMapper;
-
 
 
     @BeforeEach
@@ -64,7 +61,8 @@ class UserDetailsSecurityMapperImplTest {
                 .withPassword(passwordEncoder.encode("ala ma kota"))
                 .withIsEnabled(1)
                 .withUuid(UUID.randomUUID())
-                .withRoleList(roleRepository.findAll()).build();
+                .withRole(Role.ROLE_USER)
+                .build();
 
 
         // When
@@ -75,14 +73,10 @@ class UserDetailsSecurityMapperImplTest {
         assertEquals(user.getLastName(), mapUserToUserSecurityDetails.getLastName());
         assertEquals(user.getPassword(), mapUserToUserSecurityDetails.getPassword());
         assertEquals(user.getUuid(), mapUserToUserSecurityDetails.getUuid());
-        assertEquals(user.getRoleList().size(), mapUserToUserSecurityDetails.getRoleList().size());
-
-
+        assertEquals(user.getRole(), mapUserToUserSecurityDetails.getRole());
 
 
     }
-
-
 
 
 }

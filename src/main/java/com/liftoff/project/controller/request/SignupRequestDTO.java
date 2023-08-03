@@ -37,8 +37,7 @@ public class SignupRequestDTO {
     @Size(min = 5, max = 45)
     private String password;
 
-    @NotNull
-    private List<String> roles;
+
 
 
 

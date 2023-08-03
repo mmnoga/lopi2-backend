@@ -54,13 +54,16 @@ public class User {
     private Integer isEnabled;
     @Column(name = "UUID")
     private UUID uuid;
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER) //cascade = CascadeType.ALL
-    @JoinTable(
-            name = "APP_USER_ROLE",
-            joinColumns = @JoinColumn(name = "ID_APP_USER"),
-            inverseJoinColumns = @JoinColumn(name = "ID_ROLE"))
-    private List<Role> roleList;
+//    @JsonIgnore
+//    @ManyToMany(fetch = FetchType.EAGER) //cascade = CascadeType.ALL
+//    @JoinTable(
+//            name = "APP_USER_ROLE",
+//            joinColumns = @JoinColumn(name = "ID_APP_USER"),
+//            inverseJoinColumns = @JoinColumn(name = "ID_ROLE"))
+
+    @Enumerated(EnumType.STRING) // to trzyma stinga
+    @Column(name = "ROLE")
+    private Role role;
 
     public boolean isEnabled() {
 
@@ -70,23 +73,23 @@ public class User {
 
     }
 
-    @Override
-    public String toString() {
-
-        String roles = this.roleList.stream().map(role-> role.getRoleName().toString()).collect(Collectors.joining(","));
-        return "UserArch{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", isEnabled=" + isEnabled() +
-                ", uuid=" + uuid.toString() +
-                ", role=" + roles +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//
+//        String roles = this.roleList.stream().map(role-> role.name().toString()).collect(Collectors.joining(","));
+//        return "UserArch{" +
+//                "id=" + id +
+//                ", firstName='" + firstName + '\'' +
+//                ", lastName='" + lastName + '\'' +
+//                ", email='" + email + '\'' +
+//                ", password='" + password + '\'' +
+//                ", createdAt=" + createdAt +
+//                ", updatedAt=" + updatedAt +
+//                ", isEnabled=" + isEnabled() +
+//                ", uuid=" + uuid.toString() +
+//                ", role=" + roles +
+//                '}';
+//    }
 
 
 }

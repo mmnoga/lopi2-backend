@@ -32,7 +32,7 @@ public class UserResponseDTO {
 
     private UUID uuid;
 
-    private List<RoleResponseDTO> roleList;
+    private RoleResponseDTO role;
 
 
 }

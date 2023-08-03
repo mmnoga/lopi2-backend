@@ -13,15 +13,14 @@ public class RoleMapperImpl implements RoleMapper {
 
 
 
-    public List<RoleResponseDTO> mapRolesToRoleResponses(List<Role> roles){
+    public RoleResponseDTO mapRolesToRoleResponses(Role role){
 
 
-        return   roles.stream().map( (role)->{
+
             return RoleResponseDTO.builder()
-                    .withRoleName(role.getRoleName())
-                    .withUuid(role.getUuid())
+                    .withRoleName(role)
                     .build();
-        }).collect(Collectors.toList());
+
 
 
 

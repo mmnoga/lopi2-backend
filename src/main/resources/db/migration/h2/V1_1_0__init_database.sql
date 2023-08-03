@@ -49,7 +49,7 @@ CREATE TABLE APP_USER (
                                 FIRST_NAME VARCHAR(250) NOT NULL,
                                 LAST_NAME VARCHAR(250) NOT NULL,
                                 EMAIL VARCHAR(100) NOT NULL UNIQUE,
-
+                                ROLE VARCHAR(50) NOT NULL,
                                 PASSWORD VARCHAR(150),
                                 CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                 UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -57,19 +57,5 @@ CREATE TABLE APP_USER (
                                 UUID UUID DEFAULT RANDOM_UUID()
 );
 
-CREATE TABLE ROLE (
-                                ID BIGINT AUTO_INCREMENT  PRIMARY KEY,
-                               ROLE_NAME VARCHAR(50) NOT NULL,
-                                 --ROLE_NAME TINYINT NOT NULL,
-                                UUID UUID DEFAULT RANDOM_UUID()
-);
-CREATE TABLE APP_USER_ROLE (
 
-                                ID BIGINT AUTO_INCREMENT  PRIMARY KEY,
-                                ID_APP_USER  BIGINT,
-                                ID_ROLE BIGINT,
-                                UUID UUID DEFAULT RANDOM_UUID(),
-                                FOREIGN KEY (ID_APP_USER) REFERENCES APP_USER(ID),
-                                FOREIGN KEY (ID_ROLE) REFERENCES ROLE(ID)
-);
 

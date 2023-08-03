@@ -3,8 +3,8 @@ package com.liftoff.project.mapper.impl;
 import com.liftoff.project.controller.request.SignupRequestDTO;
 import com.liftoff.project.controller.response.UserResponseDTO;
 import com.liftoff.project.mapper.RoleMapper;
+import com.liftoff.project.model.Role;
 import com.liftoff.project.model.User;
-import com.liftoff.project.repository.RoleRepository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,8 +15,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,8 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
     private RoleMapper roleMapper;
 
 
-    @Mock
-    private RoleRepository roleRepository;
+
 
     @InjectMocks
     private UserMapperImpl userMapper;
@@ -48,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.*;
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-         userMapper = new UserMapperImpl(roleRepository,roleMapper, passwordEncoder);
+         userMapper = new UserMapperImpl(roleMapper, passwordEncoder);
     }
 
     @Test
@@ -75,7 +72,8 @@ import static org.junit.jupiter.api.Assertions.*;
                 .withPassword(passwordEncoder.encode("ala ma kota"))
                 .withIsEnabled(1)
                 .withUuid(UUID.randomUUID())
-                .withRoleList(roleRepository.findAll()).build();
+                .withRole(Role.ROLE_USER)
+                .build();
 
 
         // When
@@ -87,7 +85,7 @@ import static org.junit.jupiter.api.Assertions.*;
         assertEquals(user.getPassword(), responseDTO.getPassword());
         assertEquals(user.getIsEnabled(), responseDTO.getIsEnabled());
         assertEquals(user.getUuid(), responseDTO.getUuid());
-        assertEquals(user.getRoleList().size(), responseDTO.getRoleList().size());
+        assertEquals(user.getRole(), responseDTO.getRole());
 
 
 
@@ -112,9 +110,7 @@ import static org.junit.jupiter.api.Assertions.*;
     public void should_Return_User_For_Not_Null_UserResponse() {
         // Given
 
-            List<String> roles = new ArrayList<>();
-                    roles.add("ROLE_USER");
-                    roles.add("ROLE_ADMIN");
+
 
         SignupRequestDTO signupRequestDTO = SignupRequestDTO.builder()
                 .withFirstName("Maciej")
@@ -122,7 +118,7 @@ import static org.junit.jupiter.api.Assertions.*;
                 .withEmail("genger@wp.pl")
                 //.withPassword("")
                 .withUuid("f97b6441-6ce0-4c95-93b7-9cf9aafa6712")
-                .withRoles(roles).build();
+                .build();
 
 
         // When
@@ -135,7 +131,7 @@ import static org.junit.jupiter.api.Assertions.*;
         assertEquals(user.getLastName(), signupRequestDTO.getLastName());
         assertEquals(user.getPassword(), signupRequestDTO.getPassword());
         assertEquals(user.getUuid().toString(), signupRequestDTO.getUuid());
-        assertEquals(user.getRoleList().size(), signupRequestDTO.getRoles().size());
+
 
 
 

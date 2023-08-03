@@ -1,24 +1,22 @@
 package com.liftoff.project.mapper.impl;
+
 import com.liftoff.project.controller.request.SignupRequestDTO;
 import com.liftoff.project.controller.response.UserResponseDTO;
 import com.liftoff.project.mapper.RoleMapper;
 import com.liftoff.project.mapper.UserMapper;
-import com.liftoff.project.model.RoleName;
+import com.liftoff.project.model.Role;
 import com.liftoff.project.model.User;
-import com.liftoff.project.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class UserMapperImpl implements UserMapper {
 
 
-    private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
     private final PasswordEncoder passwordEncoder;
 
@@ -37,9 +35,7 @@ public class UserMapperImpl implements UserMapper {
                 .withPassword(passwordEncoder.encode(signupRequestDTO.getPassword()))
                 .withIsEnabled(0)
                 .withUuid(UUID.randomUUID())
-                .withRoleList(signupRequestDTO.getRoles().stream().map((role) -> {
-                    return roleRepository.findByRoleName(RoleName.valueOf(role));
-                }).collect(Collectors.toList()))
+                .withRole(Role.ROLE_USER)
                 .build();
     }
 
@@ -57,7 +53,7 @@ public class UserMapperImpl implements UserMapper {
                 .withPassword(user.getPassword())
                 .withIsEnabled(user.getIsEnabled())
                 .withUuid(user.getUuid())
-                .withRoleList(roleMapper.mapRolesToRoleResponses(user.getRoleList()))
+                .withRole(roleMapper.mapRolesToRoleResponses(user.getRole()))
                 .build();
     }
 

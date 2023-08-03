@@ -41,44 +41,17 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<UserResponseDTO> registerUser(@Valid @RequestBody SignupRequestDTO signUpRequestDTO) {
 
-        return new ResponseEntity<>(userMapper.mapUserToUserResponse(userService.addUser(signUpRequestDTO)), HttpStatus.CREATED);
+        //return new ResponseEntity<>(userMapper.mapUserToUserResponse(userService.addUser(signUpRequestDTO)), HttpStatus.CREATED);
+        return new ResponseEntity<>(userService.addUser(signUpRequestDTO), HttpStatus.CREATED);
     }
 
 
     @PostMapping("/signin")
     public ResponseEntity<JwtResponseDTO> authenticateUser(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequestDTO.getUsername(), loginRequestDTO.getUserPass()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
-
-        UserDetailsSecurity userDetails = (UserDetailsSecurity) authentication.getPrincipal();
-
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
-
-
-//        if (userDetails != null && refreshTokenService.countRefreshTokenForUserArch(userDetails.getId()) > 0) {
-//            refreshTokenService.deleteByUserId(userDetails.getId());
-//        }
-
-       // RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
-
-        return ResponseEntity.ok(new JwtResponseDTO(jwt, "Bearer",
-                userDetails.getUuid(),
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                roles,
-                userDetails.getFirstName(),
-                userDetails.getLastName()
-        ));
+        return new ResponseEntity<>(userService.authenticateUser(loginRequestDTO), HttpStatus.OK);
     }
-
-//        return new ResponseEntity<>(userService.authenticateUser(loginRequestDTO), HttpStatus.OK);
-//    }
 
 
 }

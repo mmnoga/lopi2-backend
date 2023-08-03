@@ -5,11 +5,12 @@ import com.liftoff.project.configuration.jwt.JwtUtils;
 import com.liftoff.project.controller.request.LoginRequestDTO;
 import com.liftoff.project.controller.request.SignupRequestDTO;
 import com.liftoff.project.controller.response.JwtResponseDTO;
+import com.liftoff.project.controller.response.UserResponseDTO;
 import com.liftoff.project.mapper.UserMapper;
 import com.liftoff.project.model.User;
-import com.liftoff.project.repository.RoleRepository;
 import com.liftoff.project.repository.UserRepository;
 import com.liftoff.project.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,27 +23,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
 
-    private UserRepository userRepository;
-    private UserMapper userMapper;
-    private RoleRepository roleRepository;
-    private  AuthenticationManager authenticationManager;
-    private  JwtUtils jwtUtils;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, RoleRepository roleRepository) {
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
-        this.roleRepository = roleRepository;
-        this.authenticationManager = authenticationManager;
-        this.jwtUtils = jwtUtils;
-    }
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtils jwtUtils;
 
-    public User addUser(SignupRequestDTO signupRequestDTO) {
 
-        return userRepository.save(userMapper.mapSignupRequestToUser(signupRequestDTO));
+    public UserResponseDTO addUser(SignupRequestDTO signupRequestDTO) {
+
+        User save = userRepository.save(userMapper.mapSignupRequestToUser(signupRequestDTO));
+        return userMapper.mapUserToUserResponse(save);
 
     }
 
@@ -70,7 +65,7 @@ public class UserServiceImpl implements UserService {
                 userDetails.getUuid(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
-                roles,
+                roles.get(0),
                 userDetails.getFirstName(),
                 userDetails.getLastName()
         );
