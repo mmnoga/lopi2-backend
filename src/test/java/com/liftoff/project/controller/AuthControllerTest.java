@@ -1,12 +1,10 @@
 package com.liftoff.project.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liftoff.project.controller.request.LoginRequestDTO;
 import com.liftoff.project.controller.request.SignupRequestDTO;
 import com.liftoff.project.controller.response.JwtResponseDTO;
 import com.liftoff.project.controller.response.UserResponseDTO;
-import com.liftoff.project.mapper.RoleMapper;
 import com.liftoff.project.mapper.UserMapper;
 import com.liftoff.project.service.UserService;
 import org.hamcrest.Matchers;
@@ -47,8 +45,7 @@ class AuthControllerTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
-    @Mock
-    private RoleMapper roleMapper;
+
 
     @Mock
     private UserMapper userMapper;
@@ -73,7 +70,7 @@ class AuthControllerTest {
                 .withPassword(passwordEncoder.encode("ala ma kota"))
                 .withCreatedAt(null)
                 .withUpdatedAt(null)
-                .withIsEnabled(0)
+                .withIsEnabled(false)
                 .withUuid(UUID.fromString("27e21ae6-515b-4871-b7f2-ee19125c54f7"))
                 .build();
 
@@ -134,9 +131,7 @@ class AuthControllerTest {
         }
 
 
-
     }
-
 
 
     private static String asJsonString(final Object obj) {

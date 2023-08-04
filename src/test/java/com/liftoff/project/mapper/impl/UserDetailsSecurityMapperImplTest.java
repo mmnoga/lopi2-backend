@@ -59,7 +59,7 @@ class UserDetailsSecurityMapperImplTest {
                 .withLastName("Marciniak")
                 .withEmail("genger@wp.pl")
                 .withPassword(passwordEncoder.encode("ala ma kota"))
-                .withIsEnabled(1)
+                .withIsEnabled(true)
                 .withUuid(UUID.randomUUID())
                 .withRole(Role.ROLE_USER)
                 .build();

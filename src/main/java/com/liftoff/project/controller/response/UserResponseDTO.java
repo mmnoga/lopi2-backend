@@ -2,6 +2,7 @@ package com.liftoff.project.controller.response;
 
 
 
+import com.liftoff.project.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,7 +33,7 @@ public class UserResponseDTO {
 
     private UUID uuid;
 
-    private RoleResponseDTO role;
+    private Role role;
 
 
 }

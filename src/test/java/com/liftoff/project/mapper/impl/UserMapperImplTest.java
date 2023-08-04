@@ -2,10 +2,8 @@ package com.liftoff.project.mapper.impl;
 
 import com.liftoff.project.controller.request.SignupRequestDTO;
 import com.liftoff.project.controller.response.UserResponseDTO;
-import com.liftoff.project.mapper.RoleMapper;
 import com.liftoff.project.model.Role;
 import com.liftoff.project.model.User;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(MockitoExtension.class)
  class UserMapperImplTest {
@@ -32,8 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
     @Mock
     private PasswordEncoder passwordEncoder;
 
-    @Mock
-    private RoleMapper roleMapper;
+
 
 
 
@@ -45,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.*;
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-         userMapper = new UserMapperImpl(roleMapper, passwordEncoder);
+         userMapper = new UserMapperImpl(passwordEncoder);
     }
 
     @Test
@@ -70,7 +68,7 @@ import static org.junit.jupiter.api.Assertions.*;
                 .withLastName("Marciniak")
                 .withEmail("genger@wp.pl")
                 .withPassword(passwordEncoder.encode("ala ma kota"))
-                .withIsEnabled(1)
+                .withIsEnabled(true)
                 .withUuid(UUID.randomUUID())
                 .withRole(Role.ROLE_USER)
                 .build();
@@ -83,7 +81,6 @@ import static org.junit.jupiter.api.Assertions.*;
         assertEquals(user.getFirstName(), responseDTO.getFirstName());
         assertEquals(user.getLastName(), responseDTO.getLastName());
         assertEquals(user.getPassword(), responseDTO.getPassword());
-        assertEquals(user.getIsEnabled(), responseDTO.getIsEnabled());
         assertEquals(user.getUuid(), responseDTO.getUuid());
         assertEquals(user.getRole(), responseDTO.getRole());
 

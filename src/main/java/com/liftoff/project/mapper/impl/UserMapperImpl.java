@@ -2,13 +2,13 @@ package com.liftoff.project.mapper.impl;
 
 import com.liftoff.project.controller.request.SignupRequestDTO;
 import com.liftoff.project.controller.response.UserResponseDTO;
-import com.liftoff.project.mapper.RoleMapper;
 import com.liftoff.project.mapper.UserMapper;
 import com.liftoff.project.model.Role;
 import com.liftoff.project.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
 import java.util.UUID;
 
 @Component
@@ -16,7 +16,6 @@ import java.util.UUID;
 public class UserMapperImpl implements UserMapper {
 
 
-    private final RoleMapper roleMapper;
     private final PasswordEncoder passwordEncoder;
 
 
@@ -52,7 +51,7 @@ public class UserMapperImpl implements UserMapper {
                 .withPassword(user.getPassword())
                 .withIsEnabled(user.getIsEnabled())
                 .withUuid(user.getUuid())
-                .withRole(roleMapper.mapRolesToRoleResponses(user.getRole()))
+                .withRole(user.getRole())
                 .build();
     }
 
