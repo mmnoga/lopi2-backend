@@ -11,6 +11,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -68,4 +69,16 @@ public class Category {
 
     @ManyToMany(mappedBy = "categories")
     private Set<Product> products;
+
+    public boolean containsProducts() {
+        return products != null && !products.isEmpty();
+    }
+
+    public boolean containsSubcategories() {
+        return subcategories != null && !subcategories.isEmpty();
+    }
+
+    public boolean isSubcategory() {
+        return parentCategory != null;
+    }
 }
