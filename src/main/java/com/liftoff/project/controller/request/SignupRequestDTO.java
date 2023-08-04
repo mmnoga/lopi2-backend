@@ -34,7 +34,7 @@ public class SignupRequestDTO {
 
 
     @NotBlank
-    @Size(min = 5, max = 45)
+    @Size(min = 8, max = 45)
     private String password;
 
 

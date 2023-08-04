@@ -28,7 +28,7 @@ public class UserResponseDTO {
 
     private Instant updatedAt;
 
-    private Integer isEnabled;
+    private boolean isEnabled;
 
     private UUID uuid;
 

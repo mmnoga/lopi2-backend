@@ -32,7 +32,7 @@ public class UserMapperImpl implements UserMapper {
                 .withLastName(signupRequestDTO.getLastName())
                 .withEmail(signupRequestDTO.getEmail())
                 .withPassword(passwordEncoder.encode(signupRequestDTO.getPassword()))
-                .withIsEnabled(0)
+                .withIsEnabled(true)
                 .withUuid(UUID.randomUUID())
                 .withRole(Role.ROLE_USER)
                 .build();

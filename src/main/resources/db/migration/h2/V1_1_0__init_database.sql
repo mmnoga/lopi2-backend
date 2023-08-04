@@ -53,7 +53,7 @@ CREATE TABLE APP_USER (
                                 PASSWORD VARCHAR(150),
                                 CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                 UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                                IS_ENABLED INTEGER DEFAULT 1,
+                                IS_ENABLED BOOLEAN DEFAULT TRUE,
                                 UUID UUID DEFAULT RANDOM_UUID()
 );
 

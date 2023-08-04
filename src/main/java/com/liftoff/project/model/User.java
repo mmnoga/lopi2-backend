@@ -45,22 +45,13 @@ public class User {
     @Column(name = "UPDATED_AT")
     private Instant updatedAt;
     @Column(name = "IS_ENABLED")
-    private Integer isEnabled;
+    private Boolean isEnabled;
     @Column(name = "UUID")
     private UUID uuid;
     @Enumerated(EnumType.STRING)
     @Column(name = "ROLE")
     private Role role;
 
-    public boolean isEnabled() {
-
-        boolean isEnabled = false;
-        if (this.isEnabled == 1) {
-            isEnabled = true;
-        }
-        return isEnabled;
-
-    }
 
 
 }
