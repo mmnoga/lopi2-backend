@@ -1,8 +1,8 @@
 package com.liftoff.project.configuration;
+
 import com.liftoff.project.configuration.jwt.AuthEntryPointJwt;
 import com.liftoff.project.configuration.jwt.AuthTokenFilter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,15 +19,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig  {
-
+public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
     private AuthEntryPointJwt unauthorizedHandler;
@@ -58,14 +57,11 @@ public class SecurityConfig  {
     }
 
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request.requestMatchers("/api/auth/signin").permitAll()
-                        .requestMatchers("/api/auth/signup").permitAll()
-                        .requestMatchers("/api/example/read").hasRole("USER")
-                        .anyRequest().authenticated())
+                .authorizeHttpRequests(request -> request
+                        .anyRequest().permitAll())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
                         authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -73,17 +69,12 @@ public class SecurityConfig  {
     }
 
 
-
     @Bean
     WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring().requestMatchers(
-                new AntPathRequestMatcher("/h2-console/**"),
-                new AntPathRequestMatcher("/api/categories/**"),
-                new AntPathRequestMatcher("/api/products/**")
-
+                new AntPathRequestMatcher("/h2-console/**")
         );
     }
-
 
 
 }

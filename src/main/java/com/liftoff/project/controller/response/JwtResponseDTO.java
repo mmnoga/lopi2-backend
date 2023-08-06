@@ -1,10 +1,7 @@
 package com.liftoff.project.controller.response;
 
-import lombok.Builder;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
 import java.util.UUID;
 
 @Data
