@@ -68,6 +68,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductResponseDTO> getNRecentAddedActiveProducts(int n) {
+        List<Product> products = productRepository.findTopNRecentActiveProducts(n);
+
+        return products.stream()
+                .map(productMapper::mapEntityToResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public ProductResponseDTO addProduct(ProductRequestDTO productRequestDTO) {
         Product newProduct = productMapper.mapRequestToEntity(productRequestDTO);
 

@@ -26,12 +26,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -312,7 +314,51 @@ class ProductControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    void shouldReturnProductsWhenValidN() throws Exception {
+        // given
+        int n = 3;
+        List<ProductResponseDTO> dummyProducts = createNDummyProducts(n);
+        when(productService.getNRecentAddedActiveProducts(anyInt())).thenReturn(dummyProducts);
+
+        // when & then
+        mockMvc.perform(get("/api/products/recent-added")
+                        .param("n", String.valueOf(n)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldReturnEmptyListOfProductsWhenNoProductAdded() throws Exception {
+        // given
+        int n = 5;
+        List<ProductResponseDTO> emptyProductsList = Collections.emptyList();
+
+        // when
+        when(productService.getNRecentAddedActiveProducts(n)).thenReturn(emptyProductsList);
+
+        // then
+        mockMvc.perform(get("/api/products/recent-added")
+                        .param("n", String.valueOf(n)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(0));
+    }
+
     private String asJsonString(final Object obj) throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(obj);
     }
+
+    private List<ProductResponseDTO> createNDummyProducts(int n) {
+        List<ProductResponseDTO> dummyProducts = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            dummyProducts.add(ProductResponseDTO.builder()
+                    .name("Product " + (i + 1))
+                    .description("Product " + (i + 1) + " description")
+                    .regularPrice(2.99 + i)
+                    .published(true)
+                    .build());
+        }
+        return dummyProducts;
+    }
+
 }

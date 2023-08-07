@@ -64,18 +64,21 @@ public class ProductInsertCommand implements CommandLineRunner {
                 .uId(UUID.randomUUID())
                 .name("Product 1")
                 .description("Product 1 description")
+                .published(true)
                 .categories(Set.of(cat4, cat6))
                 .build();
         Product prod2 = Product.builder()
                 .uId(UUID.randomUUID())
                 .name("Product 2")
                 .description("Product 2 description")
+                .published(true)
                 .categories(Set.of(cat5, cat2))
                 .build();
         Product prod3 = Product.builder()
                 .uId(UUID.randomUUID())
                 .name("Product 3")
                 .description("Product 3 description")
+                .published(true)
                 .categories(Set.of(cat1))
                 .build();
 

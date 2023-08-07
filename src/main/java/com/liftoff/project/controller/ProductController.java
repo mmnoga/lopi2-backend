@@ -6,6 +6,8 @@ import com.liftoff.project.controller.response.ProductResponseDTO;
 import com.liftoff.project.exception.CategoryNotFoundException;
 import com.liftoff.project.exception.ProductNotFoundException;
 import com.liftoff.project.service.ProductService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +55,13 @@ public class ProductController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/recent-added")
+    public ResponseEntity<List<ProductResponseDTO>> getNRecentAddedActiveProducts(
+            @RequestParam(value = "n", defaultValue = "5") @Valid @Min(1) int n) {
+        List<ProductResponseDTO> products = productService.getNRecentAddedActiveProducts(n);
+        return ResponseEntity.ok(products);
     }
 
     @PostMapping
