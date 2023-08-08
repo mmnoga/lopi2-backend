@@ -59,7 +59,7 @@ class AuthControllerTest {
                 .withFirstName("John133")
                 .withLastName("Doe13553")
                 .withEmail("johnDoe553@gmail.com")
-                .withPassword("ala ma kota")
+                .withPassword("TEST1234")
                 .withUuid("")
                 .build();
 
@@ -67,7 +67,7 @@ class AuthControllerTest {
                 .withFirstName("John133")
                 .withLastName("Doe13553")
                 .withEmail("johnDoe553@gmail.com")
-                .withPassword(passwordEncoder.encode("ala ma kota"))
+                .withPassword(passwordEncoder.encode("TEST1234"))
                 .withCreatedAt(null)
                 .withUpdatedAt(null)
                 .withIsEnabled(false)
