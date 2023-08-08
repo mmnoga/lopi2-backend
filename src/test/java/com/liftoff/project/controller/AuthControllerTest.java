@@ -108,9 +108,7 @@ class AuthControllerTest {
 
 
         JwtResponseDTO jwtResponseDTO = new JwtResponseDTO("TOKEN_STRING",
-                "Bearer",
-                UUID.fromString("27e21ae6-515b-4871-b7f2-ee19125c54f7"
-                ), "test_email@example.com", "test_email@example.com",
+                             "test_email@example.com",
                 "ROLE_USER", "Steve", "Gadd");
 
         Mockito.when(userService.authenticateUser(any())).thenReturn(jwtResponseDTO);
@@ -125,7 +123,7 @@ class AuthControllerTest {
                     .andExpect(MockMvcResultMatchers.status().isOk())
 //                    .andExpect(MockMvcResultMatchers.jsonPath("$.firstName", Matchers.is("John133")))
 //                    .andExpect(MockMvcResultMatchers.jsonPath("$.lastName", Matchers.is("Doe13553")))
-                    .andExpect(MockMvcResultMatchers.jsonPath("$.email", Matchers.is("test_email@example.com")));
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.username", Matchers.is("test_email@example.com")));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

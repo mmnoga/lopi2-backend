@@ -1,6 +1,5 @@
 package com.liftoff.project.configuration;
 
-import com.liftoff.project.configuration.jwt.AuthEntryPointJwt;
 import com.liftoff.project.configuration.jwt.AuthTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +28,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
-    private AuthEntryPointJwt unauthorizedHandler;
+
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
@@ -50,6 +49,7 @@ public class SecurityConfig {
             throws Exception {
         return config.getAuthenticationManager();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
