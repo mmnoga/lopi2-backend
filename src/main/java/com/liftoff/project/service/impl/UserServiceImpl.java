@@ -6,7 +6,7 @@ import com.liftoff.project.controller.request.LoginRequestDTO;
 import com.liftoff.project.controller.request.SignupRequestDTO;
 import com.liftoff.project.controller.response.JwtResponseDTO;
 import com.liftoff.project.controller.response.UserResponseDTO;
-import com.liftoff.project.exception.LoginException;
+import com.liftoff.project.exception.LoginAuthenticationException;
 import com.liftoff.project.mapper.UserMapper;
 import com.liftoff.project.model.User;
 import com.liftoff.project.repository.UserRepository;
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
                     userDetails.getLastName()
             );
         } catch (Exception ex) { //AuthenticationException
-            throw new LoginException(ex.getMessage());
+            throw new LoginAuthenticationException(ex.getMessage());
         }
 
 
