@@ -6,6 +6,7 @@ import com.liftoff.project.controller.request.LoginRequestDTO;
 import com.liftoff.project.controller.request.SignupRequestDTO;
 import com.liftoff.project.controller.response.JwtResponseDTO;
 import com.liftoff.project.controller.response.UserResponseDTO;
+import com.liftoff.project.exception.LoginException;
 import com.liftoff.project.mapper.UserMapper;
 import com.liftoff.project.model.User;
 import com.liftoff.project.repository.UserRepository;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -41,33 +43,38 @@ public class UserServiceImpl implements UserService {
     }
 
     public JwtResponseDTO authenticateUser(LoginRequestDTO loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getUserPass()));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
-
-        UserDetailsSecurity userDetails = (UserDetailsSecurity) authentication.getPrincipal();
-
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
 
 
-//        if (userDetails != null && refreshTokenService.countRefreshTokenForUserArch(userDetails.getId()) > 0) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getUserPass()));
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = jwtUtils.generateJwtToken(authentication);
+
+            UserDetailsSecurity userDetails = (UserDetailsSecurity) authentication.getPrincipal();
+
+            List<String> roles = userDetails.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
+
+
+            //        if (userDetails != null && refreshTokenService.countRefreshTokenForUserArch(userDetails.getId()) > 0) {
 //            refreshTokenService.deleteByUserId(userDetails.getId());
 //        }
 
-        // RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+            // RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
-        return new JwtResponseDTO(jwt, "Bearer",
-                userDetails.getUuid(),
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                roles.get(0),
-                userDetails.getFirstName(),
-                userDetails.getLastName()
-        );
+            return new JwtResponseDTO(jwt,
+                    userDetails.getUsername(),
+                    roles.get(0),
+                    userDetails.getFirstName(),
+                    userDetails.getLastName()
+            );
+        } catch (Exception ex) { //AuthenticationException
+            throw new LoginException(ex.getMessage());
+        }
+
 
     }
 
