@@ -3,11 +3,11 @@ package com.liftoff.project.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 
-public class LoginException extends AuthenticationException {
+public class LoginAuthenticationException extends AuthenticationException {
     private final HttpStatus status;
     private final String message;
 
-    public LoginException(String message) {
+    public LoginAuthenticationException(String message) {
         super(message);
         this.status = HttpStatus.NOT_FOUND;
         this.message = message;
