@@ -8,6 +8,7 @@ import com.liftoff.project.exception.ParentCategoryNotFoundException;
 import com.liftoff.project.exception.ProductNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -40,11 +41,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleInvalidParentCategoryException(InvalidParentCategoryException ex) {
         return createErrorResponse(ex.getMessage(), ex.getStatus());
 
-    } @ExceptionHandler(LoginException.class)
+    }
+
+    @ExceptionHandler(LoginException.class)
     public ResponseEntity<Map<String, String>> handleInvalidLoginException(LoginException ex) {
         return createErrorResponse(ex.getMessage(), ex.getStatus());
     }
 
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidLoginFieldsException(MethodArgumentNotValidException ex) {
+        return createErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 
 
     private ResponseEntity<Map<String, String>> createErrorResponse(String errorMessage, HttpStatus status) {
