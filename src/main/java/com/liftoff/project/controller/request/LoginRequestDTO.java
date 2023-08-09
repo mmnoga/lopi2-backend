@@ -1,6 +1,5 @@
 package com.liftoff.project.controller.request;
 
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -17,7 +16,7 @@ public class LoginRequestDTO {
     private String username;
 
     @NotBlank(message = "User`s password cannot be empty")
-    @Size(min = 8, max = 8, message = "Password must be at least 8 characters")
+    @Size(min = 8, message = "Password must be at least 8 characters")
     private String userPass;
 
 
