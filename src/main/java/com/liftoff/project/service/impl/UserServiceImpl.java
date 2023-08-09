@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
 
     public User loadUserByUsername(String username) {
 
-        Optional<User> myOptionalUser = userRepository.findByEmail(username);
+        Optional<User> myOptionalUser = userRepository.findByUsername(username);
 
          final User user = myOptionalUser.orElseThrow(() -> {
             return new UsernameNotFoundException("User not found");

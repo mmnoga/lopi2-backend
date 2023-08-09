@@ -27,7 +27,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) {
 
 
-        Optional<User> myOptionalUser = userRepository.findByEmail(username);
+        Optional<User> myOptionalUser = userRepository.findByUsername(username);
 
         final UserDetailsSecurity userDetailsSecurity = myOptionalUser.map((user) -> {
 

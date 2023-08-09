@@ -20,13 +20,7 @@ public class UserResponseDTO {
 
     private String lastName;
 
-    private String email;
-
-    private String password;
-
-    private Instant createdAt;
-
-    private Instant updatedAt;
+    private String username;
 
     private boolean isEnabled;
 

@@ -66,10 +66,7 @@ class AuthControllerTest {
         UserResponseDTO responseDTO = UserResponseDTO.builder()
                 .withFirstName("John133")
                 .withLastName("Doe13553")
-                .withEmail("johnDoe553@gmail.com")
-                .withPassword(passwordEncoder.encode("TEST1234"))
-                .withCreatedAt(null)
-                .withUpdatedAt(null)
+                .withUsername("johnDoe553@gmail.com")
                 .withIsEnabled(false)
                 .withUuid(UUID.fromString("27e21ae6-515b-4871-b7f2-ee19125c54f7"))
                 .build();
@@ -87,7 +84,7 @@ class AuthControllerTest {
                     .andExpect(MockMvcResultMatchers.status().isCreated())
                     .andExpect(MockMvcResultMatchers.jsonPath("$.firstName", Matchers.is("John133")))
                     .andExpect(MockMvcResultMatchers.jsonPath("$.lastName", Matchers.is("Doe13553")))
-                    .andExpect(MockMvcResultMatchers.jsonPath("$.email", Matchers.is("johnDoe553@gmail.com")));
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.username", Matchers.is("johnDoe553@gmail.com")));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

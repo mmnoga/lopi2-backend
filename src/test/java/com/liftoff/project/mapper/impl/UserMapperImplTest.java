@@ -66,7 +66,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
         User user = User.builder()
                 .withFirstName("Maciej")
                 .withLastName("Marciniak")
-                .withEmail("genger@wp.pl")
+                .withUsername("genger@wp.pl")
                 .withPassword(passwordEncoder.encode("ala ma kota"))
                 .withIsEnabled(true)
                 .withUuid(UUID.randomUUID())
@@ -80,7 +80,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
         // Then
         assertEquals(user.getFirstName(), responseDTO.getFirstName());
         assertEquals(user.getLastName(), responseDTO.getLastName());
-        assertEquals(user.getPassword(), responseDTO.getPassword());
         assertEquals(user.getUuid(), responseDTO.getUuid());
         assertEquals(user.getRole(), responseDTO.getRole());
 
@@ -113,7 +112,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
                 .withFirstName("Maciej")
                 .withLastName("Marciniak")
                 .withEmail("genger@wp.pl")
-                //.withPassword("")
                 .withUuid("f97b6441-6ce0-4c95-93b7-9cf9aafa6712")
                 .build();
 
