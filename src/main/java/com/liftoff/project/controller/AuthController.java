@@ -4,7 +4,9 @@ import com.liftoff.project.controller.request.LoginRequestDTO;
 import com.liftoff.project.controller.request.SignupRequestDTO;
 import com.liftoff.project.controller.response.JwtResponseDTO;
 import com.liftoff.project.controller.response.UserResponseDTO;
+import com.liftoff.project.exception.UserAlreadyExistedException;
 import com.liftoff.project.service.UserService;
+import com.liftoff.project.service.UserValidationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,10 +26,16 @@ public class AuthController {
 
 
     private final UserService userService;
-
+    private final UserValidationService userValidationService;
 
     @PostMapping("/signup")
     public ResponseEntity<UserResponseDTO> registerUser(@Valid @RequestBody SignupRequestDTO signUpRequestDTO) {
+
+
+        if (userValidationService.validateUsername(signUpRequestDTO) != null) {
+
+            throw new UserAlreadyExistedException(userValidationService.validateUsername(signUpRequestDTO));
+        }
 
         return new ResponseEntity<>(userService.addUser(signUpRequestDTO), HttpStatus.CREATED);
     }
@@ -35,7 +43,6 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<JwtResponseDTO> authenticateUser(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
-
 
         return new ResponseEntity<>(userService.authenticateUser(loginRequestDTO), HttpStatus.OK);
     }

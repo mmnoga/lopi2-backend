@@ -8,7 +8,6 @@ import com.liftoff.project.controller.response.JwtResponseDTO;
 import com.liftoff.project.controller.response.UserResponseDTO;
 import com.liftoff.project.exception.LoginAuthenticationException;
 import com.liftoff.project.mapper.UserMapper;
-import com.liftoff.project.model.Example;
 import com.liftoff.project.model.User;
 import com.liftoff.project.repository.UserRepository;
 import com.liftoff.project.service.UserService;
@@ -19,11 +18,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -79,17 +76,5 @@ public class UserServiceImpl implements UserService {
 
     }
 
-
-    public User loadUserByUsername(String username) {
-
-        Optional<User> myOptionalUser = userRepository.findByUsername(username);
-
-         final User user = myOptionalUser.orElseThrow(() -> {
-            return new UsernameNotFoundException("User not found");
-        });
-
-
-        return user;
-    }
 
 }

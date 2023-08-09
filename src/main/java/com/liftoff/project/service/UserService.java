@@ -4,7 +4,6 @@ import com.liftoff.project.controller.request.LoginRequestDTO;
 import com.liftoff.project.controller.request.SignupRequestDTO;
 import com.liftoff.project.controller.response.JwtResponseDTO;
 import com.liftoff.project.controller.response.UserResponseDTO;
-import com.liftoff.project.model.User;
 
 public interface UserService {
 
@@ -27,14 +26,7 @@ public interface UserService {
      * @return The JwtResponseDTO object representing the logged user.
      */
 
-     JwtResponseDTO authenticateUser(LoginRequestDTO loginRequest);
+    JwtResponseDTO authenticateUser(LoginRequestDTO loginRequest);
 
-    /**
-     * Load User to another methods
-     * Returns User entity
-     *
-     * @param username The String  containing the name of User.
-     * @return The ser entity or trows exception UsernameNotFoundException.
-     */
-     User loadUserByUsername(String username);
+
 }

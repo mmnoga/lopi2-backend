@@ -29,7 +29,7 @@ public class UserMapperImpl implements UserMapper {
         return User.builder()
                 .withFirstName(signupRequestDTO.getFirstName())
                 .withLastName(signupRequestDTO.getLastName())
-                .withUsername(signupRequestDTO.getEmail())
+                .withUsername(signupRequestDTO.getUsername())
                 .withPassword(passwordEncoder.encode(signupRequestDTO.getPassword()))
                 .withIsEnabled(true)
                 .withUuid(UUID.randomUUID())

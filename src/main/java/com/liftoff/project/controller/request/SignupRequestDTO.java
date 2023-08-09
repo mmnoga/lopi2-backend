@@ -15,23 +15,22 @@ import lombok.NoArgsConstructor;
 public class SignupRequestDTO {
 
 
-    private String uuid;
-
-    @NotBlank
+    @NotBlank(message = "User's first name cannot be empty.")
+    @Size(min = 3, message = "User's first name must be at least 3 characters")
     private String firstName;
 
     @NotBlank(message = "User's sure name cannot be empty.")
+    @Size(min = 3, message = "User's sure name must be at least 3 characters")
     private String lastName;
 
 
-    @NotBlank
-    @Size(max = 50)
-    @Email(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$", message = "Email must be valid like name@domain.pl")
-    private String email;
+    @Email(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$", message = "User name as email must be valid like name@domain.pl")
+    @NotBlank(message = "User's name cannot be empty")
+    private String username;
 
 
-    @NotBlank
-    @Size(min = 8, max = 8, message = "Password must be at least 8 characters")
+    @NotBlank(message = "User`s password cannot be empty")
+    @Size(min = 8, message = "Password must be at least 8 characters")
     private String password;
 
 

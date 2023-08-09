@@ -58,9 +58,8 @@ class AuthControllerTest {
         SignupRequestDTO signUpRequestDTO = SignupRequestDTO.builder()
                 .withFirstName("John133")
                 .withLastName("Doe13553")
-                .withEmail("johnDoe553@gmail.com")
+                .withUsername("johnDoe553@gmail.com")
                 .withPassword("TEST1234")
-                .withUuid("")
                 .build();
 
         UserResponseDTO responseDTO = UserResponseDTO.builder()
