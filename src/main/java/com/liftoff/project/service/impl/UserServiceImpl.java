@@ -17,9 +17,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -75,6 +77,19 @@ public class UserServiceImpl implements UserService {
         }
 
 
+    }
+
+
+    public User loadUserByUsername(String username) {
+
+        Optional<User> myOptionalUser = userRepository.findByEmail(username);
+
+         final User user = myOptionalUser.orElseThrow(() -> {
+            return new UsernameNotFoundException("User not found");
+        });
+
+
+        return user;
     }
 
 }
