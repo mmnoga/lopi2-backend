@@ -1,8 +1,15 @@
 package com.liftoff.project.controller.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Data
+@Builder(setterPrefix = "with")
+@AllArgsConstructor
+@NoArgsConstructor
 public class JwtResponseDTO {
 
     private String token;
@@ -10,16 +17,5 @@ public class JwtResponseDTO {
     private String role;
     private String firstName;
     private String lastName;
-
-
-    public JwtResponseDTO(String token, String username, String role, String firstName, String lastName) {
-        this.token = token;
-        this.username = username;
-        this.role = role;
-        this.firstName = firstName;
-        this.lastName = lastName;
-
-
-    }
 
 }

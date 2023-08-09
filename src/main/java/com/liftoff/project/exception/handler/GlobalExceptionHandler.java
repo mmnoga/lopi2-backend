@@ -63,11 +63,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleInvalidLoginFieldsException(MethodArgumentNotValidException ex) {
 
-
-        return createErrorResponse(ex.getBindingResult().getFieldErrors()
-                .stream()
-                .map(error -> error.getDefaultMessage())
-                .collect(joining(", ")), HttpStatus.BAD_REQUEST);
+        return createErrorResponse(ex.getBindingResult().getFieldErrors().get(0).getDefaultMessage(), HttpStatus.BAD_REQUEST);
     }
 
 

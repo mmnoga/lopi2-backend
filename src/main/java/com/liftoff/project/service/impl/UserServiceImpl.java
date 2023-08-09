@@ -8,6 +8,7 @@ import com.liftoff.project.controller.response.JwtResponseDTO;
 import com.liftoff.project.controller.response.UserResponseDTO;
 import com.liftoff.project.exception.LoginAuthenticationException;
 import com.liftoff.project.mapper.UserMapper;
+import com.liftoff.project.model.Example;
 import com.liftoff.project.model.User;
 import com.liftoff.project.repository.UserRepository;
 import com.liftoff.project.service.UserService;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -60,19 +62,17 @@ public class UserServiceImpl implements UserService {
                     .collect(Collectors.toList());
 
 
-            //        if (userDetails != null && refreshTokenService.countRefreshTokenForUserArch(userDetails.getId()) > 0) {
-//            refreshTokenService.deleteByUserId(userDetails.getId());
-//        }
+            return JwtResponseDTO.builder()
+                    .withToken(jwt)
+                    .withUsername(userDetails.getUsername())
+                    .withRole(roles.get(0))
+                    .withFirstName(userDetails.getFirstName())
+                    .withLastName(userDetails.getLastName())
+                    .build();
 
-            // RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
-            return new JwtResponseDTO(jwt,
-                    userDetails.getUsername(),
-                    roles.get(0),
-                    userDetails.getFirstName(),
-                    userDetails.getLastName()
-            );
-        } catch (Exception ex) { //AuthenticationException
+        } catch (AuthenticationException ex) {
+
             throw new LoginAuthenticationException(ex.getMessage());
         }
 
