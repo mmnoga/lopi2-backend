@@ -32,10 +32,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
     private PasswordEncoder passwordEncoder;
 
 
-
-
-
-
     @InjectMocks
     private UserMapperImpl userMapper;
 
@@ -84,8 +80,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
         assertEquals(user.getRole(), responseDTO.getRole());
 
 
-
-
     }
 
     @Test
@@ -106,14 +100,11 @@ import static org.junit.jupiter.api.Assertions.assertNull;
     public void should_Return_User_For_Not_Null_UserResponse() {
         // Given
 
-
-
         SignupRequestDTO signupRequestDTO = SignupRequestDTO.builder()
                 .withFirstName("Maciej")
                 .withLastName("Marciniak")
                 .withUsername("genger@wp.pl")
                 .build();
-
 
         // When
         User user = userMapper.mapSignupRequestToUser(signupRequestDTO);
