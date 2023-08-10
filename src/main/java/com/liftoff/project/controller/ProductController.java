@@ -70,13 +70,25 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
+    @PostMapping("/activate")
+    public ResponseEntity<ProductResponseDTO> activateProductByUuid(@RequestParam UUID productUuid) {
+        ProductResponseDTO product = productService.getProductByUuid(productUuid);
+        if (product != null) {
+            ProductResponseDTO activatedProduct
+                    = productService.activateProduct(product);
+            return ResponseEntity.ok(activatedProduct);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @DeleteMapping("/{productUuid}")
     public ResponseEntity<Void> deleteProductByUuid(@PathVariable UUID productUuid) {
         try {
             productService.deleteProductByUuId(productUuid);
             return ResponseEntity.noContent().build();
         } catch (ProductNotFoundException ex) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(ex.getStatus()).body(null);
         }
     }
 

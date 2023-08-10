@@ -6,6 +6,7 @@ import com.liftoff.project.controller.response.ProductResponseDTO;
 import com.liftoff.project.mapper.CategoryMapper;
 import com.liftoff.project.model.Category;
 import com.liftoff.project.model.Product;
+import com.liftoff.project.model.ProductStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +26,7 @@ class ProductMapperImplTest {
     @BeforeEach
     void setUp() {
         categoryMapper = mock(CategoryMapper.class);
-        productMapper = new ProductMapperImpl(categoryMapper);
+        productMapper = new ProductMapperImpl();
     }
 
     @Test
@@ -41,7 +42,7 @@ class ProductMapperImplTest {
         product.setDescription("Description 1");
         product.setShortDescription("Short Description 1");
         product.setNote("Note 1");
-        product.setPublished(true);
+        product.setStatus(ProductStatus.ACTIVE);
         product.setProductscol("Products Col 1");
         product.setQuantity(10);
 
@@ -58,7 +59,7 @@ class ProductMapperImplTest {
         assertEquals(product.getDescription(), responseDTO.getDescription());
         assertEquals(product.getShortDescription(), responseDTO.getShortDescription());
         assertEquals(product.getNote(), responseDTO.getNote());
-        assertEquals(product.getPublished(), responseDTO.getPublished());
+        assertEquals(product.getStatus(), responseDTO.getStatus());
         assertEquals(product.getProductscol(), responseDTO.getProductscol());
         assertEquals(product.getQuantity(), responseDTO.getQuantity());
         assertNull(responseDTO.getCategories());
@@ -111,7 +112,7 @@ class ProductMapperImplTest {
                 .description("Description 1")
                 .shortDescription("Short description 1")
                 .note("Note 1")
-                .published(true)
+                .status(ProductStatus.ACTIVE)
                 .productscol("Products Col 1")
                 .quantity(10)
                 .build();
@@ -128,7 +129,7 @@ class ProductMapperImplTest {
         assertEquals(productRequestDTO.getDescription(), product.getDescription());
         assertEquals(productRequestDTO.getShortDescription(), product.getShortDescription());
         assertEquals(productRequestDTO.getNote(), product.getNote());
-        assertEquals(productRequestDTO.getPublished(), product.getPublished());
+        assertEquals(productRequestDTO.getStatus(), product.getStatus());
         assertEquals(productRequestDTO.getProductscol(), product.getProductscol());
         assertEquals(productRequestDTO.getQuantity(), product.getQuantity());
     }

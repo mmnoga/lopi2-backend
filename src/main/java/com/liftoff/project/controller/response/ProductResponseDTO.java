@@ -1,5 +1,6 @@
 package com.liftoff.project.controller.response;
 
+import com.liftoff.project.model.ProductStatus;
 import lombok.Builder;
 import lombok.Data;
 
@@ -21,10 +22,11 @@ public class ProductResponseDTO {
         private String description;
         private String shortDescription;
         private String note;
-        private Boolean published;
+        private ProductStatus status;
         private String productscol;
         private Integer quantity;
         private Instant createdAt;
         private Instant updatedAt;
+        private Instant archivedAt;
         private Set<CategoryResponseDTO> categories;
 }

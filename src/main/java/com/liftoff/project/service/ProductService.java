@@ -74,4 +74,13 @@ public interface ProductService {
      */
     void deleteProductByUuId(UUID productUuId);
 
+    /**
+     * Activate an existing product.
+     *
+     * @param product The product to be updated.
+     * @return The ProductResponseDTO object representing the activated product.
+     * @throws ProductNotFoundException If the product with the given UUID is not found.
+     */
+    ProductResponseDTO activateProduct(ProductResponseDTO product);
+
 }
