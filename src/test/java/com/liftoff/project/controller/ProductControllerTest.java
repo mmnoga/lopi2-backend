@@ -77,7 +77,7 @@ class ProductControllerTest {
                 .build();
 
         List<ProductResponseDTO> products = Arrays.asList(product1, product2);
-        PaginatedProductResponseDTO paginatedProducts = new PaginatedProductResponseDTO(products, 1);
+        PaginatedProductResponseDTO paginatedProducts = new PaginatedProductResponseDTO(products, 1, 2);
 
         // when
         when(productService.getProducts(page, size)).thenReturn(paginatedProducts);
@@ -102,7 +102,7 @@ class ProductControllerTest {
         int page = 0;
         int size = 10;
         List<ProductResponseDTO> emptyProductsList = Collections.emptyList();
-        PaginatedProductResponseDTO paginatedProducts = new PaginatedProductResponseDTO(emptyProductsList, 0);
+        PaginatedProductResponseDTO paginatedProducts = new PaginatedProductResponseDTO(emptyProductsList, 0, 0);
 
         // when
         when(productService.getProducts(page, size)).thenReturn(paginatedProducts);
