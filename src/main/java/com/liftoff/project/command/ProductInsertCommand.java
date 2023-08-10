@@ -11,8 +11,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Component
 @Priority(1)
@@ -61,30 +62,18 @@ public class ProductInsertCommand implements CommandLineRunner {
 
         categoryRepository.saveAll(List.of(cat1, cat2, cat3, cat4, cat5, cat6));
 
-        Product prod0 = Product.builder()
-                .uId(UUID.randomUUID())
-                .name("Product 0")
-                .description("Product 0 description")
-                .status(ProductStatus.ACTIVE)
-                .categories(null)
-                .build();
+        List<Product> productList = IntStream.range(1, 51)
+                .mapToObj(i -> Product.builder()
+                        .uId(UUID.randomUUID())
+                        .name("Product " + i)
+                        .description("Product " + i + " description")
+                        .status(ProductStatus.ACTIVE)
+                        .categories(null)
+                        .build())
+                .collect(Collectors.toList());
 
-        Product prod4 = Product.builder()
-                .uId(UUID.randomUUID())
-                .name("Product 4")
-                .description("Product 4 description")
-                .status(ProductStatus.IN_PREPARATION)
-                .categories(Set.of(cat1))
-                .build();
-        Product prod5 = Product.builder()
-                .uId(UUID.randomUUID())
-                .name("Product 5")
-                .description("Product 5 description")
-                .status(ProductStatus.CLOSED)
-                .categories(null)
-                .build();
+        productRepository.saveAll(productList);
 
-        productRepository.saveAll(List.of(prod0, prod4, prod5));
     }
 
 }

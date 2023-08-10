@@ -46,8 +46,9 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
 
         int totalPages = productPage.getTotalPages();
+        long totalProducts = productPage.getTotalElements();
 
-        return new PaginatedProductResponseDTO(productResponseList, totalPages);
+        return new PaginatedProductResponseDTO(productResponseList, totalPages, totalProducts);
     }
 
     @Override
@@ -82,8 +83,10 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponseDTO addProduct(ProductRequestDTO productRequestDTO) {
         Product newProduct = productMapper.mapRequestToEntity(productRequestDTO);
 
-        Set<Category> existingCategories = categoryService.getExistingCategories(productRequestDTO.getCategories());
-        newProduct.setCategories(existingCategories);
+        if (productRequestDTO.getCategories() != null) {
+            Set<Category> existingCategories = categoryService.getExistingCategories(productRequestDTO.getCategories());
+            newProduct.setCategories(existingCategories);
+        }
 
         Product savedProduct = productRepository.save(newProduct);
         return productMapper.mapEntityToResponse(savedProduct);
@@ -92,12 +95,17 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDTO updateProductByUuid(UUID productUuid, ProductRequestDTO productRequestDTO) {
         Product existingProduct = productRepository.findByUId(productUuid)
-                .orElseThrow(() ->
-                        new ProductNotFoundException("Product with UUID " + productUuid + " not found."));
+                .orElseThrow(() -> new ProductNotFoundException("Product with UUID " + productUuid + " not found"));
 
-        Set<Category> existingCategories =
-                categoryService.getExistingCategories(productRequestDTO.getCategories());
-
+        updateProductFromRequest(existingProduct, productRequestDTO);
+        
+         Set<Category> existingCategories =
+                    categoryService.getExistingCategories(productRequestDTO.getCategories());
+      
+        if (productRequestDTO.getCategories() != null) {
+            existingProduct.setCategories(existingCategories);
+        }
+      
         return productArchiverService.archiveProduct(existingProduct, productRequestDTO, existingCategories);
     }
 
@@ -113,7 +121,6 @@ public class ProductServiceImpl implements ProductService {
             product.setArchivedAt(Instant.now());
             productRepository.save(product);
         }
-
     }
 
     @Override
@@ -125,5 +132,19 @@ public class ProductServiceImpl implements ProductService {
 
         return product;
     }
-
-}
+  
+    private void updateProductFromRequest(Product product, ProductRequestDTO req) {
+        if (req.getName() != null) product.setName(req.getName());
+        if (req.getSku() != null) product.setSku(req.getSku());
+        if (req.getDescription() != null) product.setDescription(req.getDescription());
+        if (req.getRegularPrice() != null) product.setRegularPrice(req.getRegularPrice());
+        if (req.getDiscountPrice() != null) product.setDiscountPrice(req.getDiscountPrice());
+        if (req.getDiscountPriceEndDate() != null) product.setDiscountPriceEndDate(req.getDiscountPriceEndDate());
+        if (req.getLowestPrice() != null) product.setLowestPrice(req.getLowestPrice());
+        if (req.getShortDescription() != null) product.setShortDescription(req.getShortDescription());
+        if (req.getNote() != null) product.setNote(req.getNote());
+        if (req.getProductscol() != null) product.setProductscol(req.getProductscol());
+        if (req.getQuantity() != null) product.setQuantity(req.getQuantity());
+    }
+  
+  }

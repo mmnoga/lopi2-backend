@@ -4,5 +4,9 @@ import java.util.List;
 
 public record PaginatedProductResponseDTO(
         List<ProductResponseDTO> products,
-        int totalPages) {
+        int totalPages,
+
+        long totalProducts
+
+) {
 }
