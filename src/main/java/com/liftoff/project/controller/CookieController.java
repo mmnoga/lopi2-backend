@@ -7,6 +7,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,26 +25,21 @@ public class CookieController {
     @GetMapping("/create")
     public ResponseEntity setCookie() {
 
-        ResponseCookie resCookie = ResponseCookie.from("some-unauthorized-user-id", "c2FtLnNtaXRoQGV4YW1wbGUuY29t")
-                .httpOnly(true) // js scripts have not an access to our cookie
+        ResponseCookie resCookie = ResponseCookie.from("some-unauthorized-user-id", "c2FtLnNtaXRoQGV4YW1wbGUuY29t").httpOnly(true) // js scripts have not an access to our cookie
                 .secure(false) // https with ssl protocol is not required
-                .path("/api/cookie")
+                .path("/api/cookie") // the cookie will be delivered to the specified URL and all of its subdirectories.
                 .maxAge(1 * 24 * 60 * 60) // one day in minutes
-                .domain("localhost")
-                .build();
-
-        //System.out.println(resCookie.getName() +  " " + resCookie.getValue());
+                .domain("localhost").build();
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, resCookie.toString()).build();
 
     }
 
-    @GetMapping("/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity deleteCookie() {
 
         // create a cookie to overwrite
-        ResponseCookie resCookie = ResponseCookie.from("some-unauthorized-user-id", null)
-                .build();
+        ResponseCookie resCookie = ResponseCookie.from("some-unauthorized-user-id", null).build();
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, resCookie.toString()).build();
 
