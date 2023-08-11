@@ -99,7 +99,7 @@ class AuthControllerTest {
 
         LoginRequestDTO loginRequestDTO = LoginRequestDTO.builder()
                 .withUsername("test_email@example.com")
-                .withUserPass("test1234")
+                .withPassword("test1234")
                 .build();
 
 
