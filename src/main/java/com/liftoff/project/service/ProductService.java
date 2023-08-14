@@ -38,6 +38,16 @@ public interface ProductService {
     List<ProductResponseDTO> getProductsByCategoryId(UUID categoryId);
 
     /**
+     * Retrieves a list of n most recently added active products.
+     *
+     * @param n The number of most recent products to fetch.
+     * @return The list of ProductResponseDTO objects representing the most recently added active products.
+     * The list may be empty if there are no active products.
+     */
+
+    List<ProductResponseDTO> getNRecentAddedActiveProducts(int n);
+
+    /**
      * Adds a new product based on the provided ProductRequestDTO object
      * and returns the created product as the ProductResponseDTO object.
      *
@@ -63,5 +73,14 @@ public interface ProductService {
      * @throws ProductNotFoundException If the product with given UUID is not found.
      */
     void deleteProductByUuId(UUID productUuId);
+
+    /**
+     * Activate an existing product.
+     *
+     * @param product The product to be updated.
+     * @return The ProductResponseDTO object representing the activated product.
+     * @throws ProductNotFoundException If the product with the given UUID is not found.
+     */
+    ProductResponseDTO activateProduct(ProductResponseDTO product);
 
 }

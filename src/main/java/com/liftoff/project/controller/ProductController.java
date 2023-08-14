@@ -6,6 +6,8 @@ import com.liftoff.project.controller.response.ProductResponseDTO;
 import com.liftoff.project.exception.CategoryNotFoundException;
 import com.liftoff.project.exception.ProductNotFoundException;
 import com.liftoff.project.service.ProductService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,10 +57,29 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/recent-added")
+    public ResponseEntity<List<ProductResponseDTO>> getNRecentAddedActiveProducts(
+            @RequestParam(value = "n", defaultValue = "5") @Valid @Min(1) int n) {
+        List<ProductResponseDTO> products = productService.getNRecentAddedActiveProducts(n);
+        return ResponseEntity.ok(products);
+    }
+
     @PostMapping
     public ResponseEntity<ProductResponseDTO> addProduct(@RequestBody ProductRequestDTO productRequestDTO) {
         ProductResponseDTO responseDTO = productService.addProduct(productRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
+    }
+
+    @PostMapping("/activate")
+    public ResponseEntity<ProductResponseDTO> activateProductByUuid(@RequestParam UUID productUuid) {
+        ProductResponseDTO product = productService.getProductByUuid(productUuid);
+        if (product != null) {
+            ProductResponseDTO activatedProduct
+                    = productService.activateProduct(product);
+            return ResponseEntity.ok(activatedProduct);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{productUuid}")
@@ -67,7 +88,7 @@ public class ProductController {
             productService.deleteProductByUuId(productUuid);
             return ResponseEntity.noContent().build();
         } catch (ProductNotFoundException ex) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(ex.getStatus()).body(null);
         }
     }
 

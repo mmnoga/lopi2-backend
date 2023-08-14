@@ -8,6 +8,7 @@ import com.liftoff.project.controller.response.ProductResponseDTO;
 import com.liftoff.project.exception.CategoryNotFoundException;
 import com.liftoff.project.exception.ProductNotFoundException;
 import com.liftoff.project.model.Product;
+import com.liftoff.project.model.ProductStatus;
 import com.liftoff.project.service.ProductService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -26,14 +27,21 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -46,9 +54,9 @@ class ProductControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private ProductService productService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     public void shouldReturnPaginatedProducts() throws Exception {
@@ -69,7 +77,7 @@ class ProductControllerTest {
                 .build();
 
         List<ProductResponseDTO> products = Arrays.asList(product1, product2);
-        PaginatedProductResponseDTO paginatedProducts = new PaginatedProductResponseDTO(products, 1);
+        PaginatedProductResponseDTO paginatedProducts = new PaginatedProductResponseDTO(products, 1, 2);
 
         // when
         when(productService.getProducts(page, size)).thenReturn(paginatedProducts);
@@ -94,7 +102,7 @@ class ProductControllerTest {
         int page = 0;
         int size = 10;
         List<ProductResponseDTO> emptyProductsList = Collections.emptyList();
-        PaginatedProductResponseDTO paginatedProducts = new PaginatedProductResponseDTO(emptyProductsList, 0);
+        PaginatedProductResponseDTO paginatedProducts = new PaginatedProductResponseDTO(emptyProductsList, 0, 0);
 
         // when
         when(productService.getProducts(page, size)).thenReturn(paginatedProducts);
@@ -157,7 +165,7 @@ class ProductControllerTest {
                 .build();
 
         // when
-        when(productService.addProduct(Mockito.any(ProductRequestDTO.class))).thenReturn(createdProduct);
+        when(productService.addProduct(any(ProductRequestDTO.class))).thenReturn(createdProduct);
 
         // then
         mockMvc.perform(MockMvcRequestBuilders.post("/api/products")
@@ -175,7 +183,7 @@ class ProductControllerTest {
         UUID productUuid = UUID.randomUUID();
 
         // when
-        Mockito.doNothing().when(productService).deleteProductByUuId(Mockito.eq(productUuid));
+        Mockito.doNothing().when(productService).deleteProductByUuId(eq(productUuid));
 
         // then
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/products/{productUuid}", productUuid))
@@ -189,7 +197,7 @@ class ProductControllerTest {
 
         // when
         Mockito.doThrow(new ProductNotFoundException("Product with UUID " + productUuid + " not found."))
-                .when(productService).deleteProductByUuId(Mockito.eq(productUuid));
+                .when(productService).deleteProductByUuId(eq(productUuid));
 
         // then
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/products/{productUuid}", productUuid))
@@ -212,11 +220,11 @@ class ProductControllerTest {
                 .build();
 
         // when
-        when(productService.updateProductByUuid(Mockito.eq(productUuid), Mockito.any(ProductRequestDTO.class)))
+        when(productService.updateProductByUuid(eq(productUuid), any(ProductRequestDTO.class)))
                 .thenReturn(updatedProductResponse);
 
         // then
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/products/{productUuid}", productUuid)
+        mockMvc.perform(put("/api/products/{productUuid}", productUuid)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(productRequestDTO)))
                 .andExpect(status().isOk())
@@ -235,11 +243,11 @@ class ProductControllerTest {
                 .build();
 
         // when
-        when(productService.updateProductByUuid(Mockito.eq(productUuid), Mockito.any(ProductRequestDTO.class)))
+        when(productService.updateProductByUuid(eq(productUuid), any(ProductRequestDTO.class)))
                 .thenThrow(new ProductNotFoundException("Product with UUID " + productUuid + " not found."));
 
         // then
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/products/{productUuid}", productUuid)
+        mockMvc.perform(put("/api/products/{productUuid}", productUuid)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(productRequestDTO)))
                 .andExpect(status().isNotFound());
@@ -312,7 +320,137 @@ class ProductControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    void shouldReturnProductsWhenValidN() throws Exception {
+        // given
+        int n = 3;
+        List<ProductResponseDTO> dummyProducts = createNDummyProducts(n);
+        when(productService.getNRecentAddedActiveProducts(anyInt())).thenReturn(dummyProducts);
+
+        // when & then
+        mockMvc.perform(get("/api/products/recent-added")
+                        .param("n", String.valueOf(n)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldReturnEmptyListOfProductsWhenNoProductAdded() throws Exception {
+        // given
+        int n = 5;
+        List<ProductResponseDTO> emptyProductsList = Collections.emptyList();
+
+        // when
+        when(productService.getNRecentAddedActiveProducts(n)).thenReturn(emptyProductsList);
+
+        // then
+        mockMvc.perform(get("/api/products/recent-added")
+                        .param("n", String.valueOf(n)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(0));
+    }
+
+    @Test
+    void shouldArchiveActiveProduct() throws Exception {
+        // given
+        UUID existingActiveProductUuid = UUID.fromString("e3bb11fc-d45d-4d78-b72c-21d41f494a96");
+
+        ProductRequestDTO productRequestDTO = ProductRequestDTO.builder()
+                .name("Updated name")
+                .description("Updated description")
+                .build();
+
+        ProductResponseDTO productResponseDTO = ProductResponseDTO.builder()
+                .uId(existingActiveProductUuid)
+                .name("Updated name")
+                .description("Updated description")
+                .status(ProductStatus.ACTIVE)
+                .archivedAt(Instant.now())
+                .build();
+
+        when(productService.updateProductByUuid(eq(existingActiveProductUuid), any(ProductRequestDTO.class)))
+                .thenReturn(productResponseDTO);
+
+        // when & then
+        mockMvc.perform(put("/api/products/{uuid}", existingActiveProductUuid)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productRequestDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("ACTIVE"))
+                .andExpect(jsonPath("$.archivedAt").value(notNullValue()));
+    }
+
+    @Test
+    void shouldArchiveClosedProduct() throws Exception {
+        // given
+        UUID existingClosedProductUuid = UUID.fromString("e3bb11fc-d45d-4d78-b72c-21d41f494a97");
+
+        ProductRequestDTO productRequestDTO = ProductRequestDTO.builder()
+                .name("Updated name")
+                .description("Updated description")
+                .build();
+
+        ProductResponseDTO productResponseDTO = ProductResponseDTO.builder()
+                .uId(existingClosedProductUuid)
+                .name("Updated name")
+                .description("Updated description")
+                .status(ProductStatus.IN_PREPARATION)
+                .build();
+
+        when(productService.updateProductByUuid(eq(existingClosedProductUuid), any(ProductRequestDTO.class)))
+                .thenReturn(productResponseDTO);
+
+        // when & then
+        mockMvc.perform(put("/api/products/{uuid}", existingClosedProductUuid)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productRequestDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("IN_PREPARATION"));
+    }
+
+    @Test
+    void shouldArchiveInPreparationProduct() throws Exception {
+        // given
+        UUID existingInPreparationProductUuid = UUID.fromString("e3bb11fc-d45d-4d78-b72c-21d41f494a98");
+
+        ProductRequestDTO productRequestDTO = ProductRequestDTO.builder()
+                .name("Updated name")
+                .description("Updated description")
+                .build();
+
+        ProductResponseDTO productResponseDTO = ProductResponseDTO.builder()
+                .uId(existingInPreparationProductUuid)
+                .name("Updated name")
+                .description("Updated description")
+                .status(ProductStatus.IN_PREPARATION)
+                .build();
+
+        when(productService.updateProductByUuid(eq(existingInPreparationProductUuid), any(ProductRequestDTO.class)))
+                .thenReturn(productResponseDTO);
+
+        // when & then
+        mockMvc.perform(put("/api/products/{uuid}", existingInPreparationProductUuid)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productRequestDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("IN_PREPARATION"));
+    }
+
     private String asJsonString(final Object obj) throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(obj);
     }
+
+    private List<ProductResponseDTO> createNDummyProducts(int n) {
+        List<ProductResponseDTO> dummyProducts = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            dummyProducts.add(ProductResponseDTO.builder()
+                    .name("Product " + (i + 1))
+                    .description("Product " + (i + 1) + " description")
+                    .regularPrice(2.99 + i)
+                    .status(ProductStatus.ACTIVE)
+                    .build());
+        }
+        return dummyProducts;
+    }
+
 }

@@ -2,6 +2,8 @@ package com.liftoff.project.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -64,8 +66,9 @@ public class Product {
     @Column(name = "NOTE")
     private String note;
 
-    @Column(name = "PUBLISHED")
-    private Boolean published;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "STATUS")
+    private ProductStatus status;
 
     @Column(name = "PRODUCTSCOL")
     private String productscol;
@@ -80,6 +83,9 @@ public class Product {
     @UpdateTimestamp(source = SourceType.DB)
     @Column(name = "UPDATED_AT")
     private Instant updatedAt;
+
+    @Column(name = "ARCHIVED_AT")
+    private Instant archivedAt;
 
     @ManyToMany()
     @JoinTable(
