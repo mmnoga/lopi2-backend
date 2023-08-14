@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -83,8 +84,14 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponseDTO addProduct(ProductRequestDTO productRequestDTO) {
         Product newProduct = productMapper.mapRequestToEntity(productRequestDTO);
 
+        if (productRequestDTO.getStatus() == null) {
+            newProduct.setStatus(ProductStatus.ACTIVE);
+        }
+
         if (productRequestDTO.getCategories() != null) {
-            Set<Category> existingCategories = categoryService.getExistingCategories(productRequestDTO.getCategories());
+            Set<Category> existingCategories =
+                    categoryService
+                            .getExistingCategories(productRequestDTO.getCategories());
             newProduct.setCategories(existingCategories);
         }
 
@@ -98,14 +105,16 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ProductNotFoundException("Product with UUID " + productUuid + " not found"));
 
         updateProductFromRequest(existingProduct, productRequestDTO);
-        
-         Set<Category> existingCategories =
-                    categoryService.getExistingCategories(productRequestDTO.getCategories());
-      
+
+        Set<Category> existingCategories = new HashSet<>();
+
         if (productRequestDTO.getCategories() != null) {
+            existingCategories = categoryService
+                    .getExistingCategories(
+                            productRequestDTO.getCategories());
             existingProduct.setCategories(existingCategories);
         }
-      
+
         return productArchiverService.archiveProduct(existingProduct, productRequestDTO, existingCategories);
     }
 
@@ -146,5 +155,5 @@ public class ProductServiceImpl implements ProductService {
         if (req.getProductscol() != null) product.setProductscol(req.getProductscol());
         if (req.getQuantity() != null) product.setQuantity(req.getQuantity());
     }
-  
-  }
+
+}
