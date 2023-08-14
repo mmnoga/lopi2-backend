@@ -4,6 +4,7 @@ package com.liftoff.project.controller;
 import com.liftoff.project.exception.CookiesNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import static io.jsonwebtoken.Jwts.header;
+
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -27,12 +30,19 @@ public class CookieController {
     public ResponseEntity setCookie() {
 
         ResponseCookie resCookie = ResponseCookie.from("some-unauthorized-user-id", "c2FtLnNtaXRoQGV4YW1wbGUuY29t").httpOnly(true) // js scripts have not an access to our cookie
-                .secure(false) // https with ssl protocol is not required
+                .secure(true) // https with ssl protocol is not/or required
                 .path("/api/cookie") // the cookie will be delivered to the specified URL and all of its subdirectories.
                 .maxAge(1 * 24 * 60 * 60) // one day in minutes
                 .domain("localhost").build();
 
+
+
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, resCookie.toString()).build();
+
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.add(resCookie.getName(), resCookie.getValue());
+//
+//        return new ResponseEntity<>("Cookie is created", httpHeaders, HttpStatus.OK);
 
     }
 
