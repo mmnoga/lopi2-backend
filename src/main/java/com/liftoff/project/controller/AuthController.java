@@ -4,7 +4,6 @@ import com.liftoff.project.controller.request.LoginRequestDTO;
 import com.liftoff.project.controller.request.SignupRequestDTO;
 import com.liftoff.project.controller.response.JwtResponseDTO;
 import com.liftoff.project.controller.response.UserResponseDTO;
-import com.liftoff.project.exception.UserAlreadyExistedException;
 import com.liftoff.project.service.UserService;
 import com.liftoff.project.service.UserValidationService;
 import jakarta.validation.Valid;
@@ -32,10 +31,7 @@ public class AuthController {
     public ResponseEntity<UserResponseDTO> registerUser(@Valid @RequestBody SignupRequestDTO signUpRequestDTO) {
 
 
-        if (userValidationService.validateUsername(signUpRequestDTO) != null) {
-
-            throw new UserAlreadyExistedException(userValidationService.validateUsername(signUpRequestDTO));
-        }
+        userValidationService.validateUsername(signUpRequestDTO);
 
         return new ResponseEntity<>(userService.addUser(signUpRequestDTO), HttpStatus.CREATED);
     }

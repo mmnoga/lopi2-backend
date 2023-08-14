@@ -5,7 +5,7 @@ import com.liftoff.project.controller.request.SignupRequestDTO;
 public interface UserValidationService {
 
 
-     String validateUsername(SignupRequestDTO signupRequestDTO);
+     void validateUsername(SignupRequestDTO signupRequestDTO);
 
 
 

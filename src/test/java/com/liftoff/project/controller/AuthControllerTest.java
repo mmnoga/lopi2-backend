@@ -5,8 +5,10 @@ import com.liftoff.project.controller.request.LoginRequestDTO;
 import com.liftoff.project.controller.request.SignupRequestDTO;
 import com.liftoff.project.controller.response.JwtResponseDTO;
 import com.liftoff.project.controller.response.UserResponseDTO;
+import com.liftoff.project.exception.UserAlreadyExistedException;
 import com.liftoff.project.mapper.UserMapper;
 import com.liftoff.project.service.UserService;
+import com.liftoff.project.service.UserValidationService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +29,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.UUID;
+import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 
 @RunWith(SpringRunner.class)
@@ -42,6 +46,9 @@ class AuthControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private UserValidationService userValidationService;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -104,7 +111,7 @@ class AuthControllerTest {
 
 
         JwtResponseDTO jwtResponseDTO = new JwtResponseDTO("TOKEN_STRING",
-                             "test_email@example.com",
+                "test_email@example.com",
                 "ROLE_USER", "Steve", "Gadd");
 
         Mockito.when(userService.authenticateUser(any())).thenReturn(jwtResponseDTO);
@@ -117,8 +124,6 @@ class AuthControllerTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(asJsonString(loginRequestDTO)))
                     .andExpect(MockMvcResultMatchers.status().isOk())
-//                    .andExpect(MockMvcResultMatchers.jsonPath("$.firstName", Matchers.is("John133")))
-//                    .andExpect(MockMvcResultMatchers.jsonPath("$.lastName", Matchers.is("Doe13553")))
                     .andExpect(MockMvcResultMatchers.jsonPath("$.username", Matchers.is("test_email@example.com")));
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -127,6 +132,27 @@ class AuthControllerTest {
 
     }
 
+
+    @Test
+    void validateUser() {
+
+        // given
+        SignupRequestDTO signUpRequestDTO = SignupRequestDTO.builder()
+                .withFirstName("John133")
+                .withLastName("Doe13553")
+                .withUsername("johnDoe553@gmail.com")
+                .withPassword("TEST1234")
+                .build();
+
+
+            //when
+            userValidationService.validateUsername(signUpRequestDTO);
+
+
+            //then
+             Stream.of().map(entry -> fail("User with username: " + signUpRequestDTO.getUsername() + " already exists"));
+
+    }
 
     private static String asJsonString(final Object obj) {
         try {

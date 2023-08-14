@@ -1,6 +1,7 @@
 package com.liftoff.project.controller;
 
 
+import com.liftoff.project.exception.CookiesNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -55,9 +56,17 @@ public class CookieController {
     @GetMapping("/read/all/cookies")
     public String readAllCookies(HttpServletRequest request) {
 
-        return Arrays.stream(request.getCookies()).map((cookie) -> {
-            return cookie.getName() + " " + cookie.getValue();
-        }).collect(Collectors.joining(","));
+
+        try {
+
+            return Arrays.stream(request.getCookies()).map((cookie) -> {
+                return cookie.getName() + " -> " + cookie.getValue();
+            }).collect(Collectors.joining(","));
+
+        } catch (NullPointerException ex) {
+
+            throw new CookiesNotFoundException("Array of Cookie is empty");
+        }
 
     }
 

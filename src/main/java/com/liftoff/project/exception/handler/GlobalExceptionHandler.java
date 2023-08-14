@@ -2,6 +2,7 @@ package com.liftoff.project.exception.handler;
 
 import com.liftoff.project.exception.CannotDeleteCategoryException;
 import com.liftoff.project.exception.CategoryNotFoundException;
+import com.liftoff.project.exception.CookiesNotFoundException;
 import com.liftoff.project.exception.InvalidParentCategoryException;
 import com.liftoff.project.exception.LoginAuthenticationException;
 import com.liftoff.project.exception.ParentCategoryNotFoundException;
@@ -67,6 +68,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserAlreadyExistedException.class)
     public ResponseEntity<Map<String, String>> handleAlreadyExistsUserException(UserAlreadyExistedException ex) {
+
+        return createErrorResponse(ex.getMessage(), ex.getStatus());
+    }
+
+    @ExceptionHandler(CookiesNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleCookiesNotFoundException(CookiesNotFoundException ex) {
 
         return createErrorResponse(ex.getMessage(), ex.getStatus());
     }
