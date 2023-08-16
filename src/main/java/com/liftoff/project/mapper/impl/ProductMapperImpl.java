@@ -3,7 +3,6 @@ package com.liftoff.project.mapper.impl;
 import com.liftoff.project.controller.request.ProductRequestDTO;
 import com.liftoff.project.controller.response.CategoryResponseDTO;
 import com.liftoff.project.controller.response.ProductResponseDTO;
-import com.liftoff.project.mapper.CategoryMapper;
 import com.liftoff.project.mapper.ProductMapper;
 import com.liftoff.project.model.Category;
 import com.liftoff.project.model.Product;
@@ -18,8 +17,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ProductMapperImpl implements ProductMapper {
 
-    private final CategoryMapper categoryMapper;
-
     @Override
     public ProductResponseDTO mapEntityToResponse(Product product) {
         ProductResponseDTO response = ProductResponseDTO.builder()
@@ -32,11 +29,12 @@ public class ProductMapperImpl implements ProductMapper {
                 .description(product.getDescription())
                 .shortDescription(product.getShortDescription())
                 .note(product.getNote())
-                .published(product.getPublished())
+                .status(product.getStatus())
                 .productscol(product.getProductscol())
                 .quantity(product.getQuantity())
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
+                .archivedAt(product.getArchivedAt())
                 .build();
 
         if (product.getCategories() != null) {
@@ -67,7 +65,7 @@ public class ProductMapperImpl implements ProductMapper {
         product.setDescription(productRequestDTO.getDescription());
         product.setShortDescription(productRequestDTO.getShortDescription());
         product.setNote(productRequestDTO.getNote());
-        product.setPublished(productRequestDTO.getPublished());
+        product.setStatus(productRequestDTO.getStatus());
         product.setProductscol(productRequestDTO.getProductscol());
         product.setQuantity(productRequestDTO.getQuantity());
 

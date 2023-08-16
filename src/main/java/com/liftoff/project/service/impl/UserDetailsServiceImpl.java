@@ -34,7 +34,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             return this.userDetailsMapper.mapUserToUserSecurityDetails(user);
 
         }).orElseThrow(() -> {
-            return new UsernameNotFoundException("User not found");
+            return new UsernameNotFoundException("Authenticated User not found");
         });
 
         return userDetailsSecurity;

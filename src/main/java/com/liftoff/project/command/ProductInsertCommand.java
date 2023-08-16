@@ -2,6 +2,7 @@ package com.liftoff.project.command;
 
 import com.liftoff.project.model.Category;
 import com.liftoff.project.model.Product;
+import com.liftoff.project.model.ProductStatus;
 import com.liftoff.project.repository.CategoryRepository;
 import com.liftoff.project.repository.ProductRepository;
 import jakarta.annotation.Priority;
@@ -10,8 +11,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Component
 @Priority(1)
@@ -22,7 +24,7 @@ public class ProductInsertCommand implements CommandLineRunner {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         Category cat1 = Category.builder()
                 .uId(UUID.randomUUID())
                 .name("Category 1")
@@ -60,30 +62,17 @@ public class ProductInsertCommand implements CommandLineRunner {
 
         categoryRepository.saveAll(List.of(cat1, cat2, cat3, cat4, cat5, cat6));
 
-        Product prod1 = Product.builder()
-                .uId(UUID.randomUUID())
-                .name("Product 1")
-                .description("Product 1 description")
-                .published(true)
-                .categories(Set.of(cat4, cat6))
-                .build();
-        Product prod2 = Product.builder()
-                .uId(UUID.randomUUID())
-                .name("Product 2")
-                .description("Product 2 description")
-                .published(true)
-                .categories(Set.of(cat5, cat2))
-                .build();
-        Product prod3 = Product.builder()
-                .uId(UUID.randomUUID())
-                .name("Product 3")
-                .description("Product 3 description")
-                .published(true)
-                .categories(Set.of(cat1))
-                .build();
+        List<Product> productList = IntStream.range(1, 51)
+                .mapToObj(i -> Product.builder()
+                        .uId(UUID.randomUUID())
+                        .name("Product " + i)
+                        .description("Product " + i + " description")
+                        .status(ProductStatus.ACTIVE)
+                        .categories(null)
+                        .build())
+                .collect(Collectors.toList());
 
-        productRepository.saveAll(List.of(prod1, prod2, prod3));
-
+        productRepository.saveAll(productList);
 
     }
 

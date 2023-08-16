@@ -1,5 +1,6 @@
 package com.liftoff.project.controller.request;
 
+import com.liftoff.project.model.ProductStatus;
 import lombok.Builder;
 import lombok.Data;
 
@@ -19,7 +20,7 @@ public class ProductRequestDTO {
     private String description;
     private String shortDescription;
     private String note;
-    private Boolean published;
+    private ProductStatus status;
     private String productscol;
     private Integer quantity;
     private Set<CategoryRequestDTO> categories;
