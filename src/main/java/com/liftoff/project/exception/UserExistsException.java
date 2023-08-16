@@ -2,11 +2,11 @@ package com.liftoff.project.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class UserAlreadyExistedException extends RuntimeException{
+public class UserExistsException extends RuntimeException{
     private final HttpStatus status;
     private final String message;
 
-    public UserAlreadyExistedException(String message) {
+    public UserExistsException(String message) {
         super(message);
         this.status = HttpStatus.FOUND;
         this.message = message;

@@ -7,7 +7,7 @@ import com.liftoff.project.exception.InvalidParentCategoryException;
 import com.liftoff.project.exception.LoginAuthenticationException;
 import com.liftoff.project.exception.ParentCategoryNotFoundException;
 import com.liftoff.project.exception.ProductNotFoundException;
-import com.liftoff.project.exception.UserAlreadyExistedException;
+import com.liftoff.project.exception.UserExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -66,8 +66,8 @@ public class GlobalExceptionHandler {
         return createErrorResponse(ex.getBindingResult().getFieldErrors().get(0).getDefaultMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(UserAlreadyExistedException.class)
-    public ResponseEntity<Map<String, String>> handleAlreadyExistsUserException(UserAlreadyExistedException ex) {
+    @ExceptionHandler(UserExistsException.class)
+    public ResponseEntity<Map<String, String>> handleUserExistsException(UserExistsException ex) {
 
         return createErrorResponse(ex.getMessage(), ex.getStatus());
     }

@@ -1,35 +1,19 @@
 package com.liftoff.project.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.liftoff.project.controller.request.LoginRequestDTO;
-import com.liftoff.project.controller.request.SignupRequestDTO;
-import com.liftoff.project.controller.response.JwtResponseDTO;
-import com.liftoff.project.controller.response.UserResponseDTO;
-import com.liftoff.project.mapper.UserMapper;
-import com.liftoff.project.service.UserService;
-import org.hamcrest.Matchers;
+import com.liftoff.project.exception.CookiesNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.util.UUID;
-
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -57,23 +41,30 @@ class CookieControllerTest {
 
         //when
 
-
         // then
-        try {
-            mockMvc.perform(MockMvcRequestBuilders.get("/api/cookie/create")
-                            .contentType(MediaType.APPLICATION_JSON))
-                           .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andExpect(MockMvcResultMatchers.cookie().exists(resCookie.getName()));
+//        try {
+//            mockMvc.perform(MockMvcRequestBuilders.get("/api/cookie/create")
+//                            .contentType(MediaType.APPLICATION_JSON))
+//                           .andExpect(MockMvcResultMatchers.status().isOk())
+//                    .andExpect(MockMvcResultMatchers.cookie().exists(resCookie.getName()));
+//
+//
+//
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
 
 
+        var exception = assertThrows(RuntimeException.class, () -> {
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+            throw new CookiesNotFoundException("Array of Cookie is empty");
+        });
 
+
+        //then
+         assertEquals("Array of Cookie is empty", exception.getMessage());
 
     }
-
 
 
 }

@@ -1,7 +1,7 @@
 package com.liftoff.project.service.impl;
 
 import com.liftoff.project.controller.request.SignupRequestDTO;
-import com.liftoff.project.exception.UserAlreadyExistedException;
+import com.liftoff.project.exception.UserExistsException;
 import com.liftoff.project.repository.UserRepository;
 import com.liftoff.project.service.UserValidationService;
 import lombok.Data;
@@ -14,14 +14,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserValidationServiceImpl implements UserValidationService {
 
-
-
     private final UserRepository userRepository;
 
     public void validateUsername(SignupRequestDTO signupRequestDTO) {
 
         if (userRepository.findByUsername(signupRequestDTO.getUsername()).isPresent())
-            throw new UserAlreadyExistedException("User with username: " + signupRequestDTO.getUsername() + " already exists");
+            throw new UserExistsException("User with username: " + signupRequestDTO.getUsername() + " already exists");
     }
 
 }

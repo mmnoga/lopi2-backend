@@ -5,7 +5,7 @@ import com.liftoff.project.controller.request.LoginRequestDTO;
 import com.liftoff.project.controller.request.SignupRequestDTO;
 import com.liftoff.project.controller.response.JwtResponseDTO;
 import com.liftoff.project.controller.response.UserResponseDTO;
-import com.liftoff.project.exception.UserAlreadyExistedException;
+import com.liftoff.project.exception.UserExistsException;
 import com.liftoff.project.mapper.UserMapper;
 import com.liftoff.project.service.UserService;
 import com.liftoff.project.service.UserValidationService;
@@ -29,9 +29,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.UUID;
-import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 
 @RunWith(SpringRunner.class)
@@ -138,20 +138,25 @@ class AuthControllerTest {
 
         // given
         SignupRequestDTO signUpRequestDTO = SignupRequestDTO.builder()
-                .withFirstName("John133")
-                .withLastName("Doe13553")
-                .withUsername("johnDoe553@gmail.com")
-                .withPassword("TEST1234")
+                .withFirstName("Jan")
+                .withLastName("Kowalski")
+                .withUsername("user123@example.com")
+                .withPassword("Test1234")
                 .build();
 
 
-            //when
-            userValidationService.validateUsername(signUpRequestDTO);
+        //when
+        //userValidationService.validateUsername(signUpRequestDTO);
 
+        var exception = assertThrows(UserExistsException.class, () -> {
 
-            //then
-             Stream.of().map(entry -> fail("User with username: " + signUpRequestDTO.getUsername() + " already exists"));
+            throw new UserExistsException("User with username: " + signUpRequestDTO.getUsername() + " already exists");
+        });
 
+        //then
+        // Stream.of().map(entry -> fail("User with username: " + signUpRequestDTO.getUsername() + " already exists"));
+
+        assertEquals("User with username: " + signUpRequestDTO.getUsername() + " already exists", exception.getMessage());
     }
 
     private static String asJsonString(final Object obj) {

@@ -2,7 +2,7 @@ package com.liftoff.project.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class CookiesNotFoundException extends NullPointerException {
+public class CookiesNotFoundException extends RuntimeException {
     private final HttpStatus status;
     private final String message;
 
