@@ -9,7 +9,7 @@ public class LoginAuthenticationException extends AuthenticationException {
 
     public LoginAuthenticationException(String message) {
         super(message);
-        this.status = HttpStatus.NOT_FOUND;
+        this.status = HttpStatus.UNAUTHORIZED;
         this.message = message;
     }
 

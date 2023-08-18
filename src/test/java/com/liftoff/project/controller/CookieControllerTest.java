@@ -31,10 +31,10 @@ class CookieControllerTest {
 
         // given
         ResponseCookie resCookie = ResponseCookie.from("some-unauthorized-user-id", "c2FtLnNtaXRoQGV4YW1wbGUuY29t")
-                .httpOnly(true) // js scripts have not an access to our cookie
-                .secure(true) // https with ssl protocol is not required
+                .httpOnly(true)
+                .secure(true)
                 .path("/api/cookie")
-                .maxAge(1 * 24 * 60 * 60) // one day in minutes
+                .maxAge(1 * 24 * 60 * 60)
                 .domain("localhost")
                 .build();
 
