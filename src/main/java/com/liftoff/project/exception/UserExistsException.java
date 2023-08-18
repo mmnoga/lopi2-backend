@@ -1,15 +1,14 @@
 package com.liftoff.project.exception;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.AuthenticationException;
 
-public class LoginAuthenticationException extends AuthenticationException {
+public class UserExistsException extends RuntimeException{
     private final HttpStatus status;
     private final String message;
 
-    public LoginAuthenticationException(String message) {
+    public UserExistsException(String message) {
         super(message);
-        this.status = HttpStatus.UNAUTHORIZED;
+        this.status = HttpStatus.FOUND;
         this.message = message;
     }
 

@@ -17,13 +17,12 @@ public class UserDetailsSecurityMapperImpl implements UserDetailsSecurityMapper 
         return UserDetailsSecurity.builder()
                 .withId(user.getId())
                 .withPassword(user.getPassword())
-                .withEmail(user.getEmail())
                 .withFirstName(user.getFirstName())
                 .withLastName(user.getLastName())
                 .withIsEnabled(user.getIsEnabled())
                 //.withIsEnabled(user.isEnabled)
                 .withRole(user.getRole())
-                .withUsername(user.getEmail())
+                .withUsername(user.getUsername())
                 .withUuid(user.getUuid())
                 .build();
     }

@@ -2,12 +2,14 @@ package com.liftoff.project.exception.handler;
 
 import com.liftoff.project.exception.CannotDeleteCategoryException;
 import com.liftoff.project.exception.CategoryNotFoundException;
+import com.liftoff.project.exception.CookiesNotFoundException;
 import com.liftoff.project.exception.FileNotFoundException;
 import com.liftoff.project.exception.FileSizeExceedsLimitException;
 import com.liftoff.project.exception.InvalidParentCategoryException;
 import com.liftoff.project.exception.LoginAuthenticationException;
 import com.liftoff.project.exception.ParentCategoryNotFoundException;
 import com.liftoff.project.exception.ProductNotFoundException;
+import com.liftoff.project.exception.UserExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,8 +19,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static java.util.stream.Collectors.joining;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -74,6 +74,19 @@ public class GlobalExceptionHandler {
 
         return createErrorResponse(ex.getBindingResult().getFieldErrors().get(0).getDefaultMessage(), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(UserExistsException.class)
+    public ResponseEntity<Map<String, String>> handleUserExistsException(UserExistsException ex) {
+
+        return createErrorResponse(ex.getMessage(), ex.getStatus());
+    }
+
+    @ExceptionHandler(CookiesNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleCookiesNotFoundException(CookiesNotFoundException ex) {
+
+        return createErrorResponse(ex.getMessage(), ex.getStatus());
+    }
+
 
     private ResponseEntity<Map<String, String>> createErrorResponse(String errorMessage, HttpStatus status) {
         Map<String, String> errorResponse = new HashMap<>();

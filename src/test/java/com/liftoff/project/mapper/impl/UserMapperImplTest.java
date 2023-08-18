@@ -32,10 +32,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
     private PasswordEncoder passwordEncoder;
 
 
-
-
-
-
     @InjectMocks
     private UserMapperImpl userMapper;
 
@@ -66,7 +62,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
         User user = User.builder()
                 .withFirstName("Maciej")
                 .withLastName("Marciniak")
-                .withEmail("genger@wp.pl")
+                .withUsername("genger@wp.pl")
                 .withPassword(passwordEncoder.encode("ala ma kota"))
                 .withIsEnabled(true)
                 .withUuid(UUID.randomUUID())
@@ -80,11 +76,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
         // Then
         assertEquals(user.getFirstName(), responseDTO.getFirstName());
         assertEquals(user.getLastName(), responseDTO.getLastName());
-        assertEquals(user.getPassword(), responseDTO.getPassword());
         assertEquals(user.getUuid(), responseDTO.getUuid());
         assertEquals(user.getRole(), responseDTO.getRole());
-
-
 
 
     }
@@ -107,16 +100,11 @@ import static org.junit.jupiter.api.Assertions.assertNull;
     public void should_Return_User_For_Not_Null_UserResponse() {
         // Given
 
-
-
         SignupRequestDTO signupRequestDTO = SignupRequestDTO.builder()
                 .withFirstName("Maciej")
                 .withLastName("Marciniak")
-                .withEmail("genger@wp.pl")
-                //.withPassword("")
-                .withUuid("f97b6441-6ce0-4c95-93b7-9cf9aafa6712")
+                .withUsername("genger@wp.pl")
                 .build();
-
 
         // When
         User user = userMapper.mapSignupRequestToUser(signupRequestDTO);
@@ -127,7 +115,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
         assertEquals(user.getFirstName(), signupRequestDTO.getFirstName());
         assertEquals(user.getLastName(), signupRequestDTO.getLastName());
         assertEquals(user.getPassword(), signupRequestDTO.getPassword());
-        assertEquals(user.getUuid().toString(), signupRequestDTO.getUuid());
+
 
 
 

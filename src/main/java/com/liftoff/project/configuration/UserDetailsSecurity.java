@@ -18,7 +18,6 @@ public class UserDetailsSecurity implements org.springframework.security.core.us
 
 
     private Long id;
-    private String email;
     private String username;
     private String password;
     private boolean isEnabled;
@@ -46,7 +45,7 @@ public class UserDetailsSecurity implements org.springframework.security.core.us
 
     @Override
     public String getUsername() {
-        return this.email;
+        return this.username;
     }
 
     @Override

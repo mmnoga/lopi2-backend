@@ -49,7 +49,7 @@ CREATE TABLE APP_USER (
                                 ID BIGINT AUTO_INCREMENT  PRIMARY KEY,
                                 FIRST_NAME VARCHAR(250) NOT NULL,
                                 LAST_NAME VARCHAR(250) NOT NULL,
-                                EMAIL VARCHAR(100) NOT NULL UNIQUE,
+                                USER_NAME VARCHAR(100) NOT NULL UNIQUE,
                                 ROLE VARCHAR(50) NOT NULL,
                                 PASSWORD VARCHAR(150),
                                 CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
