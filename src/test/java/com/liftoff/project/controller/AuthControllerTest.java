@@ -7,6 +7,8 @@ import com.liftoff.project.controller.response.JwtResponseDTO;
 import com.liftoff.project.controller.response.UserResponseDTO;
 import com.liftoff.project.exception.UserExistsException;
 import com.liftoff.project.mapper.UserMapper;
+import com.liftoff.project.model.User;
+import com.liftoff.project.repository.UserRepository;
 import com.liftoff.project.service.UserService;
 import com.liftoff.project.service.UserValidationService;
 import org.hamcrest.Matchers;
@@ -28,31 +30,36 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@ExtendWith(MockitoExtension.class)
-@TestPropertySource(locations = "classpath:application-test.properties")
 class AuthControllerTest {
+
+
 
 
     @Autowired
     private MockMvc mockMvc;
+
     @MockBean
     private UserService userService;
 
-    @MockBean
+    @Autowired
     private UserValidationService userValidationService;
 
-    @Mock
+    @MockBean
     private PasswordEncoder passwordEncoder;
 
+    @MockBean
+    UserRepository userRepository;
 
     @Mock
     private UserMapper userMapper;
@@ -78,7 +85,7 @@ class AuthControllerTest {
                 .build();
 
 
-        Mockito.when(userService.addUser(any())).thenReturn(responseDTO);
+        when(userService.addUser(any())).thenReturn(responseDTO);
         //when
 
 
@@ -114,7 +121,7 @@ class AuthControllerTest {
                 "test_email@example.com",
                 "ROLE_USER", "Steve", "Gadd");
 
-        Mockito.when(userService.authenticateUser(any())).thenReturn(jwtResponseDTO);
+        when(userService.authenticateUser(any())).thenReturn(jwtResponseDTO);
         //when
 
 
@@ -134,31 +141,32 @@ class AuthControllerTest {
 
 
     @Test
-    void validateUser() {
-
+    void shouldThrowUserExistsExceptionWhenUserWithUsernameAlreadyExists() {
         // given
         SignupRequestDTO signUpRequestDTO = SignupRequestDTO.builder()
-                .withFirstName("Jan")
-                .withLastName("Kowalski")
-                .withUsername("user123@example.com")
-                .withPassword("Test1234")
+                .withFirstName("John133")
+                .withLastName("Doe13553")
+                .withUsername("johndoe553@gmail.com")
+                .withPassword("TEST1234")
                 .build();
 
+        User existingUser = new User();
+        existingUser.setFirstName("John");
+        existingUser.setLastName("Doe");
+        existingUser.setUsername("johndoe553@gmail.com");
 
-        //when
-        //userValidationService.validateUsername(signUpRequestDTO);
+        when(userRepository
+                .findByUsername(signUpRequestDTO.getUsername()))
+                .thenReturn(Optional.of(existingUser));
 
-        var exception = assertThrows(UserExistsException.class, () -> {
-
-            throw new UserExistsException("User with username: " + signUpRequestDTO.getUsername() + " already exists");
+        // when/then
+        assertThrows(UserExistsException.class, () -> {
+            userValidationService.validateUsername(signUpRequestDTO);
         });
-
-        //then
-        // Stream.of().map(entry -> fail("User with username: " + signUpRequestDTO.getUsername() + " already exists"));
-
-        assertEquals("User with username: " + signUpRequestDTO.getUsername() + " already exists", exception.getMessage());
     }
 
+
+    
     private static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);

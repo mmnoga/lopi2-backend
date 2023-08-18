@@ -1,70 +1,103 @@
 package com.liftoff.project.controller;
 
-import com.liftoff.project.exception.CookiesNotFoundException;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseCookie;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-@RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@ExtendWith(MockitoExtension.class)
 class CookieControllerTest {
-
 
     @Autowired
     private MockMvc mockMvc;
 
-
     @Test
-    void createCookie() {
+    void shouldCreateCookieWhenNoCookieExists() throws Exception {
 
         // given
-        ResponseCookie resCookie = ResponseCookie.from("some-unauthorized-user-id", "c2FtLnNtaXRoQGV4YW1wbGUuY29t")
-                .httpOnly(true)
-                .secure(true)
-                .path("/api/cookie")
-                .maxAge(1 * 24 * 60 * 60)
-                .domain("localhost")
-                .build();
+        // no cookie
 
+        // when
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/cookie/create"))
 
-        //when
-
-        // then
-//        try {
-//            mockMvc.perform(MockMvcRequestBuilders.get("/api/cookie/create")
-//                            .contentType(MediaType.APPLICATION_JSON))
-//                           .andExpect(MockMvcResultMatchers.status().isOk())
-//                    .andExpect(MockMvcResultMatchers.cookie().exists(resCookie.getName()));
-//
-//
-//
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-
-
-        var exception = assertThrows(RuntimeException.class, () -> {
-
-            throw new CookiesNotFoundException("Array of Cookie is empty");
-        });
-
-
-        //then
-         assertEquals("Array of Cookie is empty", exception.getMessage());
-
+                // then
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.header().exists(HttpHeaders.SET_COOKIE))
+                .andExpect(MockMvcResultMatchers.cookie()
+                        .value("some-unauthorized-user-id", "c2FtLnNtaXRoQGV4YW1wbGUuY29t"));
     }
 
+    @Test
+    void shouldDeleteExistingCookie() throws Exception {
+        // given
+        Cookie existingCookie = new Cookie("some-unauthorized-user-id", "existing-cookie-value");
+
+        // when
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/cookie/delete").cookie(existingCookie))
+
+                // then
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.header().exists(HttpHeaders.SET_COOKIE))
+                .andExpect(MockMvcResultMatchers.cookie().value("some-unauthorized-user-id", ""));
+    }
+
+    @Test
+    void shouldReturnCookieValue() throws Exception {
+        // given
+        String cookieValue = "test-cookie-value";
+
+        // when
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/cookie/read")
+                        .cookie(new Cookie("some-unauthorized-user-id", cookieValue)))
+
+                // then
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content()
+                        .string("Value of the cookie with name some-unauthorized-user-id: " + cookieValue));
+    }
+
+    @Test
+    void shouldReturnDefaultCookieValueWhenNoCookie() throws Exception {
+        // given
+
+        // when
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/cookie/read"))
+
+                // then
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content()
+                        .string("Value of the cookie with name some-unauthorized-user-id: default-user-id"));
+    }
+
+    @Test
+    void shouldReturnAllCookies() throws Exception {
+        // given
+        Cookie cookie1 = new Cookie("cookie1", "value1");
+        Cookie cookie2 = new Cookie("cookie2", "value2");
+
+        // when/then
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/cookie/read/all/cookies")
+                        .cookie(cookie1, cookie2))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content()
+                        .string("cookie1 -> value1,cookie2 -> value2"));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenNoCookies() throws Exception {
+        // given
+
+        // when/then
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/cookie/read/all/cookies"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.content()
+                        .json("{\"message\":\"Array of Cookie is empty\"}"));
+    }
 
 }
