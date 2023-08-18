@@ -30,8 +30,8 @@ public class CookieController {
                 .secure(true)
                 .path("/api/cookie")
                 .maxAge(1 * 24 * 60 * 60)
-                .domain("lopi2.azurewebsites.net").build();
-                //.domain("localhost").build();
+                //.domain("lopi2.azurewebsites.net").build();
+                .domain("localhost").build();
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, resCookie.toString()).build();
 
