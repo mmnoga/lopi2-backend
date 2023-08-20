@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -33,7 +32,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -41,9 +39,9 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
+@TestPropertySource(locations = "classpath:application-test.properties")
 class AuthControllerTest {
-
-
 
 
     @Autowired
@@ -56,13 +54,8 @@ class AuthControllerTest {
     private UserValidationService userValidationService;
 
     @MockBean
-    private PasswordEncoder passwordEncoder;
-
-    @MockBean
     UserRepository userRepository;
 
-    @Mock
-    private UserMapper userMapper;
 
 
     @Test
@@ -166,7 +159,6 @@ class AuthControllerTest {
     }
 
 
-    
     private static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);
