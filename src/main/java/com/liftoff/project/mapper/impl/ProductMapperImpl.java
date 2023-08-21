@@ -2,6 +2,7 @@ package com.liftoff.project.mapper.impl;
 
 import com.liftoff.project.controller.request.ProductRequestDTO;
 import com.liftoff.project.controller.response.CategoryResponseDTO;
+import com.liftoff.project.controller.response.ImageAssetResponseDTO;
 import com.liftoff.project.controller.response.ProductResponseDTO;
 import com.liftoff.project.mapper.ProductMapper;
 import com.liftoff.project.model.Category;
@@ -9,7 +10,7 @@ import com.liftoff.project.model.Product;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -37,13 +38,20 @@ public class ProductMapperImpl implements ProductMapper {
                 .archivedAt(product.getArchivedAt())
                 .build();
 
-        if (product.getCategories() != null) {
-            Set<CategoryResponseDTO> categoryResponses = product.getCategories()
-                    .stream()
-                    .map(this::mapCategory)
-                    .collect(Collectors.toSet());
-            response.setCategories(categoryResponses);
-        }
+        List<ImageAssetResponseDTO> imageAssetResponses = product.getImages()
+                .stream()
+                .map(imageAsset -> ImageAssetResponseDTO.builder()
+                        .imageUrl(imageAsset.getAssetUrl())
+                        .build())
+                .collect(Collectors.toList());
+
+        response.setImageUrls(imageAssetResponses);
+
+        List<CategoryResponseDTO> categoryResponses = product.getCategories()
+                .stream()
+                .map(this::mapCategory)
+                .collect(Collectors.toList());
+        response.setCategories(categoryResponses);
 
         return response;
     }
@@ -79,10 +87,10 @@ public class ProductMapperImpl implements ProductMapper {
                 category.getDescription());
 
         if (category.getSubcategories() != null) {
-            Set<CategoryResponseDTO> subcategoryResponses = category.getSubcategories()
+            List<CategoryResponseDTO> subcategoryResponses = category.getSubcategories()
                     .stream()
                     .map(this::mapCategory)
-                    .collect(Collectors.toSet());
+                    .toList();
             categoryResponse.getSubcategories().addAll(subcategoryResponses);
         }
 

@@ -6,6 +6,7 @@ import com.liftoff.project.controller.response.ProductResponseDTO;
 import com.liftoff.project.exception.CategoryNotFoundException;
 import com.liftoff.project.exception.ProductNotFoundException;
 import com.liftoff.project.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,6 +38,8 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
+    @Operation(summary = "Get all products",
+            description = "Retrieves a paginated list of all products.")
     public ResponseEntity<PaginatedProductResponseDTO> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
@@ -48,6 +54,8 @@ public class ProductController {
     }
 
     @GetMapping("/{productUuid}")
+    @Operation(summary = "Get product by UUID",
+            description = "Retrieves product information by its UUID.")
     public ResponseEntity<ProductResponseDTO> getProductByUuid(@PathVariable UUID productUuid) {
         ProductResponseDTO product = productService.getProductByUuid(productUuid);
         if (product != null) {
@@ -58,6 +66,8 @@ public class ProductController {
     }
 
     @GetMapping("/recent-added")
+    @Operation(summary = "Get N most recent added active products",
+            description = "Retrieves a list of N most recent added active products.")
     public ResponseEntity<List<ProductResponseDTO>> getNRecentAddedActiveProducts(
             @RequestParam(value = "n", defaultValue = "5") @Valid @Min(1) int n) {
         List<ProductResponseDTO> products = productService.getNRecentAddedActiveProducts(n);
@@ -65,12 +75,16 @@ public class ProductController {
     }
 
     @PostMapping
+    @Operation(summary = "Add a new product",
+            description = "Adds a new product with the provided details.")
     public ResponseEntity<ProductResponseDTO> addProduct(@RequestBody ProductRequestDTO productRequestDTO) {
         ProductResponseDTO responseDTO = productService.addProduct(productRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
     @PostMapping("/activate")
+    @Operation(summary = "Activate a product by UUID",
+            description = "Activates a product with the provided UUID.")
     public ResponseEntity<ProductResponseDTO> activateProductByUuid(@RequestParam UUID productUuid) {
         ProductResponseDTO product = productService.getProductByUuid(productUuid);
         if (product != null) {
@@ -82,17 +96,51 @@ public class ProductController {
         }
     }
 
+    @PostMapping(value = "/{productUuid}/images", consumes = {"multipart/form-data"})
+    @Operation(summary = "Add an image to a product by UUID",
+            description = "Adds an image to the product with the provided UUID.")
+    public ResponseEntity<ProductResponseDTO> addImageToProduct(
+            @PathVariable UUID productUuid,
+            @RequestParam("imageFile") MultipartFile imageFile) {
+        try {
+            ProductResponseDTO updatedProduct = productService.addImageToProduct(productUuid, imageFile);
+            return ResponseEntity.ok(updatedProduct);
+        } catch (ProductNotFoundException ex) {
+            throw new ResponseStatusException(ex.getStatus(), ex.getMessage(), ex);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @DeleteMapping("/{productUuid}/images")
+    @Operation(summary = "Delete an image from a product by URL",
+            description = "Deletes the specified image URL from the product with the provided UUID.")
+    public ResponseEntity<ProductResponseDTO> deleteImageByUrlFromProduct(
+            @PathVariable UUID productUuid,
+            @RequestParam("imageUrl") String imageUrl) {
+        try {
+            ProductResponseDTO updatedProduct = productService.deleteImageByUrlFromProduct(productUuid, imageUrl);
+            return ResponseEntity.ok(updatedProduct);
+        } catch (ProductNotFoundException ex) {
+            throw new ResponseStatusException(ex.getStatus(), ex.getMessage(), ex);
+        }
+    }
+
     @DeleteMapping("/{productUuid}")
+    @Operation(summary = "Delete a product by UUID",
+            description = "Deletes the product with the provided UUID.")
     public ResponseEntity<Void> deleteProductByUuid(@PathVariable UUID productUuid) {
         try {
             productService.deleteProductByUuId(productUuid);
             return ResponseEntity.noContent().build();
         } catch (ProductNotFoundException ex) {
-            return ResponseEntity.status(ex.getStatus()).body(null);
+            throw new ResponseStatusException(ex.getStatus(), ex.getMessage(), ex);
         }
     }
 
     @PutMapping("/{productUuid}")
+    @Operation(summary = "Update a product by UUID",
+            description = "Updates the product with the provided UUID using the given information.")
     public ResponseEntity<ProductResponseDTO> updateProduct(@PathVariable UUID productUuid,
                                                             @RequestBody ProductRequestDTO productRequestDTO) {
         try {
@@ -104,6 +152,8 @@ public class ProductController {
     }
 
     @GetMapping("/by-category/{categoryId}")
+    @Operation(summary = "Get products by category ID",
+            description = "Retrieves a list of products belonging to the specified category.")
     public ResponseEntity<List<ProductResponseDTO>> getProductsByCategory(@PathVariable UUID categoryId) {
         try {
             List<ProductResponseDTO> products = productService.getProductsByCategoryId(categoryId);

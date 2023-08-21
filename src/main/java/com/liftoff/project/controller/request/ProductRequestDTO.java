@@ -5,7 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -23,6 +24,8 @@ public class ProductRequestDTO {
     private ProductStatus status;
     private String productscol;
     private Integer quantity;
-    private Set<CategoryRequestDTO> categories;
+    private List<CategoryRequestDTO> categories;
+    @Builder.Default
+    private List<ProductImageRequestDTO> images = new ArrayList<>();
 
 }

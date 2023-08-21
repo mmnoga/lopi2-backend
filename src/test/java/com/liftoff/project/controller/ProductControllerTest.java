@@ -21,12 +21,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -434,6 +437,37 @@ class ProductControllerTest {
                         .content(objectMapper.writeValueAsString(productRequestDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("IN_PREPARATION"));
+    }
+
+    @Test
+    void shouldAddImageToProduct() throws Exception {
+        // given
+        UUID productUuid = UUID.fromString("e3bb11fc-d45d-4d78-b72c-21d41f494a96");
+        MockMultipartFile imageFile = new MockMultipartFile(
+                "imageFile",
+                "image.jpg",
+                MediaType.IMAGE_JPEG_VALUE,
+                "Image Content".getBytes(StandardCharsets.UTF_8)
+        );
+
+        ProductResponseDTO updatedProductResponse = ProductResponseDTO.builder()
+                .uId(productUuid)
+                .name("Product 1")
+                .description("Product 1 description")
+                .regularPrice(10.99)
+                .build();
+
+        when(productService.addImageToProduct(eq(productUuid), any(MultipartFile.class)))
+                .thenReturn(updatedProductResponse);
+
+        // when & then
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/products/{productUuid}/images", productUuid)
+                        .file(imageFile))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.uid").value(productUuid.toString()))
+                .andExpect(jsonPath("$.name").value("Product 1"))
+                .andExpect(jsonPath("$.description").value("Product 1 description"))
+                .andExpect(jsonPath("$.regularPrice").value(10.99));
     }
 
     private String asJsonString(final Object obj) throws JsonProcessingException {

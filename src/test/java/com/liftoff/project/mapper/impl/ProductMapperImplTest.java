@@ -10,11 +10,11 @@ import com.liftoff.project.model.ProductStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Set;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -62,7 +62,7 @@ class ProductMapperImplTest {
         assertEquals(product.getStatus(), responseDTO.getStatus());
         assertEquals(product.getProductscol(), responseDTO.getProductscol());
         assertEquals(product.getQuantity(), responseDTO.getQuantity());
-        assertNull(responseDTO.getCategories());
+        assertEquals(Collections.emptyList(), responseDTO.getCategories());
     }
 
     @Test
@@ -80,7 +80,7 @@ class ProductMapperImplTest {
         category2.setName("Category 2");
         category2.setDescription("Category 2 description");
 
-        Set<Category> categories = Set.of(category1, category2);
+        List<Category> categories = List.of(category1, category2);
 
         Product product = new Product();
         product.setCategories(categories);

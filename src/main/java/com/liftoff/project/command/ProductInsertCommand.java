@@ -1,19 +1,20 @@
 package com.liftoff.project.command;
 
 import com.liftoff.project.model.Category;
+import com.liftoff.project.model.ImageAsset;
 import com.liftoff.project.model.Product;
 import com.liftoff.project.model.ProductStatus;
 import com.liftoff.project.repository.CategoryRepository;
+import com.liftoff.project.repository.ImageAssetRepository;
 import com.liftoff.project.repository.ProductRepository;
 import jakarta.annotation.Priority;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Component
 @Priority(1)
@@ -22,57 +23,222 @@ public class ProductInsertCommand implements CommandLineRunner {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ImageAssetRepository imageAssetRepository;
 
     @Override
     public void run(String... args) {
-        Category cat1 = Category.builder()
+        Category kawa = Category.builder()
                 .uId(UUID.randomUUID())
-                .name("Category 1")
-                .description("Category 1 descriptions")
+                .name("Kawa")
+                .description("Kawy ziarniste, mielone, rozpuszczalne.")
                 .build();
-        Category cat2 = Category.builder()
+        Category herbata = Category.builder()
                 .uId(UUID.randomUUID())
-                .name("Category 2")
-                .description("Category 2 descriptions")
+                .name("Herbata")
+                .description("English tea shop, Dilmah, Richmont, akcesoria do herbaty.")
                 .build();
-        Category cat3 = Category.builder()
+        Category yerba = Category.builder()
                 .uId(UUID.randomUUID())
-                .name("Category 3")
-                .description("Category 2 descriptions")
-                .parentCategory(cat2)
+                .name("Yerba")
+                .description("Yerba mate, akcesoria.")
                 .build();
-        Category cat4 = Category.builder()
+        Category ekspresy = Category.builder()
                 .uId(UUID.randomUUID())
-                .name("Category 4")
-                .description("Category 4 descriptions")
-                .parentCategory(cat3)
+                .name("Ekspresy i akcesoria")
+                .description("Akcesoria do kawy, herbaty i yerba mate. Ekspresy i młynki. Saturatory.")
                 .build();
-        Category cat5 = Category.builder()
-                .uId(UUID.randomUUID())
-                .name("Category 5")
-                .description("Category 5 descriptions")
-                .parentCategory(cat2)
+        Category kawaZiarnista = Category.builder()
+                .uId(UUID.fromString("bfb969b7-05a2-45a6-887b-e83ef7b92574"))
+                .name("Kawa ziarnista")
+                .description("Kawa ziarnista to klasyka gatunku spośród wszystkich znanych obecnie rodzajów kawy.")
+                .parentCategory(kawa)
                 .build();
-        Category cat6 = Category.builder()
+        Category kawaMielona = Category.builder()
                 .uId(UUID.randomUUID())
-                .name("Category 6")
-                .description("Category 6 descriptions")
-                .parentCategory(cat5)
+                .name("Kawa mielona")
+                .description("Kawa mielona jest efektem starannej i długotrwałej pracy specjalistów " +
+                        "z najbardziej cenionych palarni kawy na całym świecie.")
+                .parentCategory(kawa)
+                .build();
+        Category kawaRozpuszczalna = Category.builder()
+                .uId(UUID.randomUUID())
+                .name("Kawa rozpuszczalna")
+                .description("Najlepsza kawa rozpuszczalna pozwala na szybkie oraz łatwe przygotowanie smacznego " +
+                        "i gorącego napoju bez względu gdzie się znajdujemy.")
+                .parentCategory(kawa)
+                .build();
+        Category englishTeaShop = Category.builder()
+                .uId(UUID.randomUUID())
+                .name("English Tea Shop")
+                .description("English Tea Shop to marka założona w 2010 roku, " +
+                        "której celem jest dostarczanie najwyższej jakości herbacianych mieszanek.")
+                .parentCategory(herbata)
+                .build();
+        Category englishTeaShopLisciaste = Category.builder()
+                .uId(UUID.randomUUID())
+                .name("Liściaste")
+                .parentCategory(englishTeaShop)
+                .build();
+        Category englishTeaShopTorebki = Category.builder()
+                .uId(UUID.randomUUID())
+                .name("Torebki")
+                .parentCategory(englishTeaShop)
+                .build();
+        Category akcesoriaDoHerbaty = Category.builder()
+                .uId(UUID.randomUUID())
+                .name("Akcesoria do herbaty")
+                .parentCategory(herbata)
+                .build();
+        Category herbataAkcesoriaFiltry = Category.builder()
+                .uId(UUID.randomUUID())
+                .name("Filtry")
+                .parentCategory(akcesoriaDoHerbaty)
+                .build();
+        Category herbataAkcesoriaSzklanki = Category.builder()
+                .uId(UUID.randomUUID())
+                .name("Szklanki, kubki")
+                .parentCategory(akcesoriaDoHerbaty)
+                .build();
+        categoryRepository.saveAll(List.of(kawa, herbata, yerba, ekspresy,
+                kawaZiarnista, kawaMielona, kawaRozpuszczalna,
+                englishTeaShop, englishTeaShopLisciaste, englishTeaShopTorebki,
+                akcesoriaDoHerbaty, herbataAkcesoriaFiltry, herbataAkcesoriaSzklanki));
+
+        ImageAsset melittaImage1 = ImageAsset.builder()
+                .assetUrl("https://storage.googleapis.com/download/storage/v1/b/lopi-2-dev.appspot.com/o/images%2F7fa34810-0bd9-41d5-b6f1-f56fd218f388.jpg?generation=1692295048031287&alt=media")
+                .build();
+        ImageAsset melittaImage2 = ImageAsset.builder()
+                .assetUrl("https://storage.googleapis.com/download/storage/v1/b/lopi-2-dev.appspot.com/o/images%2Fa1d764d8-037f-42fd-a178-fe70a4da80f9.png?generation=1692295115642575&alt=media")
                 .build();
 
-        categoryRepository.saveAll(List.of(cat1, cat2, cat3, cat4, cat5, cat6));
+        imageAssetRepository.saveAll(List.of(melittaImage1, melittaImage2));
 
-        List<Product> productList = IntStream.range(1, 51)
-                .mapToObj(i -> Product.builder()
-                        .uId(UUID.randomUUID())
-                        .name("Product " + i)
-                        .description("Product " + i + " description")
-                        .status(ProductStatus.ACTIVE)
-                        .categories(null)
-                        .build())
-                .collect(Collectors.toList());
+        Product kawaMelitta = Product.builder()
+                .uId(UUID.fromString("b5fba84e-1729-4d99-8412-8421d44a2a85"))
+                .name("Melitta BellaCrema Espresso 1 kg")
+                .description("Kawa Melitta BellaCrema Espresso to wyjątkowa kompozycja najszlachetniejszych, " +
+                        "starannie dobranych ziaren gatunku Arabica (100%). Dzięki mocnemu paleniu, " +
+                        "charakterystycznemu dla kaw typu espresso, jest to mieszanka o " +
+                        "najintensywniejszym smaku.")
+                .sku("0128")
+                .regularPrice(43.99)
+                .discountPrice(40.00)
+                .discountPriceEndDate(LocalDateTime.now().plusDays(10))
+                .lowestPrice(40.00)
+                .shortDescription("Kawa Melitta BellaCrema Espresso to wyjątkowa kompozycja " +
+                        "najszlachetniejszych i starannie dobranych ziaren gatunku Arabica (100%).")
+                .status(ProductStatus.ACTIVE)
+                .quantity(100)
+                .categories(List.of(kawaZiarnista))
+                .images(List.of(melittaImage1, melittaImage2))
+                .build();
 
-        productRepository.saveAll(productList);
+        Product savedMelitta = productRepository.save(kawaMelitta);
+
+        ImageAsset mildanoImage1 = ImageAsset.builder()
+                .assetUrl("https://storage.googleapis.com/download/storage/v1/b/lopi-2-dev.appspot.com/o/images%2F0d04d744-c83c-434a-ad8d-3591a33a24ef.jpeg?generation=1692295199044423&alt=media")
+                .build();
+        imageAssetRepository.save(mildanoImage1);
+
+        Product kawaMildano = Product.builder()
+                .uId(UUID.randomUUID())
+                .name("MK Cafe Mildano 0,25 kg")
+                .description("MK Cafe Mildano to doskonała kawa bezkofeinowa o wyjątkowo pełnym smaku " +
+                        "i aromacie. Wyróżnia się nie tylko naturalnością, ale przede wszystkim wyczuwalnymi " +
+                        "nutami kakao, toffi oraz cukru trzcinowego.")
+                .sku("4991")
+                .regularPrice(12.88)
+                .discountPrice(11.00)
+                .discountPriceEndDate(LocalDateTime.now().plusDays(10))
+                .lowestPrice(10.00)
+                .shortDescription("MK Cafe Mildano to doskonała kawa bezkofeinowa o wyjątkowo pełnym smaku i aromacie.")
+                .status(ProductStatus.ACTIVE)
+                .quantity(100)
+                .categories(List.of(kawaMielona))
+                .images(List.of(mildanoImage1))
+                .build();
+
+        Product mildanoSaved = productRepository.save(kawaMildano);
+
+        ImageAsset davidoffImage1 = ImageAsset.builder()
+                .assetUrl("https://storage.googleapis.com/download/storage/v1/b/lopi-2-dev.appspot.com/o/images%2F053d572f-4e91-4c3b-b3bb-c3a56acbe369.png?generation=1692295632904709&alt=media")
+                .build();
+        ImageAsset davidoffImage2 = ImageAsset.builder()
+                .assetUrl("https://storage.googleapis.com/download/storage/v1/b/lopi-2-dev.appspot.com/o/images%2F13018714-7a1c-4708-ba39-004c5121678a.png?generation=1692295691288884&alt=media")
+                .build();
+        imageAssetRepository.saveAll(List.of(davidoffImage1, davidoffImage2));
+
+        Product kawaDavidoff = Product.builder()
+                .uId(UUID.randomUUID())
+                .name("Davidoff Espresso Intense 57 100 g")
+                .description("Davidoff Espresso Intense 57 to  kompozycja pochodząca z renomowanej " +
+                        "i docenianej na całym świecie palarni. Dobrano do niej wysokiej jakości ziarna " +
+                        "Arabica (100%).")
+                .sku(" 4831")
+                .regularPrice(23.90)
+                .discountPrice(22.90)
+                .discountPriceEndDate(LocalDateTime.now().plusDays(15))
+                .lowestPrice(22.90)
+                .shortDescription("Davidoff Espresso Intense 57 to  kompozycja pochodząca z renomowanej " +
+                        "i docenianej na całym świecie palarni.")
+                .status(ProductStatus.ACTIVE)
+                .quantity(25)
+                .categories(List.of(kawaRozpuszczalna))
+                .images(List.of(davidoffImage1, davidoffImage2))
+                .build();
+
+        Product davidoffSaved = productRepository.save(kawaDavidoff);
+
+        ImageAsset mkImage1 = ImageAsset.builder()
+                .assetUrl("https://storage.googleapis.com/download/storage/v1/b/lopi-2-dev.appspot.com/o/images%2Fe7781aca-3bf2-4646-9e60-70917e4131e8.png?generation=1692296025764900&alt=media")
+                .build();
+        ImageAsset mkImage2 = ImageAsset.builder()
+                .assetUrl("https://storage.googleapis.com/download/storage/v1/b/lopi-2-dev.appspot.com/o/images%2F3b9696f4-5d8c-4475-a147-5b2bbaae28af.png?generation=1692296083883569&alt=media")
+                .build();
+        imageAssetRepository.saveAll(List.of(mkImage1, mkImage2));
+
+        Product kawaMK = Product.builder()
+                .uId(UUID.randomUUID())
+                .name("MK Cafe Premium Crema 130 g")
+                .description("MK Cafe Premium Crema to znakomita kompozycja o wyraźnych nutach miodu, " +
+                        "orzechów i karmelu. Doskonale kremowa w konsystencji, jednocześnie aromatyczna i lekka.")
+                .sku(" 4884")
+                .regularPrice(16.99)
+                .discountPrice(15.99)
+                .discountPriceEndDate(LocalDateTime.now().plusDays(5))
+                .lowestPrice(15.99)
+                .shortDescription("MK Cafe Premium Crema to znakomita kompozycja o wyraźnych " +
+                        "nutach miodu, orzechów i karmelu.")
+                .status(ProductStatus.ACTIVE)
+                .quantity(25)
+                .categories(List.of(kawaRozpuszczalna))
+                .images(List.of(mkImage1, mkImage2))
+                .build();
+
+        Product mkSaved = productRepository.save(kawaMK);
+
+        Product testProductIN_PREPARATION = Product.builder()
+                .uId(UUID.fromString("da4611cc-9a91-44fc-9abe-47d2178cbfb3"))
+                .name("TEST PRODUCT 1 (IN_PREPARATION status)")
+                .description("Test product 1 description")
+                .status(ProductStatus.IN_PREPARATION)
+                .build();
+        Product testProductCLOSED = Product.builder()
+                .uId(UUID.fromString("f12d6c80-22a6-4ede-9088-6a72eb7e4ef0"))
+                .name("TEST PRODUCT 2 (CLOSED status)")
+                .description("Test product 2 description")
+                .status(ProductStatus.CLOSED)
+                .build();
+        Product testProductACTIVE = Product.builder()
+                .uId(UUID.fromString("198e4fbe-4413-4a9a-8aeb-f5002ab5ee62"))
+                .name("TEST PRODUCT 3 (ACTIVE status)")
+                .description("Test product 3 description")
+                .status(ProductStatus.ACTIVE)
+                .build();
+        productRepository.saveAll(List.of(
+                testProductIN_PREPARATION,
+                testProductCLOSED,
+                testProductACTIVE));
 
     }
 

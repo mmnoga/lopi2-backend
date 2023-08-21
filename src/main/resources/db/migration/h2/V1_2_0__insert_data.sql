@@ -6,25 +6,6 @@ VALUES ('Bartosz', 'Stpiczynski', 'frontend dev'),
        ('Kamil', 'Chrzanowski', 'frontend dev'),
        ('Maciej', 'Marciniak', 'fullstack dev');
 
-
-INSERT INTO CATEGORIES (UID, PARENT_ID, NAME, DESCRIPTION, ICON, IMAGE_PATH, CREATED_AT, UPDATED_AT)
-VALUES ('06e1899f-97c8-4d4e-aae3-712d31c45dd0', null, 'elektronika', 'opis kategorii elektronika', 'icon',
-        'https://pixabay.com/photos/stock-iphone-business-mobile-phone-624712/', '2023-07-26 08:10:01.163454',
-        '2023-07-26 08:10:01.163454'),
-       ('68712e62-6fee-4bc0-9cd3-a94e63e3f494', 1, 'komputery', 'opis kategorii komputery', 'icon',
-        'https://pixabay.com/photos/office-business-accountant-620822/', '2023-07-26 08:10:01.163454',
-        '2023-07-26 08:10:01.163454'),
-       ('b663638d-ae89-4f5c-a6fe-f27cf41ae4e3', 2, 'laptopy', 'opis kategorii laptopy', 'icon',
-        'https://pixabay.com/photos/macbook-laptop-google-display-459196/', '2023-07-26 08:10:01.163454',
-        '2023-07-26 08:10:01.163454'),
-       ('d69b60ff-6d30-46a0-bc61-30ddab2d094c', 2, 'stacjonarne', 'opis kategorii stacjonarne', 'icon',
-        'https://pixabay.com/photos/macbook-laptop-google-display-459196/', '2023-07-26 08:10:01.163454',
-        '2023-07-26 08:10:01.163454');
-
-
-
-
-
 INSERT INTO APP_USER (FIRST_NAME, LAST_NAME, USER_NAME, PASSWORD, ROLE) VALUES
 ('Jan', 'Kowalski', 'user123@example.com',   '$2a$10$e3DPMZhiMGdS4sgXmS4N/uG.9Ar.NUHKX3iktP3oFu//zqaa4Zn8.', 'ROLE_USER'),
 ('John', 'Doe', 'john.doe@emailprovider.com',  '$2a$10$e3DPMZhiMGdS4sgXmS4N/uG.9Ar.NUHKX3iktP3oFu//zqaa4Zn8.', 'ROLE_USER'),
@@ -37,12 +18,3 @@ INSERT INTO APP_USER (FIRST_NAME, LAST_NAME, USER_NAME, PASSWORD, ROLE) VALUES
 ('Admin', 'Administratorski', 'demo.email@example.org' ,   '$2a$10$e3DPMZhiMGdS4sgXmS4N/uG.9Ar.NUHKX3iktP3oFu//zqaa4Zn8.', 'ROLE_ADMIN'),
 ('Zenon', 'Nadszyszkownik', 'hello123@email.com' ,   '$2a$10$e3DPMZhiMGdS4sgXmS4N/uG.9Ar.NUHKX3iktP3oFu//zqaa4Zn8.', 'ROLE_ADMIN')
 ;
-
-
-
-
-
-
-
-
-

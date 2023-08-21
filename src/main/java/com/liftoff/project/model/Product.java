@@ -21,7 +21,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -34,7 +35,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", unique = true)
-    private Integer id;
+    private Long id;
 
     @Column(name = "UID")
     private UUID uId;
@@ -92,5 +93,15 @@ public class Product {
             name = "PRODUCTS_CATEGORIES",
             joinColumns = @JoinColumn(name = "PRODUCTS_ID"),
             inverseJoinColumns = @JoinColumn(name = "CATEGORIES_ID"))
-    private Set<Category> categories;
+    @Builder.Default
+    private List<Category> categories = new ArrayList<>();
+
+    @ManyToMany()
+    @JoinTable(
+            name = "PRODUCTS_IMAGE_ASSETS",
+            joinColumns = @JoinColumn(name = "PRODUCT_ID"),
+            inverseJoinColumns = @JoinColumn(name = "IMAGE_ASSETS_ID"))
+    @Builder.Default
+    private List<ImageAsset> images = new ArrayList<>();
+
 }

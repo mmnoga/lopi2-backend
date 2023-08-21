@@ -14,10 +14,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -113,8 +111,8 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryMapper.mapEntityToResponse(savedCategory);
     }
 
-    public Set<Category> getExistingCategories(Set<CategoryRequestDTO> categories) {
-        Set<Category> existingCategories = new HashSet<>();
+    public List<Category> getExistingCategories(List<CategoryRequestDTO> categories) {
+        List<Category> existingCategories = new ArrayList<>();
         for (CategoryRequestDTO categoryRequestDTO : categories) {
             UUID categoryUuid = categoryRequestDTO.getParentCategoryId();
             Optional<Category> categoryOptional = categoryRepository.findByUId(categoryUuid);
@@ -125,6 +123,24 @@ public class CategoryServiceImpl implements CategoryService {
             }
         }
         return existingCategories;
+    }
+
+    @Override
+    public int getProductQuantityInCategory(UUID categoryUuId) {
+        Category category = categoryRepository.findByUId(categoryUuId)
+                .orElseThrow(() ->
+                        new CategoryNotFoundException("Category with UUID " + categoryUuId + " not found."));
+        return calculateProductQuantityInCategory(category);
+    }
+
+    private int calculateProductQuantityInCategory(Category category) {
+        int productQuantity = category.getProducts().size();
+
+        for (Category subcategory : category.getSubcategories()) {
+            productQuantity += calculateProductQuantityInCategory(subcategory);
+        }
+
+        return productQuantity;
     }
 
 }

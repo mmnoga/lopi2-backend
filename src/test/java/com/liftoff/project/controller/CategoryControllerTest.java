@@ -229,6 +229,25 @@ class CategoryControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
+    @Test
+    void shouldReturnProductQuantityInCategory() throws Exception {
+        // given
+        UUID categoryUuid = UUID.randomUUID();
+        int expectedProductQuantity = 10;
+
+        Mockito.when(categoryService.getProductQuantityInCategory(Mockito.eq(categoryUuid)))
+                .thenReturn(expectedProductQuantity);
+
+        // when & then
+        mockMvc.perform(MockMvcRequestBuilders.get(
+                                "/api/categories/{categoryUuId}/product-quantity",
+                                categoryUuid
+                        )
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string(String.valueOf(expectedProductQuantity)));
+    }
+
     private String asJsonString(final Object obj) throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(Map.of("message", obj));
     }

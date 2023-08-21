@@ -4,25 +4,30 @@ import com.liftoff.project.controller.request.ProductRequestDTO;
 import com.liftoff.project.controller.response.PaginatedProductResponseDTO;
 import com.liftoff.project.controller.response.ProductResponseDTO;
 import com.liftoff.project.exception.CategoryNotFoundException;
+import com.liftoff.project.exception.ImageNotFoundException;
 import com.liftoff.project.exception.ProductNotFoundException;
 import com.liftoff.project.mapper.ProductMapper;
 import com.liftoff.project.model.Category;
+import com.liftoff.project.model.ImageAsset;
 import com.liftoff.project.model.Product;
 import com.liftoff.project.model.ProductStatus;
 import com.liftoff.project.repository.CategoryRepository;
+import com.liftoff.project.repository.ImageAssetRepository;
 import com.liftoff.project.repository.ProductRepository;
 import com.liftoff.project.service.CategoryService;
 import com.liftoff.project.service.ProductService;
+import com.liftoff.project.service.StorageService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.Instant;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -35,6 +40,8 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
     private final CategoryService categoryService;
     private final ProductArchiverService productArchiverService;
+    private final StorageService storageService;
+    private final ImageAssetRepository imageAssetRepository;
 
     @Override
     public PaginatedProductResponseDTO getProducts(int page, int size) {
@@ -89,13 +96,32 @@ public class ProductServiceImpl implements ProductService {
         }
 
         if (productRequestDTO.getCategories() != null) {
-            Set<Category> existingCategories =
+            List<Category> existingCategories =
                     categoryService
                             .getExistingCategories(productRequestDTO.getCategories());
             newProduct.setCategories(existingCategories);
         }
 
         Product savedProduct = productRepository.save(newProduct);
+
+        return productMapper.mapEntityToResponse(savedProduct);
+    }
+
+    @Override
+    public ProductResponseDTO addImageToProduct(UUID productUuid, MultipartFile imageFile) throws IOException {
+        Product product = productRepository.findByUId(productUuid)
+                .orElseThrow(() -> new ProductNotFoundException("Product with UUID " + productUuid + " not found."));
+
+        String imageUrl = storageService.uploadFile(imageFile);
+
+        ImageAsset imageAsset = new ImageAsset();
+        imageAsset.setAssetUrl(imageUrl);
+        imageAssetRepository.save(imageAsset);
+
+        product.getImages().add(imageAsset);
+
+        Product savedProduct = productRepository.save(product);
+
         return productMapper.mapEntityToResponse(savedProduct);
     }
 
@@ -106,7 +132,7 @@ public class ProductServiceImpl implements ProductService {
 
         updateProductFromRequest(existingProduct, productRequestDTO);
 
-        Set<Category> existingCategories = new HashSet<>();
+        List<Category> existingCategories = new ArrayList<>();
 
         if (productRequestDTO.getCategories() != null) {
             existingCategories = categoryService
@@ -115,7 +141,10 @@ public class ProductServiceImpl implements ProductService {
             existingProduct.setCategories(existingCategories);
         }
 
-        return productArchiverService.archiveProduct(existingProduct, productRequestDTO, existingCategories);
+        return productArchiverService.archiveProduct(
+                existingProduct,
+                productRequestDTO,
+                existingCategories);
     }
 
     @Override
@@ -132,6 +161,23 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    public ProductResponseDTO deleteImageByUrlFromProduct(UUID productUuid, String imageUrl) {
+        Product product = productRepository.findByUId(productUuid)
+                .orElseThrow(() -> new ProductNotFoundException("Product with UUID " + productUuid + " not found."));
+
+        List<ImageAsset> images = product.getImages();
+        boolean imageRemoved = images.removeIf(
+                image ->
+                        image.getAssetUrl().equals(imageUrl));
+        if (!imageRemoved) {
+            throw new ImageNotFoundException("Image with URL " + imageUrl + " not found in the product.");
+        }
+
+        productRepository.save(product);
+
+        return productMapper.mapEntityToResponse(product);
+    }
+
     @Override
     public ProductResponseDTO activateProduct(ProductResponseDTO product) {
         if (product.getStatus().equals(ProductStatus.ACTIVE)) return product;
@@ -141,7 +187,7 @@ public class ProductServiceImpl implements ProductService {
 
         return product;
     }
-  
+
     private void updateProductFromRequest(Product product, ProductRequestDTO req) {
         if (req.getName() != null) product.setName(req.getName());
         if (req.getSku() != null) product.setSku(req.getSku());

@@ -6,9 +6,9 @@ CREATE TABLE EXAMPLE (
 );
 
 CREATE TABLE CATEGORIES (
-                          ID INT AUTO_INCREMENT PRIMARY KEY,
+                          ID BIGINT AUTO_INCREMENT PRIMARY KEY,
                           UID UUID NOT NULL,
-                          PARENT_ID INT,
+                          PARENT_ID LONG,
                           NAME VARCHAR(100),
                           DESCRIPTION VARCHAR(1000),
                           ICON VARCHAR(45),
@@ -18,7 +18,7 @@ CREATE TABLE CATEGORIES (
 );
 
 CREATE TABLE PRODUCTS (
-                         ID INT AUTO_INCREMENT PRIMARY KEY,
+                         ID BIGINT AUTO_INCREMENT PRIMARY KEY,
                          UID UUID NOT NULL,
                          NAME VARCHAR(45),
                          SKU VARCHAR(45),
@@ -38,11 +38,24 @@ CREATE TABLE PRODUCTS (
 );
 
 CREATE TABLE PRODUCTS_CATEGORIES (
-                                     PRODUCTS_ID INT NOT NULL,
-                                     CATEGORIES_ID INT NOT NULL,
+                                     PRODUCTS_ID BIGINT NOT NULL,
+                                     CATEGORIES_ID BIGINT NOT NULL,
                                      PRIMARY KEY (PRODUCTS_ID, CATEGORIES_ID),
                                      FOREIGN KEY (PRODUCTS_ID) REFERENCES PRODUCTS(ID),
                                      FOREIGN KEY (CATEGORIES_ID) REFERENCES CATEGORIES(ID)
+);
+
+CREATE TABLE IMAGE_ASSETS (
+                                ID BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                ASSET_URL VARCHAR(255)
+);
+
+CREATE TABLE PRODUCTS_IMAGE_ASSETS (
+                                       PRODUCT_ID BIGINT NOT NULL,
+                                       IMAGE_ASSETS_ID BIGINT NOT NULL,
+                                       PRIMARY KEY (PRODUCT_ID, IMAGE_ASSETS_ID),
+                                       FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCTS(ID),
+                                       FOREIGN KEY (IMAGE_ASSETS_ID) REFERENCES IMAGE_ASSETS(ID)
 );
 
 CREATE TABLE APP_USER (

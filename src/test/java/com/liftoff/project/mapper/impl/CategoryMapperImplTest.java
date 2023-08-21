@@ -49,7 +49,7 @@ class CategoryMapperImplTest {
     @Test
     public void shouldReturnCategoryDTOForCategoryWithoutSubcategories() {
         // Given
-        when(category.getId()).thenReturn(1);
+        when(category.getId()).thenReturn(1L);
         when(category.getName()).thenReturn("Category 1");
         when(category.getDescription()).thenReturn("Description 1");
 
@@ -67,17 +67,17 @@ class CategoryMapperImplTest {
         // given
         UUID categoryId = UUID.randomUUID();
         Category subcategory1 = new Category();
-        subcategory1.setId(2);
+        subcategory1.setId(2L);
         subcategory1.setName("Subcategory 1");
         subcategory1.setDescription("Subcategory 1 description");
 
         Category subcategory2 = new Category();
-        subcategory2.setId(3);
+        subcategory2.setId(3L);
         subcategory2.setName("Subcategory 2");
         subcategory2.setDescription("Subcategory 2 description");
 
         Category category = new Category();
-        category.setId(1);
+        category.setId(1L);
         category.setName("Category 1");
         category.setDescription("Category 1");
         category.setUId(categoryId);

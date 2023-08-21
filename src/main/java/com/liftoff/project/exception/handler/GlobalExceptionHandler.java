@@ -5,6 +5,7 @@ import com.liftoff.project.exception.CategoryNotFoundException;
 import com.liftoff.project.exception.CookiesNotFoundException;
 import com.liftoff.project.exception.FileNotFoundException;
 import com.liftoff.project.exception.FileSizeExceedsLimitException;
+import com.liftoff.project.exception.ImageNotFoundException;
 import com.liftoff.project.exception.InvalidParentCategoryException;
 import com.liftoff.project.exception.LoginAuthenticationException;
 import com.liftoff.project.exception.ParentCategoryNotFoundException;
@@ -61,6 +62,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(FileNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleFileNotFoundException(FileNotFoundException ex) {
+        return createErrorResponse(ex.getMessage(), ex.getStatus());
+    }
+
+    @ExceptionHandler(ImageNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleImageNotFoundException(ImageNotFoundException ex) {
         return createErrorResponse(ex.getMessage(), ex.getStatus());
     }
 

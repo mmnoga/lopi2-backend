@@ -7,7 +7,6 @@ import com.liftoff.project.exception.ParentCategoryNotFoundException;
 import com.liftoff.project.model.Category;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 public interface CategoryService {
@@ -56,13 +55,22 @@ public interface CategoryService {
     void deleteCategoryByUuid(UUID categoryUuid);
 
     /**
-     * Retrieves a set of existing categories based on the provided set of CategoryRequestDTO objects.
+     * Retrieves a list of existing categories based on the provided list of CategoryRequestDTO objects.
      *
      * @param categories The set of CategoryRequestDTO object representing categories to be checked.
      * @return A set of existing Category object corresponding to the provided CategoryRequestDTO objects.
      * @throws ParentCategoryNotFoundException If a parent category specified
      * in any of the CategoryRequestDTO objects is not found.
      */
-    Set<Category> getExistingCategories(Set<CategoryRequestDTO> categories);
+    List<Category> getExistingCategories(List<CategoryRequestDTO> categories);
+
+    /**
+     * Returns the quantity of products that belong to the specified category.
+     *
+     * @param categoryUuId The UUID of the category to check the product quantity for.
+     * @return The number of products that belong to the specified category.
+     * @throws IllegalArgumentException If the provided UUID is invalid or if the category does not exist.
+     */
+    int getProductQuantityInCategory(UUID categoryUuId);
 
 }

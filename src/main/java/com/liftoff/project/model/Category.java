@@ -11,7 +11,6 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +21,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -35,7 +33,7 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", unique = true)
-    private Integer id;
+    private Long id;
 
     @Column(name = "UID")
     private UUID uId;
@@ -68,7 +66,7 @@ public class Category {
     private Instant updatedAt;
 
     @ManyToMany(mappedBy = "categories")
-    private Set<Product> products;
+    private List<Product> products;
 
     public boolean containsProducts() {
         return products != null && !products.isEmpty();

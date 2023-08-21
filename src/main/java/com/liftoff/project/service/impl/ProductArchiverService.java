@@ -4,6 +4,7 @@ import com.liftoff.project.controller.request.ProductRequestDTO;
 import com.liftoff.project.controller.response.ProductResponseDTO;
 import com.liftoff.project.mapper.ProductMapper;
 import com.liftoff.project.model.Category;
+import com.liftoff.project.model.ImageAsset;
 import com.liftoff.project.model.Product;
 import com.liftoff.project.model.ProductStatus;
 import com.liftoff.project.repository.ProductRepository;
@@ -11,8 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +26,7 @@ public class ProductArchiverService {
     public ProductResponseDTO archiveProduct(
             Product existingProduct,
             ProductRequestDTO productRequestDTO,
-            Set<Category> existingCategories) {
+            List<Category> existingCategories) {
         switch (existingProduct.getStatus()) {
             case IN_PREPARATION:
                 return archiveInPreparationProduct(existingProduct, productRequestDTO, existingCategories);
@@ -40,7 +42,7 @@ public class ProductArchiverService {
     private ProductResponseDTO archiveInPreparationProduct(
             Product existingProduct,
             ProductRequestDTO productRequestDTO,
-            Set<Category> existingCategories) {
+            List<Category> existingCategories) {
         updateProductFromRequest(existingProduct, productRequestDTO);
 
         Product updatedProduct = productRepository.save(existingProduct);
@@ -53,9 +55,14 @@ public class ProductArchiverService {
     private ProductResponseDTO archiveActiveProduct(
             Product existingProduct,
             ProductRequestDTO productRequestDTO,
-            Set<Category> existingCategories) {
+            List<Category> existingCategories) {
         existingProduct.setStatus(ProductStatus.CLOSED);
         existingProduct.setArchivedAt(Instant.now());
+
+        List<ImageAsset> newImages = existingProduct.getImages()
+                .stream()
+                .map(image -> ImageAsset.builder().assetUrl(image.getAssetUrl()).build())
+                .collect(Collectors.toList());
 
         Product newProductFromActiveProduct = Product.builder()
                 .uId(UUID.randomUUID())
@@ -69,6 +76,7 @@ public class ProductArchiverService {
                 .note(productRequestDTO.getNote())
                 .status(ProductStatus.ACTIVE)
                 .categories(existingCategories)
+                .images(newImages)
                 .updatedAt(Instant.now())
                 .build();
 
@@ -79,7 +87,7 @@ public class ProductArchiverService {
 
     private ProductResponseDTO archiveClosedProduct(
             ProductRequestDTO productRequestDTO,
-            Set<Category> existingCategories) {
+            List<Category> existingCategories) {
         Product newProductFromActiveProduct = Product.builder()
                 .uId(UUID.randomUUID())
                 .name(productRequestDTO.getName())
@@ -112,6 +120,16 @@ public class ProductArchiverService {
         product.setNote(productRequestDTO.getNote());
         product.setProductscol(productRequestDTO.getProductscol());
         product.setQuantity(productRequestDTO.getQuantity());
+
+        if (productRequestDTO.getImages() != null) {
+            List<ImageAsset> updatedImages = productRequestDTO.getImages()
+                    .stream()
+                    .map(imageDto -> ImageAsset.builder()
+                            .assetUrl(imageDto.getImageUrl())
+                            .build())
+                    .collect(Collectors.toList());
+            product.setImages(updatedImages);
+        }
     }
 
 }

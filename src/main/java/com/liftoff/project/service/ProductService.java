@@ -4,8 +4,11 @@ import com.liftoff.project.controller.request.ProductRequestDTO;
 import com.liftoff.project.controller.response.PaginatedProductResponseDTO;
 import com.liftoff.project.controller.response.ProductResponseDTO;
 import com.liftoff.project.exception.CategoryNotFoundException;
+import com.liftoff.project.exception.ImageNotFoundException;
 import com.liftoff.project.exception.ProductNotFoundException;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -82,5 +85,27 @@ public interface ProductService {
      * @throws ProductNotFoundException If the product with the given UUID is not found.
      */
     ProductResponseDTO activateProduct(ProductResponseDTO product);
+
+    /**
+     * Adds an image to a product based on its UUID.
+     *
+     * @param productUuid The UUID of the product to which the image will be added.
+     * @param imageFile   The image file to be added to the product.
+     * @return A ResponseEntity containing the updated ProductResponseDTO with the added image.
+     * @throws ProductNotFoundException If the product with the specified UUID is not found.
+     * @throws IOException              If an error occurs while processing the image file.
+     */
+    ProductResponseDTO addImageToProduct(UUID productUuid, MultipartFile imageFile) throws IOException;
+
+    /**
+     * Deletes the specified image URL from the product with the provided UUID.
+     *
+     * @param productUuid The UUID of the product to delete the image from.
+     * @param imageUrl    The URL of the image to be deleted from the product.
+     * @return A {@link ProductResponseDTO} representing the updated product after image deletion.
+     * @throws ImageNotFoundException   If the specified image URL is not found in the product.
+     * @throws ProductNotFoundException If the product with the given UUID is not found.
+     */
+    ProductResponseDTO deleteImageByUrlFromProduct(UUID productUuid, String imageUrl);
 
 }
