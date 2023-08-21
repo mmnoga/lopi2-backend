@@ -35,6 +35,7 @@ public class CookieController {
                 .secure(true)
                 .path("/api/cookie")
                 .maxAge(1 * 24 * 60 * 60)
+                .sameSite("None")
                 .domain(serverDomain).build();
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, resCookie.toString()).build();
