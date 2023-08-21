@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -26,12 +28,14 @@ public class CookieController {
     @GetMapping("/create")
     public ResponseEntity setCookie() {
 
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        String serverDomain = request.getServerName();
+
         ResponseCookie resCookie = ResponseCookie.from("some-unauthorized-user-id", "c2FtLnNtaXRoQGV4YW1wbGUuY29t").httpOnly(true)
                 .secure(true)
                 .path("/api/cookie")
                 .maxAge(1 * 24 * 60 * 60)
-                //.domain("lopi2.azurewebsites.net").build();
-                .domain("localhost").build();
+                .domain(serverDomain).build();
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, resCookie.toString()).build();
 
