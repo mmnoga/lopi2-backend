@@ -46,7 +46,7 @@ public class CookieController {
     public ResponseEntity deleteCookie() {
 
 
-        ResponseCookie resCookie = ResponseCookie.from("some-unauthorized-user-id", null).build();
+        ResponseCookie resCookie = ResponseCookie.from("some-unauthorized-user-id", null).sameSite("None").build();
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, resCookie.toString()).build();
 
