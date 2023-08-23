@@ -31,7 +31,7 @@ private String serverDomain;
     public ResponseEntity setCookie() {
 
 
-        getServerDomain();
+        this.getServerDomain();
         ResponseCookie resCookie = ResponseCookie.from("some-unauthorized-user-id", "c2FtLnNtaXRoQGV4YW1wbGUuY29t").httpOnly(true)
                 .secure(true)
                 .path("/api/cookie")
@@ -46,7 +46,7 @@ private String serverDomain;
     @DeleteMapping("/delete")
     public ResponseEntity deleteCookie() {
 
-        getServerDomain();
+        this.getServerDomain();
 
         ResponseCookie resCookie = ResponseCookie.from("some-unauthorized-user-id", null).httpOnly(true)
                 .secure(true)
