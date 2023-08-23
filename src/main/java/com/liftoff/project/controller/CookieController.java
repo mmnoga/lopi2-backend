@@ -24,19 +24,20 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/cookie")
 public class CookieController {
 
+private String serverDomain;
+
 
     @GetMapping("/create")
     public ResponseEntity setCookie() {
 
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        String serverDomain = request.getServerName();
 
+        this.getServerDomain();
         ResponseCookie resCookie = ResponseCookie.from("some-unauthorized-user-id", "c2FtLnNtaXRoQGV4YW1wbGUuY29t").httpOnly(true)
                 .secure(true)
                 .path("/api/cookie")
                 .maxAge(1 * 24 * 60 * 60)
                 .sameSite("None")
-                .domain(serverDomain).build();
+                .domain(this.serverDomain).build();
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, resCookie.toString()).build();
 
@@ -45,8 +46,14 @@ public class CookieController {
     @DeleteMapping("/delete")
     public ResponseEntity deleteCookie() {
 
+        this.getServerDomain();
 
-        ResponseCookie resCookie = ResponseCookie.from("some-unauthorized-user-id", null).build();
+        ResponseCookie resCookie = ResponseCookie.from("some-unauthorized-user-id", null).httpOnly(true)
+                .secure(true)
+                .path("/api/cookie")
+                .maxAge(1 * 24 * 60 * 60)
+                .sameSite("None")
+                .domain(this.serverDomain).build();
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, resCookie.toString()).build();
 
@@ -76,6 +83,11 @@ public class CookieController {
 
     }
 
+        private void getServerDomain()
+        {
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+            this.serverDomain = request.getServerName();
 
+        }
 }
 
