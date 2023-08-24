@@ -21,6 +21,4 @@ public interface ProductMapper {
      */
     Product mapRequestToEntity(ProductRequestDTO productRequestDTO);
 
-    Product mapResponseToEntity(ProductResponseDTO productResponseDTO);
-
 }

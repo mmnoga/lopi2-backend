@@ -6,6 +6,7 @@ import com.liftoff.project.controller.response.JwtResponseDTO;
 import com.liftoff.project.controller.response.UserResponseDTO;
 import com.liftoff.project.service.UserService;
 import com.liftoff.project.service.UserValidationService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Auth", description = "Register and authenticate user")
 public class AuthController {
 
 

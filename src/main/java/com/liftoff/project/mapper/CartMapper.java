@@ -5,6 +5,6 @@ import com.liftoff.project.model.Cart;
 
 public interface CartMapper {
 
-    CartResponseDTO mapCartToCartResponseDTO(Cart cart);
+    CartResponseDTO mapEntityToResponse(Cart cart);
 
 }

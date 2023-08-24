@@ -6,7 +6,6 @@ import com.liftoff.project.controller.response.ImageAssetResponseDTO;
 import com.liftoff.project.controller.response.ProductResponseDTO;
 import com.liftoff.project.mapper.ProductMapper;
 import com.liftoff.project.model.Category;
-import com.liftoff.project.model.ImageAsset;
 import com.liftoff.project.model.Product;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -77,49 +76,6 @@ public class ProductMapperImpl implements ProductMapper {
         product.setStatus(productRequestDTO.getStatus());
         product.setProductscol(productRequestDTO.getProductscol());
         product.setQuantity(productRequestDTO.getQuantity());
-
-        return product;
-    }
-
-    public Product mapResponseToEntity(ProductResponseDTO productResponseDTO) {
-        if (productResponseDTO == null) {
-            return null;
-        }
-
-        Product product = new Product();
-        product.setUId(productResponseDTO.getUId());
-        product.setName(productResponseDTO.getName());
-        product.setSku(productResponseDTO.getSku());
-        product.setRegularPrice(productResponseDTO.getRegularPrice());
-        product.setDiscountPrice(productResponseDTO.getDiscountPrice());
-        product.setDiscountPriceEndDate(productResponseDTO.getDiscountPriceEndDate());
-        product.setLowestPrice(productResponseDTO.getLowestPrice());
-        product.setDescription(productResponseDTO.getDescription());
-        product.setShortDescription(productResponseDTO.getShortDescription());
-        product.setNote(productResponseDTO.getNote());
-        product.setStatus(productResponseDTO.getStatus());
-        product.setProductscol(productResponseDTO.getProductscol());
-        product.setQuantity(productResponseDTO.getQuantity());
-        product.setCreatedAt(productResponseDTO.getCreatedAt());
-        product.setUpdatedAt(productResponseDTO.getUpdatedAt());
-        product.setArchivedAt(productResponseDTO.getArchivedAt());
-
-        List<Category> categories = productResponseDTO.getCategories()
-                .stream()
-                .map(this::mapCategoryResponse)
-                .collect(Collectors.toList());
-        product.setCategories(categories);
-
-        List<ImageAsset> images = productResponseDTO.getImageUrls()
-                .stream()
-                .map(imageAssetResponse -> {
-                    ImageAsset imageAsset = new ImageAsset();
-                    imageAsset.setAssetUrl(imageAssetResponse.getImageUrl());
-                    // Set other properties if needed
-                    return imageAsset;
-                })
-                .collect(Collectors.toList());
-        product.setImages(images);
 
         return product;
     }

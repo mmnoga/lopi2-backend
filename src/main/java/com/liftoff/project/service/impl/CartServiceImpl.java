@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -25,13 +24,19 @@ public class CartServiceImpl implements CartService {
     private final CookieService cookieService;
 
     @Override
-    public Optional<Cart> getCartByUuid(UUID cartUuid) {
-        return cartRepository.findByUuid(cartUuid);
+    public Cart saveCart(Cart cart) {
+        return cartRepository.save(cart);
     }
 
     @Override
-    public Cart saveCart(Cart cart) {
-        return cartRepository.save(cart);
+    public void clearCart(HttpServletRequest request) {
+        Cart cart = getOrCreateCart(request, null);
+
+        cart.getProducts().clear();
+        cart.setTotalPrice(0.0);
+        cart.setTotalQuantity(0);
+
+        saveCart(cart);
     }
 
     @Override
@@ -62,7 +67,7 @@ public class CartServiceImpl implements CartService {
                     .orElseGet(() -> createNewCart(response));
         } else {
             cart = cartRepository.findByUuid(cartUuid)
-                    .orElseThrow(() -> new CartNotFoundException("Cart not found"));
+                    .orElseThrow(() -> new CartNotFoundException("Shopping cart not found"));
         }
 
         return cart;
