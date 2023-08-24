@@ -71,5 +71,19 @@ CREATE TABLE APP_USER (
                                 UUID UUID DEFAULT RANDOM_UUID()
 );
 
+CREATE TABLE CARTS (
+                                ID BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                UUID UUID,
+                                USER_ID BIGINT,
+                                TOTAL_PRICE DOUBLE PRECISION,
+                                TOTAL_QUANTITY INT,
+                                CREATED_AT TIMESTAMP,
+                                UPDATED_AT TIMESTAMP
+);
 
-
+CREATE TABLE CART_PRODUCTS (
+                               CART_ID BIGINT,
+                               PRODUCT_ID BIGINT,
+                               FOREIGN KEY (CART_ID) REFERENCES CARTS (ID),
+                               FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCTS (ID)
+);
