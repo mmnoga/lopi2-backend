@@ -10,4 +10,6 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
 
     Optional<Cart> findByUuid(UUID cartUuid);
 
+    Optional<Cart> findByUserUsername(String username);
+
 }

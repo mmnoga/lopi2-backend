@@ -11,6 +11,7 @@ import com.liftoff.project.exception.InvalidParentCategoryException;
 import com.liftoff.project.exception.LoginAuthenticationException;
 import com.liftoff.project.exception.ParentCategoryNotFoundException;
 import com.liftoff.project.exception.ProductNotFoundException;
+import com.liftoff.project.exception.ProductOutOfStockException;
 import com.liftoff.project.exception.UserExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -96,6 +97,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CartNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleCartNotFoundException(CartNotFoundException ex) {
+        return createErrorResponse(ex.getMessage(), ex.getStatus());
+    }
+
+    @ExceptionHandler(ProductOutOfStockException.class)
+    public ResponseEntity<Map<String, String>> handleProductOutOfStockException(ProductOutOfStockException ex) {
         return createErrorResponse(ex.getMessage(), ex.getStatus());
     }
 
