@@ -1,6 +1,7 @@
 package com.liftoff.project.exception.handler;
 
 import com.liftoff.project.exception.CannotDeleteCategoryException;
+import com.liftoff.project.exception.CartNotFoundException;
 import com.liftoff.project.exception.CategoryNotFoundException;
 import com.liftoff.project.exception.CookiesNotFoundException;
 import com.liftoff.project.exception.FileNotFoundException;
@@ -90,6 +91,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CookiesNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleCookiesNotFoundException(CookiesNotFoundException ex) {
 
+        return createErrorResponse(ex.getMessage(), ex.getStatus());
+    }
+
+    @ExceptionHandler(CartNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleCartNotFoundException(CartNotFoundException ex) {
         return createErrorResponse(ex.getMessage(), ex.getStatus());
     }
 

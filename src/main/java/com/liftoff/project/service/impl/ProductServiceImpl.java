@@ -188,6 +188,12 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
+    public Product getProductEntityByUuid(UUID productUuid) {
+        return productRepository.findByUId(productUuid)
+                .orElseThrow(() ->
+                        new ProductNotFoundException("Product not found with UUID: " + productUuid));
+    }
+
     private void updateProductFromRequest(Product product, ProductRequestDTO req) {
         if (req.getName() != null) product.setName(req.getName());
         if (req.getSku() != null) product.setSku(req.getSku());

@@ -6,6 +6,7 @@ import com.liftoff.project.controller.response.ProductResponseDTO;
 import com.liftoff.project.exception.CategoryNotFoundException;
 import com.liftoff.project.exception.ImageNotFoundException;
 import com.liftoff.project.exception.ProductNotFoundException;
+import com.liftoff.project.model.Product;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -107,5 +108,7 @@ public interface ProductService {
      * @throws ProductNotFoundException If the product with the given UUID is not found.
      */
     ProductResponseDTO deleteImageByUrlFromProduct(UUID productUuid, String imageUrl);
+
+    Product getProductEntityByUuid(UUID productUuid);
 
 }
