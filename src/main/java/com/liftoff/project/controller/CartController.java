@@ -1,11 +1,13 @@
 package com.liftoff.project.controller;
 
+import com.liftoff.project.controller.response.CartResponseDTO;
 import com.liftoff.project.mapper.ProductMapper;
 import com.liftoff.project.model.Cart;
 import com.liftoff.project.model.Product;
 import com.liftoff.project.service.CartService;
 import com.liftoff.project.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ import java.util.UUID;
 @RequestMapping("/api/cart")
 @CrossOrigin("*")
 @RequiredArgsConstructor
+@Tag(name = "Shopping Cart", description = "API endpoints for managing shopping carts")
 public class CartController {
 
     private final CartService cartService;
@@ -51,7 +54,7 @@ public class CartController {
 
     @GetMapping("/products")
     @Operation(summary = "Get products from the shopping cart for unauthenticated user")
-    public ResponseEntity<Cart> getCartProducts(HttpServletRequest request) {
+    public ResponseEntity<CartResponseDTO> getCartProducts(HttpServletRequest request) {
         Cart cart = cartService.getOrCreateCart(request, null);
 
         return ResponseEntity.ok(cart);
