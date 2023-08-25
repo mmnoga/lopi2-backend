@@ -19,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @RequiredArgsConstructor
@@ -69,14 +71,22 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void createCartForUser(String username, String cartId) {
+    public String createCartForUser(String username) {
+        AtomicReference<String> cartIdRef = new AtomicReference<>(null);
+
         userRepository.findByUsername(username)
                 .ifPresent(user -> {
+                    String cartId = UUID.randomUUID().toString();
                     Cart cart = new Cart();
                     cart.setUser(user);
                     cart.setUuid(UUID.fromString(cartId));
+                    cart.setTotalPrice(0.0);
+                    cart.setTotalQuantity(0);
                     cartRepository.save(cart);
+                    cartIdRef.set(cartId);
                 });
+
+        return cartIdRef.get();
     }
 
     @Override
@@ -99,7 +109,39 @@ public class CartServiceImpl implements CartService {
         updateCartTotals(cart);
         cartRepository.save(cart);
 
-        return "Product added to cart";
+        return "Product " + productUid + " added to cart " + cart.getUuid();
+    }
+
+    @Override
+    public void mergeCartWithAuthenticatedUser(
+            String unauthenticatedCartId, String authenticatedCartId) {
+        Cart unauthenticatedCart = cartRepository
+                .findByUuid(UUID.fromString(unauthenticatedCartId))
+                .orElseThrow(() -> new CartNotFoundException("Unauthenticated cart not found"));
+
+        Cart authenticatedCart = cartRepository
+                .findByUuid(UUID.fromString(authenticatedCartId))
+                .orElseThrow(() -> new CartNotFoundException("Authenticated cart not found"));
+
+        List<Product> unauthenticatedProducts = unauthenticatedCart.getProducts();
+        List<Product> authenticatedProducts = authenticatedCart.getProducts();
+
+        authenticatedProducts.addAll(unauthenticatedProducts);
+
+        double totalUnauthenticatedPrice = unauthenticatedCart.getTotalPrice();
+        int totalUnauthenticatedQuantity = unauthenticatedCart.getTotalQuantity();
+
+        authenticatedCart.setTotalPrice(
+                authenticatedCart.getTotalPrice() + totalUnauthenticatedPrice);
+        authenticatedCart.setTotalQuantity(
+                authenticatedCart.getTotalQuantity() + totalUnauthenticatedQuantity);
+
+        unauthenticatedProducts.clear();
+        unauthenticatedCart.setTotalPrice(0.0);
+        unauthenticatedCart.setTotalQuantity(0);
+
+        cartRepository.save(authenticatedCart);
+        cartRepository.save(unauthenticatedCart);
     }
 
     @Override
@@ -144,11 +186,14 @@ public class CartServiceImpl implements CartService {
     }
 
     private UUID extractCartUuidFromCookies(Cookie[] cookies) {
-        return Arrays.stream(cookies)
-                .filter(cookie -> CART_ID_COOKIE_NAME.equals(cookie.getName()))
-                .map(cookie -> UUID.fromString(cookie.getValue()))
-                .findFirst()
-                .orElse(null);
+        if (cookies != null) {
+            return Arrays.stream(cookies)
+                    .filter(cookie -> CART_ID_COOKIE_NAME.equals(cookie.getName()))
+                    .map(cookie -> UUID.fromString(cookie.getValue()))
+                    .findFirst()
+                    .orElse(null);
+        }
+        return null;
     }
 
     private void updateCartTotals(Cart cart) {
@@ -179,10 +224,8 @@ public class CartServiceImpl implements CartService {
     private Cart getOrCreateCartByCartId(String cartId) {
         UUID cartUuid = UUID.fromString(cartId);
 
-        Cart cart = cartRepository.findByUuid(cartUuid)
+        return cartRepository.findByUuid(cartUuid)
                 .orElseGet(() -> createNewCartWithUuid(cartUuid));
-
-        return cart;
     }
 
 }

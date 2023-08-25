@@ -13,6 +13,7 @@ import com.liftoff.project.exception.ParentCategoryNotFoundException;
 import com.liftoff.project.exception.ProductNotFoundException;
 import com.liftoff.project.exception.ProductOutOfStockException;
 import com.liftoff.project.exception.UserExistsException;
+import com.liftoff.project.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -105,6 +106,10 @@ public class GlobalExceptionHandler {
         return createErrorResponse(ex.getMessage(), ex.getStatus());
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleUserNotFoundException(UserNotFoundException ex) {
+        return createErrorResponse(ex.getMessage(), ex.getStatus());
+    }
 
     private ResponseEntity<Map<String, String>> createErrorResponse(String errorMessage, HttpStatus status) {
         Map<String, String> errorResponse = new HashMap<>();

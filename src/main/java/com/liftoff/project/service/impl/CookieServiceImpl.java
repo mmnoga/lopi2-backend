@@ -1,6 +1,7 @@
 package com.liftoff.project.service.impl;
 
 import com.liftoff.project.service.CookieService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,19 @@ public class CookieServiceImpl implements CookieService {
                 name, value, MAX_AGE_SECONDS, serverName);
 
         response.setHeader("Set-Cookie", cookieValue);
+    }
+
+    public String getCookieValue(String name, HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (name.equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
     }
 
 }

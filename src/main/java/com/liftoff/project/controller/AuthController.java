@@ -5,11 +5,16 @@ import com.liftoff.project.controller.request.LoginRequestDTO;
 import com.liftoff.project.controller.request.SignupRequestDTO;
 import com.liftoff.project.controller.response.JwtResponseDTO;
 import com.liftoff.project.controller.response.UserResponseDTO;
+import com.liftoff.project.service.CartService;
+import com.liftoff.project.service.CookieService;
 import com.liftoff.project.service.UserService;
 import com.liftoff.project.service.UserValidationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,8 +29,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 @Tag(name = "Auth", description = "Register and authenticate user")
 public class AuthController {
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     private final UserService userService;
+    private final CartService cartService;
+    private final CookieService cookieService;
     private final UserValidationService userValidationService;
     private final JwtUtils jwtUtils;
 
@@ -41,14 +49,30 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<JwtResponseDTO> authenticateUser(
-            @Valid @RequestBody LoginRequestDTO loginRequestDTO) {
+            @Valid @RequestBody LoginRequestDTO loginRequestDTO,
+            HttpServletRequest request) {
         JwtResponseDTO jwtResponse = userService.authenticateUser(loginRequestDTO);
 
         String jwtToken = jwtUtils.generateJwtToken(jwtResponse.getUsername(), jwtResponse.getRole());
         jwtResponse.setToken(jwtToken);
 
+        String authenticatedUsername = jwtResponse.getUsername();
+
+        String userCartId = cartService
+                .findCartIdByUsername(authenticatedUsername);
+
+        if (userCartId == null) {
+            userCartId = cartService
+                    .createCartForUser(authenticatedUsername);
+        }
+
+        String unauthenticatedCartId = cookieService
+                .getCookieValue("cartId", request);
+
+        cartService
+                .mergeCartWithAuthenticatedUser(unauthenticatedCartId, userCartId);
+
         return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
     }
-
 
 }

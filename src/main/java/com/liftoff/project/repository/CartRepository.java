@@ -1,6 +1,7 @@
 package com.liftoff.project.repository;
 
 import com.liftoff.project.model.Cart;
+import com.liftoff.project.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -11,5 +12,7 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     Optional<Cart> findByUuid(UUID cartUuid);
 
     Optional<Cart> findByUserUsername(String username);
+
+    Cart findByUser(User user);
 
 }
