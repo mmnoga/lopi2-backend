@@ -1,7 +1,6 @@
 package com.liftoff.project.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.liftoff.project.configuration.jwt.JwtUtils;
 import com.liftoff.project.controller.request.LoginRequestDTO;
 import com.liftoff.project.controller.request.SignupRequestDTO;
 import com.liftoff.project.controller.response.JwtResponseDTO;
@@ -51,9 +50,6 @@ class AuthControllerTest {
     private UserService userService;
 
     @MockBean
-    private JwtUtils jwtUtils;
-
-    @MockBean
     private CartService cartService;
 
     @Autowired
@@ -100,7 +96,7 @@ class AuthControllerTest {
     }
 
     @Test
-    void authenticateUser() throws Exception {
+    void authenticateUser() {
         // given
         LoginRequestDTO loginRequestDTO = LoginRequestDTO.builder()
                 .withUsername("test_email@example.com")
