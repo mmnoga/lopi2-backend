@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -44,7 +46,10 @@ public class CartController {
 
         Product product = productService.getProductEntityByUuid(productUuid);
 
-        cart.getProducts().add(product);
+        List<Product> productList = new ArrayList<>(cart.getProducts());
+        productList.add(product);
+
+        cart.setProducts(productList);
         cart.setTotalPrice(cart.getTotalPrice() + product.getRegularPrice());
         cart.setTotalQuantity(cart.getTotalQuantity() + 1);
 
