@@ -16,9 +16,12 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -27,7 +30,8 @@ import java.util.concurrent.atomic.AtomicReference;
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
 
-    private static final String CART_ID_COOKIE_NAME = "cartId";
+    @Value("${cart.cookie.name}")
+    private String CART_ID_COOKIE_NAME;
 
     private final CartRepository cartRepository;
     private final UserRepository userRepository;
@@ -43,11 +47,12 @@ public class CartServiceImpl implements CartService {
     @Override
     public void clearCart(HttpServletRequest request) {
         Cart cart = getOrCreateCart(request, null);
-
+        System.out.println("CART: " + cart);
         cart.getProducts().clear();
         cart.setTotalPrice(0.0);
         cart.setTotalQuantity(0);
 
+        System.out.println("CART AFTER: " + cart);
         saveCart(cart);
     }
 
@@ -92,6 +97,10 @@ public class CartServiceImpl implements CartService {
     @Override
     public String addToCart(String cartId, UUID productUid) {
         Cart cart = getOrCreateCartByCartId(cartId);
+
+        if (cart == null) {
+            throw new CartNotFoundException("Cart not found");
+        }
 
         Product productToAdd = productService.getProductEntityByUuid(productUid);
 
@@ -148,6 +157,7 @@ public class CartServiceImpl implements CartService {
     public Cart createNewCart(HttpServletResponse response) {
         Cart cart = new Cart();
         cart.setUuid(UUID.randomUUID());
+        cart.setProducts(Collections.emptyList());
         cart.setTotalPrice(0.0);
         cart.setTotalQuantity(0);
 
@@ -173,6 +183,10 @@ public class CartServiceImpl implements CartService {
         } else {
             cart = cartRepository.findByUuid(cartUuid)
                     .orElseThrow(() -> new CartNotFoundException("Shopping cart not found"));
+        }
+
+        if (cart.getProducts() == null) {
+            cart.setProducts(new ArrayList<>());
         }
 
         return cart;

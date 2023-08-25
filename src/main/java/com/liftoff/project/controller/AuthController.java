@@ -13,8 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -29,13 +28,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 @Tag(name = "Auth", description = "Register and authenticate user")
 public class AuthController {
-    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     private final UserService userService;
     private final CartService cartService;
     private final CookieService cookieService;
     private final UserValidationService userValidationService;
     private final JwtUtils jwtUtils;
+
+    @Value("${cart.cookie.name}")
+    private String CART_ID_COOKIE_NAME;
 
     @PostMapping("/signup")
     public ResponseEntity<UserResponseDTO> registerUser(
@@ -58,21 +59,24 @@ public class AuthController {
 
         String authenticatedUsername = jwtResponse.getUsername();
 
-        String userCartId = cartService
-                .findCartIdByUsername(authenticatedUsername);
+        mergeCarts(request, authenticatedUsername);
 
+        return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
+    }
+
+    private void mergeCarts(HttpServletRequest request, String username) {
+        String userCartId = cartService
+                .findCartIdByUsername(username);
         if (userCartId == null) {
             userCartId = cartService
-                    .createCartForUser(authenticatedUsername);
+                    .createCartForUser(username);
         }
 
         String unauthenticatedCartId = cookieService
-                .getCookieValue("cartId", request);
+                .getCookieValue(CART_ID_COOKIE_NAME, request);
 
         cartService
                 .mergeCartWithAuthenticatedUser(unauthenticatedCartId, userCartId);
-
-        return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
     }
 
 }

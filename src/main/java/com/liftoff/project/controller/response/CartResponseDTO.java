@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 @Builder
 @Data
@@ -14,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CartResponseDTO {
 
+    private UUID uuid;
     private List<ProductResponseDTO> products;
     private Double totalPrice;
     private Integer totalQuantity;

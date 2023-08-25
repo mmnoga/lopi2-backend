@@ -22,6 +22,7 @@ public class CartMapperImpl implements CartMapper {
         }
 
         CartResponseDTO cartResponseDTO = new CartResponseDTO();
+        cartResponseDTO.setUuid(cart.getUuid());
         cartResponseDTO.setProducts(cart.getProducts().stream()
                 .map(productMapper::mapEntityToResponse)
                 .collect(Collectors.toList()));

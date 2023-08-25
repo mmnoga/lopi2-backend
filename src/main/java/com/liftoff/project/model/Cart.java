@@ -47,10 +47,10 @@ public class Cart {
     private List<Product> products = new ArrayList<>();
 
     @Column(name = "TOTAL_PRICE")
-    private Double totalPrice;
+    private Double totalPrice = 0.0;
 
     @Column(name = "TOTAL_QUANTITY")
-    private Integer totalQuantity;
+    private Integer totalQuantity = 0;
 
     @CreationTimestamp
     @Column(name = "CREATED_AT")

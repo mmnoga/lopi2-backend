@@ -48,7 +48,7 @@ public class AuthCartController {
         String cartId = cartService.findCartIdByUsername(username);
 
         if (cartId == null) {
-            cartId = cartService.createCartForUser(username).toString();
+            cartId = cartService.createCartForUser(username);
         }
 
         String addToCartResponse = cartService.addToCart(cartId, productUid);
