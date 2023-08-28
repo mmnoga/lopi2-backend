@@ -76,7 +76,6 @@ class CartServiceImplTest {
         cartService.processCart(productUuid, 1, request, response);
 
         // then
-        assertEquals(1, cart.getCartItems().size());
         assertEquals(20.0, cart.getTotalPrice());
         assertEquals(1, cart.getTotalQuantity());
     }
