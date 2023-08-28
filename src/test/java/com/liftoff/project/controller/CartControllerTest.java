@@ -1,6 +1,7 @@
 package com.liftoff.project.controller;
 
 import com.liftoff.project.model.Cart;
+import com.liftoff.project.model.CartItem;
 import com.liftoff.project.model.Product;
 import com.liftoff.project.service.CartService;
 import com.liftoff.project.service.ProductService;
@@ -20,7 +21,6 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -62,11 +62,11 @@ class CartControllerTest {
         product.setRegularPrice(10.99);
 
         Cart cart = new Cart();
-        when(cartService.getOrCreateCart(any(), any())).thenReturn(cart);
+        when(cartService.getCartByCookieOrCreateNewCart(any(), any())).thenReturn(cart);
 
         when(productService.getProductEntityByUuid(productUuid)).thenReturn(product);
 
-        // when&then
+        // when/then
         mockMvc.perform(post("/api/cart/add")
                         .param("productUuid", productUuid.toString()))
                 .andExpect(status().isOk());
@@ -92,7 +92,7 @@ class CartControllerTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setCookies(new Cookie(CART_ID_COOKIE_NAME, cart.getUuid().toString()));
 
-        when(cartService.getOrCreateCart(any(), any())).thenReturn(cart);
+        when(cartService.getCartByCookieOrCreateNewCart(any(), any())).thenReturn(cart);
         when(productService.getProductEntityByUuid(productUuid1)).thenReturn(product1);
         when(productService.getProductEntityByUuid(productUuid2)).thenReturn(product2);
 
@@ -115,9 +115,9 @@ class CartControllerTest {
         Cart cart = new Cart();
         cart.setUuid(cartUuid);
 
-        when(cartService.getOrCreateCart(any(HttpServletRequest.class), isNull())).thenReturn(cart);
+        when(cartService.getCartByCookieOrCreateNewCart(any(HttpServletRequest.class), isNull())).thenReturn(cart);
 
-        // when&then
+        // when/then
         mockMvc.perform(get("/api/cart"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.uuid").value(cartUuid.toString()));
@@ -131,12 +131,16 @@ class CartControllerTest {
         product.setUId(productUuid);
         product.setRegularPrice(10.99);
 
+        CartItem cartItem = new CartItem();
+        cartItem.setProduct(product);
+        cartItem.setQuantity(2);
+
         Cart cart = new Cart();
-        cart.setProducts(List.of(product));
+        cart.getCartItems().add(cartItem);
 
-        when(cartService.getOrCreateCart(any(), any())).thenReturn(cart);
+        when(cartService.getCartByCookieOrCreateNewCart(any(), any())).thenReturn(cart);
 
-        // when&then
+        // when/then
         mockMvc.perform(delete("/api/cart/clear"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Cart has been cleared"));

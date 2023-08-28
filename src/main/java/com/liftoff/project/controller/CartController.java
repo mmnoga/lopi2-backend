@@ -34,11 +34,11 @@ public class CartController {
     @Operation(summary = "Add a product to the shopping cart")
     public ResponseEntity<String> addToCart(
             @RequestParam UUID productUuid,
+            @RequestParam(defaultValue = "1") int quantity,
             HttpServletRequest request,
-            HttpServletResponse response
-    ) {
+            HttpServletResponse response) {
         cartService
-                .processCart(productUuid, request, response);
+                .processCart(productUuid, quantity, request, response);
 
         return ResponseEntity.ok("Product " + productUuid + " added to cart");
     }
@@ -47,7 +47,7 @@ public class CartController {
     @Operation(summary = "View the shopping cart")
     public ResponseEntity<CartResponseDTO> getCart(HttpServletRequest request) {
         Cart cart = cartService
-                .getOrCreateCart(request, null);
+                .getCartByCookieOrCreateNewCart(request, null);
 
         CartResponseDTO cartResponseDTO = cartMapper
                 .mapEntityToResponse(cart);

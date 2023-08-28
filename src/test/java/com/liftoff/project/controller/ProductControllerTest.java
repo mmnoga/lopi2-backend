@@ -67,7 +67,6 @@ class ProductControllerTest {
         int page = 0;
         int size = 2;
 
-        // Create sample products
         ProductResponseDTO product1 = ProductResponseDTO.builder()
                 .name("Product 1")
                 .description("Product 1 description")

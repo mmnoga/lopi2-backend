@@ -109,6 +109,13 @@ public interface ProductService {
      */
     ProductResponseDTO deleteImageByUrlFromProduct(UUID productUuid, String imageUrl);
 
+    /**
+     * Retrieves a product entity by its unique identifier.
+     *
+     * @param productUuid The unique identifier (UUID) of the product to retrieve.
+     * @return The product entity if found.
+     * @throws ProductNotFoundException If no product is found with the given UUID.
+     */
     Product getProductEntityByUuid(UUID productUuid);
 
 }

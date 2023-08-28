@@ -81,9 +81,11 @@ CREATE TABLE CARTS (
                                 UPDATED_AT TIMESTAMP
 );
 
-CREATE TABLE CART_PRODUCTS (
-                               CART_ID BIGINT,
-                               PRODUCT_ID BIGINT,
-                               FOREIGN KEY (CART_ID) REFERENCES CARTS (ID),
-                               FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCTS (ID)
+CREATE TABLE CART_ITEMS (
+                            ID BIGINT AUTO_INCREMENT PRIMARY KEY,
+                            CART_ID BIGINT,
+                            PRODUCT_ID BIGINT,
+                            QUANTITY INT,
+                            FOREIGN KEY (CART_ID) REFERENCES CARTS (ID),
+                            FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCTS (ID)
 );

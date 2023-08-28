@@ -16,7 +16,7 @@ import java.util.UUID;
 public class CartResponseDTO {
 
     private UUID uuid;
-    private List<ProductResponseDTO> products;
+    private List<CartItemResponseDTO> cartItems;
     private Double totalPrice;
     private Integer totalQuantity;
     private Instant createdAt;

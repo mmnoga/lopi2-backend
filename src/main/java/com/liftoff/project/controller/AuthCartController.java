@@ -38,11 +38,12 @@ public class AuthCartController {
     public ResponseEntity<String> addToCartForAuthenticated(
             @Parameter(in = ParameterIn.HEADER, name = "Authorization")
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestParam UUID productUid) {
+            @RequestParam UUID productUid,
+            @RequestParam(required = false, defaultValue = "1") int quantity) {
         String username = userDetails.getUsername();
 
         String processCartResponse = authCartService
-                        .processCartForUser(username, productUid);
+                .processCartForUser(username, productUid, quantity);
 
         return ResponseEntity.ok(processCartResponse);
     }

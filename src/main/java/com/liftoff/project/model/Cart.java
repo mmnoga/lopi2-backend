@@ -1,12 +1,12 @@
 package com.liftoff.project.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -38,13 +38,8 @@ public class Cart {
     @JoinColumn(name = "USER_ID")
     private User user;
 
-    @OneToMany
-    @JoinTable(
-            name = "CART_PRODUCTS",
-            joinColumns = @JoinColumn(name = "CART_ID"),
-            inverseJoinColumns = @JoinColumn(name = "PRODUCT_ID")
-    )
-    private List<Product> products = new ArrayList<>();
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    private List<CartItem> cartItems = new ArrayList<>();
 
     @Column(name = "TOTAL_PRICE")
     private Double totalPrice = 0.0;

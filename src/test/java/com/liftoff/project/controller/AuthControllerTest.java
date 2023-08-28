@@ -109,7 +109,7 @@ class AuthControllerTest {
         when(userService.authenticateUser(any())).thenReturn(jwtResponseDTO);
         doNothing().when(cartService).mergeCartWithAuthenticatedUser(any(), any());
 
-        // when and then
+        // when/then
         try {
             mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/signin")
                             .contentType(MediaType.APPLICATION_JSON)

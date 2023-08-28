@@ -1,9 +1,11 @@
 package com.liftoff.project.mapper.impl;
 
+import com.liftoff.project.controller.response.CartItemResponseDTO;
 import com.liftoff.project.controller.response.CartResponseDTO;
 import com.liftoff.project.mapper.CartMapper;
 import com.liftoff.project.mapper.ProductMapper;
 import com.liftoff.project.model.Cart;
+import com.liftoff.project.model.CartItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -23,8 +25,13 @@ public class CartMapperImpl implements CartMapper {
 
         CartResponseDTO cartResponseDTO = new CartResponseDTO();
         cartResponseDTO.setUuid(cart.getUuid());
-        cartResponseDTO.setProducts(cart.getProducts().stream()
-                .map(productMapper::mapEntityToResponse)
+        cartResponseDTO.setCartItems(cart.getCartItems().stream()
+                .map(cartItem -> {
+                    CartItemResponseDTO cartItemResponseDTO = new CartItemResponseDTO();
+                    cartItemResponseDTO.setProduct(productMapper.mapEntityToResponse(cartItem.getProduct()));
+                    cartItemResponseDTO.setQuantity(cartItem.getQuantity());
+                    return cartItemResponseDTO;
+                })
                 .collect(Collectors.toList()));
         cartResponseDTO.setTotalPrice(cart.getTotalPrice());
         cartResponseDTO.setTotalQuantity(cart.getTotalQuantity());
@@ -32,6 +39,19 @@ public class CartMapperImpl implements CartMapper {
         cartResponseDTO.setUpdatedAt(cart.getUpdatedAt());
 
         return cartResponseDTO;
+    }
+
+    @Override
+    public CartItemResponseDTO mapCartItemToCartItemResponseDTO(CartItem cartItem) {
+        if (cartItem == null) {
+            return null;
+        }
+
+        CartItemResponseDTO cartItemResponseDTO = new CartItemResponseDTO();
+        cartItemResponseDTO.setProduct(productMapper.mapEntityToResponse(cartItem.getProduct()));
+        cartItemResponseDTO.setQuantity(cartItem.getQuantity());
+
+        return cartItemResponseDTO;
     }
 
 }

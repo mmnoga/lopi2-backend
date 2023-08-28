@@ -3,7 +3,6 @@ package com.liftoff.project.service;
 import com.liftoff.project.controller.response.CartResponseDTO;
 import com.liftoff.project.exception.CartNotFoundException;
 import com.liftoff.project.exception.ProductNotFoundException;
-import com.liftoff.project.exception.ProductOutOfStockException;
 
 import java.util.UUID;
 
@@ -32,18 +31,16 @@ public interface AuthCartService {
     String createCartForUser(String username);
 
     /**
-     * Processes the addition of a product with the specified product UUID to the cart associated with the user specified by the username.
-     * The method adds the specified product to the cart associated with the user's session. It calculates the updated total price and total quantity
-     * of the cart after adding the product.
+     * Processes the addition of a product to the authenticated user's cart.
      *
-     * @param username   the username of the user for whom to process the cart addition
-     * @param productUid the UUID of the product to be added to the cart
-     * @return a message indicating that the product was successfully added to the user's cart
-     * @throws CartNotFoundException       if the user's cart is not found
-     * @throws ProductNotFoundException    if the product with the provided UUID is not found
-     * @throws ProductOutOfStockException  if the product is out of stock and cannot be added
+     * @param username    The username of the authenticated user.
+     * @param productUid  The UUID of the product to be added.
+     * @param quantity    The quantity of the product to be added.
+     * @return A message indicating the success of adding the product to the cart.
+     * @throws CartNotFoundException    If the user's cart is not found.
+     * @throws ProductNotFoundException If the product with the given UUID is not found.
      */
-    String processCartForUser(String username, UUID productUid);
+    String processCartForUser(String username, UUID productUid, int quantity);
 
     /**
      * Retrieves cart information associated with the user specified by the username.

@@ -141,7 +141,7 @@ public class ProductInsertCommand implements CommandLineRunner {
         imageAssetRepository.save(mildanoImage1);
 
         Product kawaMildano = Product.builder()
-                .uId(UUID.randomUUID())
+                .uId(UUID.fromString("143a761d-2015-48fb-96bf-b02e04752bd4"))
                 .name("MK Cafe Mildano 0,25 kg")
                 .description("MK Cafe Mildano to doskonała kawa bezkofeinowa o wyjątkowo pełnym smaku " +
                         "i aromacie. Wyróżnia się nie tylko naturalnością, ale przede wszystkim wyczuwalnymi " +
