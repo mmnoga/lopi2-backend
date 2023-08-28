@@ -21,6 +21,6 @@ public interface CartMapper {
      * @param cartItem The {@link CartItem} entity to be mapped.
      * @return The corresponding {@link CartItemResponseDTO} containing mapped data.
      */
-    public CartItemResponseDTO mapCartItemToCartItemResponseDTO(CartItem cartItem);
+    CartItemResponseDTO mapCartItemToCartItemResponseDTO(CartItem cartItem);
 
 }

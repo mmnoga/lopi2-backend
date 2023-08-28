@@ -9,10 +9,8 @@ import com.liftoff.project.service.CookieService;
 import com.liftoff.project.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -28,9 +26,6 @@ import static org.mockito.Mockito.when;
 
 class CartServiceImplTest {
 
-    @Value("${cart.cookie.name}")
-    private String CART_ID_COOKIE_NAME;
-
     @Mock
     private CartRepository cartRepository;
 
@@ -42,9 +37,6 @@ class CartServiceImplTest {
 
     @Mock
     private CookieService cookieService;
-
-    @InjectMocks
-    private CartServiceImpl cartService;
 
     @BeforeEach
     public void setup() {
@@ -89,18 +81,4 @@ class CartServiceImplTest {
         assertEquals(1, cart.getTotalQuantity());
     }
 
-    @Test
-    public void shouldThrowProductNotFoundExceptionWhenAddNoExistingProduct() {
-
-    }
-
-    @Test
-    public void shouldThrowProductOutOfStockWhenAddOutOfStockProduct() {
-
-    }
-
-    @Test
-    public void shouldThrowCartNotFoundExceptionWhenAddProductToNoExistingCart() {
-
-    }
 }
