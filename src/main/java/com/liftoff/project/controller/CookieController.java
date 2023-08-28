@@ -1,7 +1,7 @@
 package com.liftoff.project.controller;
 
 
-import com.liftoff.project.exception.CookiesNotFoundException;
+import com.liftoff.project.exception.CookieNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -78,7 +78,7 @@ private String serverDomain;
 
         } catch (RuntimeException ex) {
 
-            throw new CookiesNotFoundException("Array of Cookie is empty");
+            throw new CookieNotFoundException("Array of Cookie is empty");
         }
 
     }

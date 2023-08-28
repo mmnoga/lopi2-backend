@@ -2,6 +2,7 @@ package com.liftoff.project.service.impl;
 
 import com.liftoff.project.controller.response.CartResponseDTO;
 import com.liftoff.project.exception.CartNotFoundException;
+import com.liftoff.project.exception.CookieNotFoundException;
 import com.liftoff.project.exception.ProductNotFoundException;
 import com.liftoff.project.exception.ProductOutOfStockException;
 import com.liftoff.project.mapper.CartMapper;
@@ -12,19 +13,17 @@ import com.liftoff.project.repository.UserRepository;
 import com.liftoff.project.service.CartService;
 import com.liftoff.project.service.CookieService;
 import com.liftoff.project.service.ProductService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @RequiredArgsConstructor
@@ -46,52 +45,16 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void clearCart(HttpServletRequest request) {
-        Cart cart = getOrCreateCart(request, null);
-        System.out.println("CART: " + cart);
-        cart.getProducts().clear();
-        cart.setTotalPrice(0.0);
-        cart.setTotalQuantity(0);
+        String cartId = cookieService
+                .getCookieValue(CART_ID_COOKIE_NAME, request);
 
-        System.out.println("CART AFTER: " + cart);
-        saveCart(cart);
-    }
-
-    @Override
-    public void clearUserCart(String cartId) {
-        Cart cart = getOrCreateCartByCartId(cartId);
-
-        cart.getProducts().clear();
-        cart.setTotalPrice(0.0);
-        cart.setTotalQuantity(0);
-
-        saveCart(cart);
-    }
-
-    @Override
-    public String findCartIdByUsername(String username) {
-        return cartRepository.findByUserUsername(username)
-                .map(Cart::getUuid)
-                .map(UUID::toString)
-                .orElse(null);
-    }
-
-    @Override
-    public String createCartForUser(String username) {
-        AtomicReference<String> cartIdRef = new AtomicReference<>(null);
-
-        userRepository.findByUsername(username)
-                .ifPresent(user -> {
-                    String cartId = UUID.randomUUID().toString();
-                    Cart cart = new Cart();
-                    cart.setUser(user);
-                    cart.setUuid(UUID.fromString(cartId));
+        cartRepository.findByUuid(UUID.fromString(cartId))
+                .ifPresent(cart -> {
+                    cart.getProducts().clear();
                     cart.setTotalPrice(0.0);
                     cart.setTotalQuantity(0);
-                    cartRepository.save(cart);
-                    cartIdRef.set(cartId);
+                    saveCart(cart);
                 });
-
-        return cartIdRef.get();
     }
 
     @Override
@@ -122,8 +85,8 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void mergeCartWithAuthenticatedUser(
-            String unauthenticatedCartId, String authenticatedCartId) {
+    @Transactional
+    public void mergeCartWithAuthenticatedUser(String unauthenticatedCartId, String authenticatedCartId) {
         Cart unauthenticatedCart = cartRepository
                 .findByUuid(UUID.fromString(unauthenticatedCartId))
                 .orElseThrow(() -> new CartNotFoundException("Unauthenticated cart not found"));
@@ -154,42 +117,32 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Cart createNewCart(HttpServletResponse response) {
-        Cart cart = new Cart();
-        cart.setUuid(UUID.randomUUID());
-        cart.setProducts(Collections.emptyList());
-        cart.setTotalPrice(0.0);
-        cart.setTotalQuantity(0);
+    public void processCart(UUID productUuid, HttpServletRequest request, HttpServletResponse response) {
+        Cart cart = getOrCreateCart(request, response);
+        Product product = productService
+                .getProductEntityByUuid(productUuid);
 
-        Cart savedCart = saveCart(cart);
+        List<Product> productList = new ArrayList<>(cart.getProducts());
+        productList.add(product);
 
-        cookieService.setCookie(
-                CART_ID_COOKIE_NAME,
-                savedCart.getUuid().toString(),
-                response);
+        cart.setProducts(productList);
+        cart.setTotalPrice(cart.getTotalPrice() + product.getRegularPrice());
+        cart.setTotalQuantity(cart.getTotalQuantity() + 1);
 
-        return savedCart;
+        saveCart(cart);
     }
 
     @Override
     public Cart getOrCreateCart(HttpServletRequest request, HttpServletResponse response) {
-        UUID cartUuid = extractCartUuidFromCookies(request.getCookies());
-
-        Cart cart;
-
-        if (response != null) {
-            cart = cartRepository.findByUuid(cartUuid)
-                    .orElseGet(() -> createNewCart(response));
-        } else {
-            cart = cartRepository.findByUuid(cartUuid)
-                    .orElseThrow(() -> new CartNotFoundException("Shopping cart not found"));
+        try {
+            String cartId = cookieService
+                    .getCookieValue(CART_ID_COOKIE_NAME, request);
+            return cartRepository
+                    .findByUuid(UUID.fromString(cartId))
+                    .orElseGet(() -> createEmptyCart());
+        } catch (CookieNotFoundException ex) {
+            return createNewCartOrThrow(response, CART_ID_COOKIE_NAME);
         }
-
-        if (cart.getProducts() == null) {
-            cart.setProducts(new ArrayList<>());
-        }
-
-        return cart;
     }
 
     @Override
@@ -197,17 +150,6 @@ public class CartServiceImpl implements CartService {
         Cart cart = getOrCreateCartByCartId(cartId);
 
         return cartMapper.mapEntityToResponse(cart);
-    }
-
-    private UUID extractCartUuidFromCookies(Cookie[] cookies) {
-        if (cookies != null) {
-            return Arrays.stream(cookies)
-                    .filter(cookie -> CART_ID_COOKIE_NAME.equals(cookie.getName()))
-                    .map(cookie -> UUID.fromString(cookie.getValue()))
-                    .findFirst()
-                    .orElse(null);
-        }
-        return null;
     }
 
     private void updateCartTotals(Cart cart) {
@@ -226,9 +168,10 @@ public class CartServiceImpl implements CartService {
         cartRepository.save(cart);
     }
 
-    private Cart createNewCartWithUuid(UUID cartUuid) {
+    private Cart createEmptyCart() {
         Cart cart = new Cart();
-        cart.setUuid(cartUuid);
+        cart.setUuid(UUID.randomUUID());
+        cart.setProducts(Collections.emptyList());
         cart.setTotalPrice(0.0);
         cart.setTotalQuantity(0);
 
@@ -239,7 +182,28 @@ public class CartServiceImpl implements CartService {
         UUID cartUuid = UUID.fromString(cartId);
 
         return cartRepository.findByUuid(cartUuid)
-                .orElseGet(() -> createNewCartWithUuid(cartUuid));
+                .orElseGet(() -> createCartWithUuid(cartUuid));
+    }
+
+    private Cart createCartWithUuid(UUID cartUuid) {
+        Cart cart = new Cart();
+
+        cart.setUuid(cartUuid);
+        cart.setTotalPrice(0.0);
+        cart.setTotalQuantity(0);
+
+        return saveCart(cart);
+    }
+
+    private Cart createNewCartOrThrow(HttpServletResponse response, String cookieName) {
+        if (response != null) {
+            Cart newCart = createEmptyCart();
+            cookieService
+                    .setCookie(CART_ID_COOKIE_NAME, newCart.getUuid().toString(), response);
+            return newCart;
+        } else {
+            throw new CookieNotFoundException("Cookie with name " + cookieName + " not found");
+        }
     }
 
 }

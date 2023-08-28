@@ -5,6 +5,12 @@ import com.liftoff.project.model.Cart;
 
 public interface CartMapper {
 
+    /**
+     * Maps the Cart entity to the CartResponseDTO object.
+     *
+     * @param cart The Cart entity to be mapped.
+     * @return The corresponding CartResponseDTO.
+     */
     CartResponseDTO mapEntityToResponse(Cart cart);
 
 }

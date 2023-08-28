@@ -3,9 +3,7 @@ package com.liftoff.project.controller;
 import com.liftoff.project.controller.response.CartResponseDTO;
 import com.liftoff.project.mapper.CartMapper;
 import com.liftoff.project.model.Cart;
-import com.liftoff.project.model.Product;
 import com.liftoff.project.service.CartService;
-import com.liftoff.project.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -32,7 +28,6 @@ import java.util.UUID;
 public class CartController {
 
     private final CartService cartService;
-    private final ProductService productService;
     private final CartMapper cartMapper;
 
     @PostMapping("/add")
@@ -42,28 +37,20 @@ public class CartController {
             HttpServletRequest request,
             HttpServletResponse response
     ) {
-        Cart cart = cartService.getOrCreateCart(request, response);
+        cartService
+                .processCart(productUuid, request, response);
 
-        Product product = productService.getProductEntityByUuid(productUuid);
-
-        List<Product> productList = new ArrayList<>(cart.getProducts());
-        productList.add(product);
-
-        cart.setProducts(productList);
-        cart.setTotalPrice(cart.getTotalPrice() + product.getRegularPrice());
-        cart.setTotalQuantity(cart.getTotalQuantity() + 1);
-
-        cartService.saveCart(cart);
-
-        return ResponseEntity.ok("Product " + productUuid + " added to cart " + cart.getUuid());
+        return ResponseEntity.ok("Product " + productUuid + " added to cart");
     }
 
     @GetMapping()
     @Operation(summary = "View the shopping cart")
-    public ResponseEntity<CartResponseDTO> getCartProducts(HttpServletRequest request) {
-        Cart cart = cartService.getOrCreateCart(request, null);
+    public ResponseEntity<CartResponseDTO> getCart(HttpServletRequest request) {
+        Cart cart = cartService
+                .getOrCreateCart(request, null);
 
-        CartResponseDTO cartResponseDTO = cartMapper.mapEntityToResponse(cart);
+        CartResponseDTO cartResponseDTO = cartMapper
+                .mapEntityToResponse(cart);
 
         return ResponseEntity.ok(cartResponseDTO);
     }

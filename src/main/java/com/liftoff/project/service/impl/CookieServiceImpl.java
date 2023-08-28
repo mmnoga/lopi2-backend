@@ -1,5 +1,6 @@
 package com.liftoff.project.service.impl;
 
+import com.liftoff.project.exception.CookieNotFoundException;
 import com.liftoff.project.service.CookieService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,7 +38,7 @@ public class CookieServiceImpl implements CookieService {
                 }
             }
         }
-        return null;
+        throw new CookieNotFoundException("Cookie with name " + name + " not found");
     }
 
 }

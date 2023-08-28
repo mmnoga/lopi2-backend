@@ -5,6 +5,9 @@ import com.liftoff.project.controller.request.LoginRequestDTO;
 import com.liftoff.project.controller.request.SignupRequestDTO;
 import com.liftoff.project.controller.response.JwtResponseDTO;
 import com.liftoff.project.controller.response.UserResponseDTO;
+import com.liftoff.project.exception.CartNotFoundException;
+import com.liftoff.project.exception.CookieNotFoundException;
+import com.liftoff.project.service.AuthCartService;
 import com.liftoff.project.service.CartService;
 import com.liftoff.project.service.CookieService;
 import com.liftoff.project.service.UserService;
@@ -31,6 +34,7 @@ public class AuthController {
 
     private final UserService userService;
     private final CartService cartService;
+    private final AuthCartService authCartService;
     private final CookieService cookieService;
     private final UserValidationService userValidationService;
     private final JwtUtils jwtUtils;
@@ -59,24 +63,28 @@ public class AuthController {
 
         String authenticatedUsername = jwtResponse.getUsername();
 
-        mergeCarts(request, authenticatedUsername);
+        try {
+            mergeCarts(request, authenticatedUsername);
+        } catch (CookieNotFoundException ex) {
+            return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
+        }
 
         return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
     }
 
     private void mergeCarts(HttpServletRequest request, String username) {
-        String userCartId = cartService
-                .findCartIdByUsername(username);
+        String userCartId = authCartService.findCartIdByUsername(username);
+
         if (userCartId == null) {
-            userCartId = cartService
-                    .createCartForUser(username);
+            userCartId = authCartService.createCartForUser(username);
         }
 
-        String unauthenticatedCartId = cookieService
-                .getCookieValue(CART_ID_COOKIE_NAME, request);
+        String unauthenticatedCartId = cookieService.getCookieValue(CART_ID_COOKIE_NAME, request);
 
-        cartService
-                .mergeCartWithAuthenticatedUser(unauthenticatedCartId, userCartId);
+        try {
+            cartService.mergeCartWithAuthenticatedUser(unauthenticatedCartId, userCartId);
+        } catch (CartNotFoundException ex) {
+        }
     }
 
 }

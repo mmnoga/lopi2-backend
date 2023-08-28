@@ -1,8 +1,7 @@
 package com.liftoff.project.controller;
 
 import com.liftoff.project.controller.response.CartResponseDTO;
-import com.liftoff.project.exception.LoginAuthenticationException;
-import com.liftoff.project.service.CartService;
+import com.liftoff.project.service.AuthCartService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -30,52 +29,35 @@ import java.util.UUID;
 @Tag(name = "Shopping Cart for Auth", description = "Managing shopping carts for auth users")
 public class AuthCartController {
 
-    private final CartService cartService;
+    private final AuthCartService authCartService;
 
     @PostMapping("/add")
     @Operation(summary = "Add a product to the authenticated user's shopping cart",
             security = @SecurityRequirement(name = "bearerAuth"))
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<String> addToCartForAuth(
+    public ResponseEntity<String> addToCartForAuthenticated(
+            @Parameter(in = ParameterIn.HEADER, name = "Authorization")
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam UUID productUid) {
-        if (userDetails == null) {
-            throw new LoginAuthenticationException("User is not authenticated");
-        }
-
         String username = userDetails.getUsername();
 
-        String cartId = cartService.findCartIdByUsername(username);
+        String processCartResponse = authCartService
+                        .processCartForUser(username, productUid);
 
-        if (cartId == null) {
-            cartId = cartService.createCartForUser(username);
-        }
-
-        String addToCartResponse = cartService.addToCart(cartId, productUid);
-
-        return ResponseEntity.ok(addToCartResponse);
+        return ResponseEntity.ok(processCartResponse);
     }
 
     @GetMapping("/view")
     @Operation(summary = "View authenticated user's shopping cart",
             security = @SecurityRequirement(name = "bearerAuth"))
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<CartResponseDTO> viewCartForAuth(
+    public ResponseEntity<CartResponseDTO> getCartForAuthenticated(
             @Parameter(in = ParameterIn.HEADER, name = "Authorization")
             @AuthenticationPrincipal UserDetails userDetails) {
-        if (userDetails == null) {
-            throw new LoginAuthenticationException("User is not authenticated");
-        }
-
         String username = userDetails.getUsername();
 
-        String cartId = cartService.findCartIdByUsername(username);
-
-        if (cartId == null) {
-            return ResponseEntity.ok(new CartResponseDTO());
-        }
-
-        CartResponseDTO cartResponse = cartService.getCart(cartId);
+        CartResponseDTO cartResponse = authCartService
+                .viewCartForUser(username);
 
         return ResponseEntity.ok(cartResponse);
     }
@@ -83,17 +65,13 @@ public class AuthCartController {
     @DeleteMapping("/clear")
     @Operation(summary = "Clear authenticated user's shopping cart",
             security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<String> clearShoppingCartForAuthenticated(
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<String> clearCartForAuthenticated(
             @Parameter(in = ParameterIn.HEADER, name = "Authorization")
             @AuthenticationPrincipal UserDetails userDetails) {
-        if (userDetails == null) {
-            throw new LoginAuthenticationException("User is not authenticated");
-        }
-
         String username = userDetails.getUsername();
 
-        String cartId = cartService.findCartIdByUsername(username);
-        cartService.clearUserCart(cartId);
+        authCartService.clearCartForUser(username);
 
         return ResponseEntity.ok("Shopping cart has been cleared");
     }

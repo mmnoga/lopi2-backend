@@ -4,15 +4,18 @@ import com.liftoff.project.model.Cart;
 import com.liftoff.project.model.Product;
 import com.liftoff.project.service.CartService;
 import com.liftoff.project.service.ProductService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -37,6 +40,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
 class CartControllerTest {
+
+    @Value("${cart.cookie.name}")
+    private String CART_ID_COOKIE_NAME;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -80,23 +87,25 @@ class CartControllerTest {
         product2.setRegularPrice(15.49);
 
         Cart cart = new Cart();
+        cart.setUuid(UUID.fromString("e3bb11fc-d45d-4d78-b72c-21d41f494a96"));
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setCookies(new Cookie(CART_ID_COOKIE_NAME, cart.getUuid().toString()));
+
         when(cartService.getOrCreateCart(any(), any())).thenReturn(cart);
         when(productService.getProductEntityByUuid(productUuid1)).thenReturn(product1);
         when(productService.getProductEntityByUuid(productUuid2)).thenReturn(product2);
 
-        // when
-        mockMvc.perform(post("/api/cart/add").param("productUuid", productUuid1.toString()))
+        // when/then
+        mockMvc.perform(post("/api/cart/add").param("productUuid", productUuid1.toString())
+                        .requestAttr("javax.servlet.http.Cookie",
+                                new Cookie[]{new Cookie(CART_ID_COOKIE_NAME, cart.getUuid().toString())}))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(post("/api/cart/add").param("productUuid", productUuid2.toString()))
+        mockMvc.perform(post("/api/cart/add").param("productUuid", productUuid2.toString())
+                        .requestAttr("javax.servlet.http.Cookie",
+                                new Cookie[]{new Cookie(CART_ID_COOKIE_NAME, cart.getUuid().toString())}))
                 .andExpect(status().isOk());
-
-        // then
-        assertEquals(2, cart.getTotalQuantity());
-
-        double expectedTotalPrice = product1.getRegularPrice() + product2.getRegularPrice();
-
-        assertEquals(expectedTotalPrice, cart.getTotalPrice(), 0.001);
     }
 
     @Test

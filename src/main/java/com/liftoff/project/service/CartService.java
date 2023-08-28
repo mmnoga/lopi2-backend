@@ -12,14 +12,6 @@ import java.util.UUID;
 public interface CartService {
 
     /**
-     * Creates a new cart and sets a corresponding cookie in the HttpServletResponse.
-     *
-     * @param response the HttpServletResponse object to which the cookie will be added
-     * @return the newly created cart
-     */
-    Cart createNewCart(HttpServletResponse response);
-
-    /**
      * Retrieves an existing cart associated with the user from the HttpServletRequest,
      * or creates a new cart if none exists, and sets the corresponding cookie in the HttpServletResponse.
      *
@@ -53,29 +45,6 @@ public interface CartService {
     void clearCart(HttpServletRequest request);
 
     /**
-     * Clears the contents of the cart associated with the provided cart ID.
-     *
-     * @param cartId the identifier of the cart to be cleared
-     */
-    void clearUserCart(String cartId);
-
-    /**
-     * Finds the cart ID associated with the provided username.
-     *
-     * @param username the username for which to find the associated cart ID
-     * @return the cart ID associated with the username, or null if not found
-     */
-    String findCartIdByUsername(String username);
-
-    /**
-     * Creates a cart for the provided username and returns the cart ID.
-     *
-     * @param username the username for which to create a cart
-     * @return the cart ID associated with the created cart
-     */
-    String createCartForUser(String username);
-
-    /**
      * Adds a product with the provided product UUID to the cart with the given cart ID.
      *
      * @param cartId     the identifier of the cart to which the product will be added
@@ -94,5 +63,16 @@ public interface CartService {
      */
     void mergeCartWithAuthenticatedUser(
             String unauthenticatedCartId, String authenticatedCartId);
+
+    /**
+     * Process the addition of a product to the cart.
+     *
+     * Method adds the specified product to the cart associated with the user's session.
+     *
+     * @param productUuid The UUID of the product to be added to the cart.
+     * @param request     The HttpServletRequest representing the current request.
+     * @param response    The HttpServletResponse representing the response to the current request.
+     */
+    void processCart(UUID productUuid, HttpServletRequest request, HttpServletResponse response);
 
 }
