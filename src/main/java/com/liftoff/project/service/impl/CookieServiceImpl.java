@@ -1,10 +1,12 @@
 package com.liftoff.project.service.impl;
 
-import com.liftoff.project.exception.CookieNotFoundException;
+import com.liftoff.project.exception.cookie.CookieNotFoundException;
 import com.liftoff.project.service.CookieService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -12,7 +14,14 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Service
 public class CookieServiceImpl implements CookieService {
 
-    private static final int MAX_AGE_SECONDS = 86400;
+    private final int maxAgeSeconds;
+
+    @Autowired
+    public CookieServiceImpl(
+            @Value("${cart.cookie.max_age_seconds}") int maxAgeSeconds
+    ) {
+        this.maxAgeSeconds = maxAgeSeconds;
+    }
 
     @Override
     public void setCookie(String name, String value, HttpServletResponse response) {
@@ -23,7 +32,7 @@ public class CookieServiceImpl implements CookieService {
         String serverName = request.getServerName();
 
         String cookieValue = String.format("%s=%s; Secure; SameSite=None; Max-Age=%d; Domain=%s; Path=/",
-                name, value, MAX_AGE_SECONDS, serverName);
+                name, value, maxAgeSeconds, serverName);
 
         response.setHeader("Set-Cookie", cookieValue);
     }
@@ -39,6 +48,20 @@ public class CookieServiceImpl implements CookieService {
             }
         }
         throw new CookieNotFoundException("Cookie with name " + name + " not found");
+    }
+
+    @Override
+    public void deleteCookie(String name, HttpServletResponse response) {
+        HttpServletRequest request = ((ServletRequestAttributes)
+                RequestContextHolder
+                        .currentRequestAttributes())
+                .getRequest();
+        String serverName = request.getServerName();
+
+        String cookieValue = String.format("%s=; Secure; SameSite=None; Max-Age=0; Domain=%s; Path=/",
+                name, serverName);
+
+        response.setHeader("Set-Cookie", cookieValue);
     }
 
 }

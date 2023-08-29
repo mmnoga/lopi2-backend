@@ -23,4 +23,12 @@ public interface CookieService {
      */
     String getCookieValue(String name, HttpServletRequest request);
 
+    /**
+     * Deletes a specified cookie by setting its expiration time to 0.
+     *
+     * @param name     the name of the cookie to be deleted
+     * @param response the HttpServletResponse object to set the "Set-Cookie" header
+     */
+    void deleteCookie(String name, HttpServletResponse response);
+
 }
