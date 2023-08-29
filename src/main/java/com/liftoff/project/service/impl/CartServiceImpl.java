@@ -1,7 +1,6 @@
 package com.liftoff.project.service.impl;
 
 import com.liftoff.project.exception.cart.CartNotFoundException;
-import com.liftoff.project.exception.cookie.CookieNotFoundException;
 import com.liftoff.project.model.Cart;
 import com.liftoff.project.model.CartItem;
 import com.liftoff.project.model.Product;
@@ -30,7 +29,7 @@ public class CartServiceImpl implements CartService {
 
     @Value("${cart.cookie.name}")
     private String cookieName;
-    @Value("${cart.cookie.max_age_seconds}")
+    @Value("${cart.cookie.maxAgeSeconds}")
     private Long cookieMaxTime;
 
     private final CartRepository cartRepository;
@@ -134,31 +133,15 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Cart getCartByCookieOrCreateNewCart(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            String cartId = cookieService.getCookieValue(cookieName, request);
+        String cartId = cookieService.getCookieValue(cookieName, request);
 
-            if (cartId != null) {
-                return cartRepository.findByUuid(UUID.fromString(cartId))
-                        .orElseGet(() -> createCartWithId(cartId));
-            } else {
-                Cart newCart = createCart();
-                String newCartId = newCart.getUuid().toString();
-                cookieService.setCookie(cookieName, newCartId, response);
-
-                Instant expirationTime = Instant.now()
-                        .plusSeconds(cookieMaxTime);
-                Session session = sessionService
-                        .createSession(newCart.getUuid(), expirationTime);
-                newCart.setSession(session);
-
-                return cartRepository.save(newCart);
-            }
-        } catch (CookieNotFoundException ex) {
+        if (cartId != null) {
+            return cartRepository.findByUuid(UUID.fromString(cartId))
+                    .orElseGet(() -> createCartWithId(cartId));
+        } else if (response != null) {
             Cart newCart = createCart();
-            if (response != null) {
-                String newCartId = newCart.getUuid().toString();
-                cookieService.setCookie(cookieName, newCartId, response);
-            }
+            String newCartId = newCart.getUuid().toString();
+            cookieService.setCookie(cookieName, newCartId, response);
 
             Instant expirationTime = Instant.now()
                     .plusSeconds(cookieMaxTime);
@@ -167,6 +150,8 @@ public class CartServiceImpl implements CartService {
             newCart.setSession(session);
 
             return cartRepository.save(newCart);
+        } else {
+            return null;
         }
     }
 

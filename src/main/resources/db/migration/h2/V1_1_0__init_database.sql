@@ -86,9 +86,7 @@ CREATE TABLE SESSIONS (
                           ID BIGINT AUTO_INCREMENT PRIMARY KEY,
                           UID UUID,
                           EXPIRATION_TIME TIMESTAMP,
-                          IS_EXPIRED BOOLEAN,
-                          CART_ID BIGINT,
-                          FOREIGN KEY (CART_ID) REFERENCES CARTS(ID)
+                          IS_EXPIRED BOOLEAN
 );
 
 ALTER TABLE CARTS

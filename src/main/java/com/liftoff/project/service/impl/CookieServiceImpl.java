@@ -1,6 +1,5 @@
 package com.liftoff.project.service.impl;
 
-import com.liftoff.project.exception.cookie.CookieNotFoundException;
 import com.liftoff.project.service.CookieService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,23 +17,25 @@ public class CookieServiceImpl implements CookieService {
 
     @Autowired
     public CookieServiceImpl(
-            @Value("${cart.cookie.max_age_seconds}") int maxAgeSeconds
+            @Value("${cart.cookie.maxAgeSeconds}") int maxAgeSeconds
     ) {
         this.maxAgeSeconds = maxAgeSeconds;
     }
 
     @Override
     public void setCookie(String name, String value, HttpServletResponse response) {
-        HttpServletRequest request = ((ServletRequestAttributes)
-                RequestContextHolder
-                        .currentRequestAttributes())
-                .getRequest();
-        String serverName = request.getServerName();
+        if (response != null) {
+            HttpServletRequest request = ((ServletRequestAttributes)
+                    RequestContextHolder
+                            .currentRequestAttributes())
+                    .getRequest();
+            String serverName = request.getServerName();
 
-        String cookieValue = String.format("%s=%s; Secure; SameSite=None; Max-Age=%d; Domain=%s; Path=/",
-                name, value, maxAgeSeconds, serverName);
+            String cookieValue = String.format("%s=%s; Secure; SameSite=None; Max-Age=%d; Domain=%s; Path=/",
+                    name, value, maxAgeSeconds, serverName);
 
-        response.setHeader("Set-Cookie", cookieValue);
+            response.setHeader("Set-Cookie", cookieValue);
+        }
     }
 
     public String getCookieValue(String name, HttpServletRequest request) {
@@ -47,21 +48,7 @@ public class CookieServiceImpl implements CookieService {
                 }
             }
         }
-        throw new CookieNotFoundException("Cookie with name " + name + " not found");
-    }
-
-    @Override
-    public void deleteCookie(String name, HttpServletResponse response) {
-        HttpServletRequest request = ((ServletRequestAttributes)
-                RequestContextHolder
-                        .currentRequestAttributes())
-                .getRequest();
-        String serverName = request.getServerName();
-
-        String cookieValue = String.format("%s=; Secure; SameSite=None; Max-Age=0; Domain=%s; Path=/",
-                name, serverName);
-
-        response.setHeader("Set-Cookie", cookieValue);
+        return null;
     }
 
 }

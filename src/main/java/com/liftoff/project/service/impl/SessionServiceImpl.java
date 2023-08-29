@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -23,6 +24,25 @@ public class SessionServiceImpl implements SessionService {
         session.setExpired(false);
 
         return sessionRepository.save(session);
+    }
+
+    @Override
+    public void updateExpiredStatus(UUID uid) {
+        Session session = sessionRepository
+                .findByuId(uid)
+                .orElse(null);
+        if (session != null) {
+            session.setExpired(true);
+            sessionRepository.save(session);
+        }
+    }
+
+    @Override
+    public List<Session> getExpiredSessions() {
+        Instant currentDate = Instant.now();
+
+        return sessionRepository
+                .findByExpirationTimeBeforeAndIsExpiredFalse(currentDate);
     }
 
 }

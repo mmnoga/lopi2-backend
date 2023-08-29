@@ -8,18 +8,21 @@ import com.liftoff.project.mapper.CartMapper;
 import com.liftoff.project.model.Cart;
 import com.liftoff.project.model.CartItem;
 import com.liftoff.project.model.Product;
+import com.liftoff.project.model.Session;
 import com.liftoff.project.repository.CartRepository;
 import com.liftoff.project.repository.UserRepository;
 import com.liftoff.project.service.AuthCartService;
 import com.liftoff.project.service.CartService;
 import com.liftoff.project.service.ProductService;
+import com.liftoff.project.service.SessionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +33,7 @@ public class AuthCartServiceImpl implements AuthCartService {
     private final UserRepository userRepository;
     private final CartService cartService;
     private final ProductService productService;
+    private final SessionService sessionService;
     private final CartMapper cartMapper;
 
     @Override
@@ -41,22 +45,26 @@ public class AuthCartServiceImpl implements AuthCartService {
     }
 
     @Override
+    @Transactional
     public String createCartForUser(String username) {
-        AtomicReference<String> cartIdRef = new AtomicReference<>(null);
+        String cartId = UUID.randomUUID().toString();
 
         userRepository.findByUsername(username)
                 .ifPresent(user -> {
-                    String cartId = UUID.randomUUID().toString();
                     Cart cart = new Cart();
                     cart.setUser(user);
                     cart.setUuid(UUID.fromString(cartId));
                     cart.setTotalPrice(0.0);
                     cart.setTotalQuantity(0);
+
+                    Session session = sessionService
+                            .createSession(cart.getUuid(), Instant.now().plus(Duration.ofSeconds(86400)));
+                    cart.setSession(session);
+
                     cartRepository.save(cart);
-                    cartIdRef.set(cartId);
                 });
 
-        return cartIdRef.get();
+        return cartId;
     }
 
     @Override
