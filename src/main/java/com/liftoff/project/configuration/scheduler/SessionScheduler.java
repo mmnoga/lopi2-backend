@@ -13,12 +13,18 @@ public class SessionScheduler {
 
     private final SessionService sessionService;
 
-    @Scheduled(cron = "${cart.cookie.sessionRemoverOccurrence}")
-    public void updateExpiredStatus() {
-        log.info("Update expired session status...");
+    @Scheduled(cron = "${cart.cookie.updateExpiredSessionsOccurrence}")
+    public void updateExpiredStatusTask() {
+        log.info("Updating expired sessions status...");
         sessionService.getExpiredSessions()
                 .forEach(session -> sessionService
                         .updateExpiredStatus(session.getUId()));
+    }
+
+    @Scheduled(cron = "${cart.cookie.deleteExpiredSessionsOccurrence}")
+    public void deleteExpiredSessionsTask() {
+        log.info("Deleting expired sessions...");
+        sessionService.deleteExpiredSessions();
     }
 
 }

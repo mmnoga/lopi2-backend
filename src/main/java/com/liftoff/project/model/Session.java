@@ -1,5 +1,6 @@
 package com.liftoff.project.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,7 +34,7 @@ public class Session {
     @Column(name = "IS_EXPIRED")
     private boolean isExpired;
 
-    @OneToOne(mappedBy = "session")
+    @OneToOne(mappedBy = "session", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Cart cart;
 
 }

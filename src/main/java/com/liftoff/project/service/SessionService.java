@@ -14,4 +14,6 @@ public interface SessionService {
 
     List<Session> getExpiredSessions();
 
+    void deleteExpiredSessions();
+
 }

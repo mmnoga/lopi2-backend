@@ -45,4 +45,10 @@ public class SessionServiceImpl implements SessionService {
                 .findByExpirationTimeBeforeAndIsExpiredFalse(currentDate);
     }
 
+    @Override
+    public void deleteExpiredSessions() {
+        List<Session> expiredSessions = sessionRepository.findByIsExpiredTrue();
+        sessionRepository.deleteAll(expiredSessions);
+    }
+
 }

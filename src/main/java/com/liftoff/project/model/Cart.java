@@ -56,7 +56,7 @@ public class Cart {
     @Column(name = "UPDATED_AT")
     private Instant updatedAt;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "SESSION_ID")
     private Session session;
 

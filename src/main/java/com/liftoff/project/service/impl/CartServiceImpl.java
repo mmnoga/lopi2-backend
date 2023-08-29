@@ -98,37 +98,39 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public void mergeCartWithAuthenticatedUser(String unauthenticatedCartId, String authenticatedCartId) {
-        Cart unauthenticatedCart = cartRepository
-                .findByUuid(UUID.fromString(unauthenticatedCartId))
-                .orElseThrow(() -> new CartNotFoundException("Unauthenticated cart not found"));
+        if (unauthenticatedCartId != null) {
+            Cart unauthenticatedCart = cartRepository
+                    .findByUuid(UUID.fromString(unauthenticatedCartId))
+                    .orElseThrow(() -> new CartNotFoundException("Unauthenticated cart not found"));
 
-        Cart authenticatedCart = cartRepository
-                .findByUuid(UUID.fromString(authenticatedCartId))
-                .orElseThrow(() -> new CartNotFoundException("Authenticated cart not found"));
+            Cart authenticatedCart = cartRepository
+                    .findByUuid(UUID.fromString(authenticatedCartId))
+                    .orElseThrow(() -> new CartNotFoundException("Authenticated cart not found"));
 
-        List<CartItem> unauthenticatedCartItems = unauthenticatedCart.getCartItems();
-        List<CartItem> authenticatedCartItems = authenticatedCart.getCartItems();
+            List<CartItem> unauthenticatedCartItems = unauthenticatedCart.getCartItems();
+            List<CartItem> authenticatedCartItems = authenticatedCart.getCartItems();
 
-        for (CartItem cartItem : unauthenticatedCartItems) {
-            cartItem.setCart(authenticatedCart);
+            for (CartItem cartItem : unauthenticatedCartItems) {
+                cartItem.setCart(authenticatedCart);
+            }
+
+            authenticatedCartItems.addAll(unauthenticatedCartItems);
+
+            double totalUnauthenticatedPrice = unauthenticatedCart.getTotalPrice();
+            int totalUnauthenticatedQuantity = unauthenticatedCart.getTotalQuantity();
+
+            authenticatedCart.setTotalPrice(
+                    authenticatedCart.getTotalPrice() + totalUnauthenticatedPrice);
+            authenticatedCart.setTotalQuantity(
+                    authenticatedCart.getTotalQuantity() + totalUnauthenticatedQuantity);
+
+            unauthenticatedCartItems.clear();
+            unauthenticatedCart.setTotalPrice(0.0);
+            unauthenticatedCart.setTotalQuantity(0);
+
+            cartRepository.save(authenticatedCart);
+            cartRepository.delete(unauthenticatedCart);
         }
-
-        authenticatedCartItems.addAll(unauthenticatedCartItems);
-
-        double totalUnauthenticatedPrice = unauthenticatedCart.getTotalPrice();
-        int totalUnauthenticatedQuantity = unauthenticatedCart.getTotalQuantity();
-
-        authenticatedCart.setTotalPrice(
-                authenticatedCart.getTotalPrice() + totalUnauthenticatedPrice);
-        authenticatedCart.setTotalQuantity(
-                authenticatedCart.getTotalQuantity() + totalUnauthenticatedQuantity);
-
-        unauthenticatedCartItems.clear();
-        unauthenticatedCart.setTotalPrice(0.0);
-        unauthenticatedCart.setTotalQuantity(0);
-
-        cartRepository.save(authenticatedCart);
-        cartRepository.save(unauthenticatedCart);
     }
 
     @Override
