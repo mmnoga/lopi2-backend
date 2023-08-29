@@ -1,12 +1,13 @@
-package com.liftoff.project.exception;
+package com.liftoff.project.exception.product;
 
 import org.springframework.http.HttpStatus;
 
-public class ImageNotFoundException extends RuntimeException {
+public class ProductOutOfStockException extends RuntimeException{
+
     private final HttpStatus status;
     private final String message;
 
-    public ImageNotFoundException(String message) {
+    public ProductOutOfStockException(String message) {
         super(message);
         this.status = HttpStatus.NOT_FOUND;
         this.message = message;

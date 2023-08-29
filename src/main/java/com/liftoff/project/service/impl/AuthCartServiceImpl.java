@@ -2,8 +2,8 @@ package com.liftoff.project.service.impl;
 
 import com.liftoff.project.controller.response.CartItemResponseDTO;
 import com.liftoff.project.controller.response.CartResponseDTO;
-import com.liftoff.project.exception.CartNotFoundException;
-import com.liftoff.project.exception.ProductNotFoundException;
+import com.liftoff.project.exception.cart.CartNotFoundException;
+import com.liftoff.project.exception.product.ProductNotFoundException;
 import com.liftoff.project.mapper.CartMapper;
 import com.liftoff.project.model.Cart;
 import com.liftoff.project.model.CartItem;

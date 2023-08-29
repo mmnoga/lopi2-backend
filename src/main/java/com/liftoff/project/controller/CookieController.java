@@ -1,7 +1,7 @@
 package com.liftoff.project.controller;
 
 
-import com.liftoff.project.exception.CookieNotFoundException;
+import com.liftoff.project.exception.cookie.CookieNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;

@@ -1,6 +1,6 @@
 package com.liftoff.project.service;
 
-import com.liftoff.project.exception.CartNotFoundException;
+import com.liftoff.project.exception.cart.CartNotFoundException;
 import com.liftoff.project.model.Cart;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -1,7 +1,7 @@
 package com.liftoff.project.service.impl;
 
-import com.liftoff.project.exception.CartNotFoundException;
-import com.liftoff.project.exception.CookieNotFoundException;
+import com.liftoff.project.exception.cart.CartNotFoundException;
+import com.liftoff.project.exception.cookie.CookieNotFoundException;
 import com.liftoff.project.model.Cart;
 import com.liftoff.project.model.CartItem;
 import com.liftoff.project.model.Product;

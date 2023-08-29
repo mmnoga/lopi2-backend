@@ -1,7 +1,7 @@
 package com.liftoff.project.service.impl;
 
 import com.liftoff.project.controller.request.SignupRequestDTO;
-import com.liftoff.project.exception.UserExistsException;
+import com.liftoff.project.exception.auth.UserExistsException;
 import com.liftoff.project.repository.UserRepository;
 import com.liftoff.project.service.UserValidationService;
 import lombok.Data;

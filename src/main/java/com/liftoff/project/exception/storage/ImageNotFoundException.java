@@ -1,13 +1,12 @@
-package com.liftoff.project.exception;
+package com.liftoff.project.exception.storage;
 
 import org.springframework.http.HttpStatus;
 
-public class UserNotFoundException extends RuntimeException{
-
+public class ImageNotFoundException extends RuntimeException {
     private final HttpStatus status;
     private final String message;
 
-    public UserNotFoundException(String message) {
+    public ImageNotFoundException(String message) {
         super(message);
         this.status = HttpStatus.NOT_FOUND;
         this.message = message;
@@ -20,4 +19,5 @@ public class UserNotFoundException extends RuntimeException{
     public String getMessage() {
         return message;
     }
+
 }

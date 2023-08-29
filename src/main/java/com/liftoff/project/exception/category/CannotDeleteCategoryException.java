@@ -1,15 +1,15 @@
-package com.liftoff.project.exception;
+package com.liftoff.project.exception.category;
 
 import org.springframework.http.HttpStatus;
 
-public class ProductOutOfStockException extends RuntimeException{
+public class CannotDeleteCategoryException extends RuntimeException{
 
     private final HttpStatus status;
     private final String message;
 
-    public ProductOutOfStockException(String message) {
+    public CannotDeleteCategoryException(String message) {
         super(message);
-        this.status = HttpStatus.NOT_FOUND;
+        this.status = HttpStatus.BAD_REQUEST;
         this.message = message;
     }
 

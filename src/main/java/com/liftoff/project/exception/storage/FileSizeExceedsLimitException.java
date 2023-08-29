@@ -1,14 +1,14 @@
-package com.liftoff.project.exception;
+package com.liftoff.project.exception.storage;
 
 import org.springframework.http.HttpStatus;
 
-public class UserExistsException extends RuntimeException{
+public class FileSizeExceedsLimitException extends RuntimeException {
     private final HttpStatus status;
     private final String message;
 
-    public UserExistsException(String message) {
+    public FileSizeExceedsLimitException(String message) {
         super(message);
-        this.status = HttpStatus.FOUND;
+        this.status = HttpStatus.BAD_REQUEST;
         this.message = message;
     }
 
@@ -19,5 +19,4 @@ public class UserExistsException extends RuntimeException{
     public String getMessage() {
         return message;
     }
-
 }

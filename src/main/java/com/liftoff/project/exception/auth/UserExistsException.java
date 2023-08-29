@@ -1,14 +1,14 @@
-package com.liftoff.project.exception;
+package com.liftoff.project.exception.auth;
 
 import org.springframework.http.HttpStatus;
 
-public class ProductNotFoundException extends RuntimeException {
+public class UserExistsException extends RuntimeException{
     private final HttpStatus status;
     private final String message;
 
-    public ProductNotFoundException(String message) {
+    public UserExistsException(String message) {
         super(message);
-        this.status = HttpStatus.NOT_FOUND;
+        this.status = HttpStatus.FOUND;
         this.message = message;
     }
 

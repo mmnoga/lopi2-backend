@@ -1,8 +1,8 @@
 package com.liftoff.project.service;
 
 import com.liftoff.project.controller.response.CartResponseDTO;
-import com.liftoff.project.exception.CartNotFoundException;
-import com.liftoff.project.exception.ProductNotFoundException;
+import com.liftoff.project.exception.cart.CartNotFoundException;
+import com.liftoff.project.exception.product.ProductNotFoundException;
 
 import java.util.UUID;
 

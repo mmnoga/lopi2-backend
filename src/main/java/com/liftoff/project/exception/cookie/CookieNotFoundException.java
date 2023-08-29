@@ -1,4 +1,4 @@
-package com.liftoff.project.exception;
+package com.liftoff.project.exception.cookie;
 
 import org.springframework.http.HttpStatus;
 

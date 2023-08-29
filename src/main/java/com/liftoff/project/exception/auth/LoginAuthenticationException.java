@@ -1,14 +1,15 @@
-package com.liftoff.project.exception;
+package com.liftoff.project.exception.auth;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.AuthenticationException;
 
-public class FileSizeExceedsLimitException extends RuntimeException {
+public class LoginAuthenticationException extends AuthenticationException {
     private final HttpStatus status;
     private final String message;
 
-    public FileSizeExceedsLimitException(String message) {
+    public LoginAuthenticationException(String message) {
         super(message);
-        this.status = HttpStatus.BAD_REQUEST;
+        this.status = HttpStatus.UNAUTHORIZED;
         this.message = message;
     }
 
@@ -19,4 +20,5 @@ public class FileSizeExceedsLimitException extends RuntimeException {
     public String getMessage() {
         return message;
     }
+
 }
