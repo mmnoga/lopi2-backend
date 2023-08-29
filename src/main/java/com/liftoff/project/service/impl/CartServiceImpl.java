@@ -5,11 +5,13 @@ import com.liftoff.project.exception.cookie.CookieNotFoundException;
 import com.liftoff.project.model.Cart;
 import com.liftoff.project.model.CartItem;
 import com.liftoff.project.model.Product;
+import com.liftoff.project.model.Session;
 import com.liftoff.project.repository.CartItemRepository;
 import com.liftoff.project.repository.CartRepository;
 import com.liftoff.project.service.CartService;
 import com.liftoff.project.service.CookieService;
 import com.liftoff.project.service.ProductService;
+import com.liftoff.project.service.SessionService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -26,17 +29,20 @@ import java.util.UUID;
 public class CartServiceImpl implements CartService {
 
     @Value("${cart.cookie.name}")
-    private String CART_ID_COOKIE_NAME;
+    private String cookieName;
+    @Value("${cart.cookie.max_age_seconds}")
+    private Long cookieMaxTime;
 
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final CookieService cookieService;
     private final ProductService productService;
+    private final SessionService sessionService;
 
     @Override
     public void clearCart(HttpServletRequest request) {
         String cartId = cookieService
-                .getCookieValue(CART_ID_COOKIE_NAME, request);
+                .getCookieValue(cookieName, request);
 
         cartRepository.findByUuid(UUID.fromString(cartId))
                 .ifPresent(cart -> {
@@ -129,7 +135,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public Cart getCartByCookieOrCreateNewCart(HttpServletRequest request, HttpServletResponse response) {
         try {
-            String cartId = cookieService.getCookieValue(CART_ID_COOKIE_NAME, request);
+            String cartId = cookieService.getCookieValue(cookieName, request);
 
             if (cartId != null) {
                 return cartRepository.findByUuid(UUID.fromString(cartId))
@@ -137,16 +143,30 @@ public class CartServiceImpl implements CartService {
             } else {
                 Cart newCart = createCart();
                 String newCartId = newCart.getUuid().toString();
-                cookieService.setCookie(CART_ID_COOKIE_NAME, newCartId, response);
-                return newCart;
+                cookieService.setCookie(cookieName, newCartId, response);
+
+                Instant expirationTime = Instant.now()
+                        .plusSeconds(cookieMaxTime);
+                Session session = sessionService
+                        .createSession(newCart.getUuid(), expirationTime);
+                newCart.setSession(session);
+
+                return cartRepository.save(newCart);
             }
         } catch (CookieNotFoundException ex) {
             Cart newCart = createCart();
             if (response != null) {
                 String newCartId = newCart.getUuid().toString();
-                cookieService.setCookie(CART_ID_COOKIE_NAME, newCartId, response);
+                cookieService.setCookie(cookieName, newCartId, response);
             }
-            return newCart;
+
+            Instant expirationTime = Instant.now()
+                    .plusSeconds(cookieMaxTime);
+            Session session = sessionService
+                    .createSession(newCart.getUuid(), expirationTime);
+            newCart.setSession(session);
+
+            return cartRepository.save(newCart);
         }
     }
 
