@@ -19,7 +19,6 @@ import com.liftoff.project.service.ProductService;
 import com.liftoff.project.service.StorageService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,8 +43,7 @@ public class ProductServiceImpl implements ProductService {
     private final ImageAssetRepository imageAssetRepository;
 
     @Override
-    public PaginatedProductResponseDTO getProducts(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public PaginatedProductResponseDTO getProducts(Pageable pageable) {
         Page<Product> productPage = productRepository.findAll(pageable);
 
         List<Product> products = productPage.getContent();

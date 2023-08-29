@@ -7,9 +7,13 @@ import com.liftoff.project.exception.CategoryNotFoundException;
 import com.liftoff.project.exception.ProductNotFoundException;
 import com.liftoff.project.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -42,9 +46,17 @@ public class ProductController {
             description = "Retrieves a paginated list of all products.")
     public ResponseEntity<PaginatedProductResponseDTO> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "name")
+            @Parameter(description = "Sort by name or regularPrice") String sortType,
+            @RequestParam(defaultValue = "asc")
+            @Parameter(description = "Sort order: asc or desc") String sortOrder
     ) {
-        PaginatedProductResponseDTO paginatedProducts = productService.getProducts(page, size);
+        Sort.Direction direction = sortOrder
+                .equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortType));
+
+        PaginatedProductResponseDTO paginatedProducts = productService.getProducts(pageable);
 
         if (paginatedProducts.products().isEmpty()) {
             return ResponseEntity.noContent().build();
