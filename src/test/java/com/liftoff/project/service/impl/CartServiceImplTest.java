@@ -7,6 +7,7 @@ import com.liftoff.project.repository.CartItemRepository;
 import com.liftoff.project.repository.CartRepository;
 import com.liftoff.project.service.CookieService;
 import com.liftoff.project.service.ProductService;
+import com.liftoff.project.service.SessionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -38,6 +39,9 @@ class CartServiceImplTest {
     @Mock
     private CookieService cookieService;
 
+    @Mock
+    private SessionService sessionService;
+
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
@@ -65,7 +69,7 @@ class CartServiceImplTest {
         when(cartRepository.save(any(Cart.class))).thenReturn(cart);
 
         CartServiceImpl cartService =
-                new CartServiceImpl(cartRepository, cartItemRepository, cookieService, productService);
+                new CartServiceImpl(cartRepository, cartItemRepository, cookieService, productService, sessionService);
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
