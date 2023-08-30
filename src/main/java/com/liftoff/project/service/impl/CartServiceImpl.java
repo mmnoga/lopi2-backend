@@ -129,7 +129,7 @@ public class CartServiceImpl implements CartService {
             unauthenticatedCart.setTotalQuantity(0);
 
             cartRepository.save(authenticatedCart);
-            cartRepository.delete(unauthenticatedCart);
+            cartRepository.save(unauthenticatedCart);
         }
     }
 
