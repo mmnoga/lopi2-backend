@@ -1,15 +1,14 @@
-package com.liftoff.project.exception;
+package com.liftoff.project.exception.cookie;
 
 import org.springframework.http.HttpStatus;
 
-public class InvalidParentCategoryException extends RuntimeException {
-
+public class CookieNotFoundException extends RuntimeException {
     private final HttpStatus status;
     private final String message;
 
-    public InvalidParentCategoryException(String message) {
+    public CookieNotFoundException(String message) {
         super(message);
-        this.status = HttpStatus.BAD_REQUEST;
+        this.status = HttpStatus.NOT_FOUND;
         this.message = message;
     }
 
@@ -17,9 +16,7 @@ public class InvalidParentCategoryException extends RuntimeException {
         return status;
     }
 
-    @Override
     public String getMessage() {
         return message;
     }
-
 }

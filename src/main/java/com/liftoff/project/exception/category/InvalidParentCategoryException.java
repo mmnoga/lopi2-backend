@@ -1,14 +1,15 @@
-package com.liftoff.project.exception;
+package com.liftoff.project.exception.category;
 
 import org.springframework.http.HttpStatus;
 
-public class ImageNotFoundException extends RuntimeException {
+public class InvalidParentCategoryException extends RuntimeException {
+
     private final HttpStatus status;
     private final String message;
 
-    public ImageNotFoundException(String message) {
+    public InvalidParentCategoryException(String message) {
         super(message);
-        this.status = HttpStatus.NOT_FOUND;
+        this.status = HttpStatus.BAD_REQUEST;
         this.message = message;
     }
 
@@ -16,6 +17,7 @@ public class ImageNotFoundException extends RuntimeException {
         return status;
     }
 
+    @Override
     public String getMessage() {
         return message;
     }

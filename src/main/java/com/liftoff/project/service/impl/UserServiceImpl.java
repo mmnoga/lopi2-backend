@@ -6,7 +6,7 @@ import com.liftoff.project.controller.request.LoginRequestDTO;
 import com.liftoff.project.controller.request.SignupRequestDTO;
 import com.liftoff.project.controller.response.JwtResponseDTO;
 import com.liftoff.project.controller.response.UserResponseDTO;
-import com.liftoff.project.exception.LoginAuthenticationException;
+import com.liftoff.project.exception.auth.LoginAuthenticationException;
 import com.liftoff.project.mapper.UserMapper;
 import com.liftoff.project.model.User;
 import com.liftoff.project.repository.UserRepository;

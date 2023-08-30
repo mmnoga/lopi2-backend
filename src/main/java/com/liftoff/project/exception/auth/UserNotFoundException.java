@@ -1,14 +1,15 @@
-package com.liftoff.project.exception;
+package com.liftoff.project.exception.auth;
 
 import org.springframework.http.HttpStatus;
 
-public class FileSizeExceedsLimitException extends RuntimeException {
+public class UserNotFoundException extends RuntimeException{
+
     private final HttpStatus status;
     private final String message;
 
-    public FileSizeExceedsLimitException(String message) {
+    public UserNotFoundException(String message) {
         super(message);
-        this.status = HttpStatus.BAD_REQUEST;
+        this.status = HttpStatus.NOT_FOUND;
         this.message = message;
     }
 

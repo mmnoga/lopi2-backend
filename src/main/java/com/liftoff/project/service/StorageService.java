@@ -1,8 +1,8 @@
 package com.liftoff.project.service;
 
 import com.liftoff.project.controller.response.FileInfoResponseDTO;
-import com.liftoff.project.exception.FileNotFoundException;
-import com.liftoff.project.exception.FileSizeExceedsLimitException;
+import com.liftoff.project.exception.storage.FileNotFoundException;
+import com.liftoff.project.exception.storage.FileSizeExceedsLimitException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

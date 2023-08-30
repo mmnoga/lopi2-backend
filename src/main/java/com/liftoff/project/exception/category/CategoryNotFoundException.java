@@ -1,14 +1,14 @@
-package com.liftoff.project.exception;
+package com.liftoff.project.exception.category;
 
 import org.springframework.http.HttpStatus;
 
-public class UserExistsException extends RuntimeException{
+public class CategoryNotFoundException extends RuntimeException{
     private final HttpStatus status;
     private final String message;
 
-    public UserExistsException(String message) {
+    public CategoryNotFoundException(String message) {
         super(message);
-        this.status = HttpStatus.FOUND;
+        this.status = HttpStatus.NOT_FOUND;
         this.message = message;
     }
 
@@ -19,5 +19,4 @@ public class UserExistsException extends RuntimeException{
     public String getMessage() {
         return message;
     }
-
 }

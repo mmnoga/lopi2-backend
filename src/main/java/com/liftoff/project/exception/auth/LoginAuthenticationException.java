@@ -1,14 +1,15 @@
-package com.liftoff.project.exception;
+package com.liftoff.project.exception.auth;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.AuthenticationException;
 
-public class CookiesNotFoundException extends RuntimeException {
+public class LoginAuthenticationException extends AuthenticationException {
     private final HttpStatus status;
     private final String message;
 
-    public CookiesNotFoundException(String message) {
+    public LoginAuthenticationException(String message) {
         super(message);
-        this.status = HttpStatus.NOT_FOUND;
+        this.status = HttpStatus.UNAUTHORIZED;
         this.message = message;
     }
 
@@ -19,4 +20,5 @@ public class CookiesNotFoundException extends RuntimeException {
     public String getMessage() {
         return message;
     }
+
 }

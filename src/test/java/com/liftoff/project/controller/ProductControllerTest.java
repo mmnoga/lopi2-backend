@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liftoff.project.controller.request.ProductRequestDTO;
 import com.liftoff.project.controller.response.PaginatedProductResponseDTO;
 import com.liftoff.project.controller.response.ProductResponseDTO;
-import com.liftoff.project.exception.CategoryNotFoundException;
-import com.liftoff.project.exception.ProductNotFoundException;
+import com.liftoff.project.exception.category.CategoryNotFoundException;
+import com.liftoff.project.exception.product.ProductNotFoundException;
 import com.liftoff.project.model.Product;
 import com.liftoff.project.model.ProductStatus;
 import com.liftoff.project.service.ProductService;
@@ -68,7 +68,6 @@ class ProductControllerTest {
         int page = 0;
         int size = 2;
 
-        // Create sample products
         ProductResponseDTO product1 = ProductResponseDTO.builder()
                 .name("Product 1")
                 .description("Product 1 description")
