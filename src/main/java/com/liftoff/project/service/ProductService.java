@@ -3,9 +3,10 @@ package com.liftoff.project.service;
 import com.liftoff.project.controller.request.ProductRequestDTO;
 import com.liftoff.project.controller.response.PaginatedProductResponseDTO;
 import com.liftoff.project.controller.response.ProductResponseDTO;
-import com.liftoff.project.exception.CategoryNotFoundException;
-import com.liftoff.project.exception.ImageNotFoundException;
-import com.liftoff.project.exception.ProductNotFoundException;
+import com.liftoff.project.exception.category.CategoryNotFoundException;
+import com.liftoff.project.exception.product.ProductNotFoundException;
+import com.liftoff.project.exception.storage.ImageNotFoundException;
+import com.liftoff.project.model.Product;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
