@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
@@ -82,7 +83,7 @@ class ProductControllerTest {
         PaginatedProductResponseDTO paginatedProducts = new PaginatedProductResponseDTO(products, 1, 2);
 
         // when
-        when(productService.getProducts(page, size)).thenReturn(paginatedProducts);
+        when(productService.getProducts(any(Pageable.class))).thenReturn(paginatedProducts);
 
         // then
         mockMvc.perform(get("/api/products")
@@ -107,7 +108,7 @@ class ProductControllerTest {
         PaginatedProductResponseDTO paginatedProducts = new PaginatedProductResponseDTO(emptyProductsList, 0, 0);
 
         // when
-        when(productService.getProducts(page, size)).thenReturn(paginatedProducts);
+        when(productService.getProducts(any(Pageable.class))).thenReturn(paginatedProducts);
 
         // then
         mockMvc.perform(get("/api/products")
