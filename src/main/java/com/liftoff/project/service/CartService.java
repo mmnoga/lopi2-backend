@@ -1,7 +1,9 @@
 package com.liftoff.project.service;
 
+import com.liftoff.project.controller.response.CartResponseDTO;
 import com.liftoff.project.exception.cart.CartNotFoundException;
 import com.liftoff.project.model.Cart;
+import com.liftoff.project.model.Product;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -36,7 +38,7 @@ public interface CartService {
      * @param request     The HttpServletRequest representing the current request.
      * @param response    The HttpServletResponse representing the response to the current request.
      */
-    void processCart(UUID productUuid, int quantity, HttpServletRequest request, HttpServletResponse response);
+    CartResponseDTO processCart(UUID productUuid, int quantity, HttpServletRequest request, HttpServletResponse response);
 
     /**
      * Clears the contents of the cart associated with the user in the HttpServletRequest.
@@ -54,5 +56,7 @@ public interface CartService {
      * @throws IllegalArgumentException If the provided cart ID is not in a valid UUID format.
      */
     Cart getCart(String cartId);
+
+    Cart addProductToCart(Cart cart, Product product, int quantity);
 
 }

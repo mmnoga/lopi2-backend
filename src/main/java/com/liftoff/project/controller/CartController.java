@@ -32,15 +32,15 @@ public class CartController {
 
     @PostMapping("/add")
     @Operation(summary = "Add a product to the shopping cart")
-    public ResponseEntity<String> addToCart(
+    public ResponseEntity<CartResponseDTO> addToCart(
             @RequestParam UUID productUuid,
             @RequestParam(defaultValue = "1") int quantity,
             HttpServletRequest request,
             HttpServletResponse response) {
-        cartService
+        CartResponseDTO cartResponseDTO = cartService
                 .processCart(productUuid, quantity, request, response);
 
-        return ResponseEntity.ok("Product " + productUuid + " added to cart");
+        return ResponseEntity.ok(cartResponseDTO);
     }
 
     @GetMapping()

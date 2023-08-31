@@ -35,17 +35,17 @@ public class AuthCartController {
     @Operation(summary = "Add a product to the authenticated user's shopping cart",
             security = @SecurityRequirement(name = "bearerAuth"))
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<String> addToCartForAuthenticated(
+    public ResponseEntity<CartResponseDTO> addToCartForAuthenticated(
             @Parameter(in = ParameterIn.HEADER, name = "Authorization")
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam UUID productUid,
             @RequestParam(required = false, defaultValue = "1") int quantity) {
         String username = userDetails.getUsername();
 
-        String processCartResponse = authCartService
+        CartResponseDTO cartResponseDTO = authCartService
                 .processCartForUser(username, productUid, quantity);
 
-        return ResponseEntity.ok(processCartResponse);
+        return ResponseEntity.ok(cartResponseDTO);
     }
 
     @GetMapping("/view")

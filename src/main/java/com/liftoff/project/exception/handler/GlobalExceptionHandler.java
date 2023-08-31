@@ -4,6 +4,7 @@ import com.liftoff.project.exception.category.CannotDeleteCategoryException;
 import com.liftoff.project.exception.cart.CartNotFoundException;
 import com.liftoff.project.exception.category.CategoryNotFoundException;
 import com.liftoff.project.exception.cookie.CookieNotFoundException;
+import com.liftoff.project.exception.product.ProductNotEnoughQuantityException;
 import com.liftoff.project.exception.storage.FileNotFoundException;
 import com.liftoff.project.exception.storage.FileSizeExceedsLimitException;
 import com.liftoff.project.exception.storage.ImageNotFoundException;
@@ -108,6 +109,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleUserNotFoundException(UserNotFoundException ex) {
+        return createErrorResponse(ex.getMessage(), ex.getStatus());
+    }
+
+    @ExceptionHandler(ProductNotEnoughQuantityException.class)
+    public ResponseEntity<Map<String, String>> handleProductNotEnoughQuantityException
+            (ProductNotEnoughQuantityException ex) {
         return createErrorResponse(ex.getMessage(), ex.getStatus());
     }
 

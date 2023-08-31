@@ -40,7 +40,7 @@ public interface AuthCartService {
      * @throws CartNotFoundException    If the user's cart is not found.
      * @throws ProductNotFoundException If the product with the given UUID is not found.
      */
-    String processCartForUser(String username, UUID productUid, int quantity);
+    CartResponseDTO processCartForUser(String username, UUID productUid, int quantity);
 
     /**
      * Retrieves cart information associated with the user specified by the username.

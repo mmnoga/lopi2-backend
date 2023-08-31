@@ -1,6 +1,9 @@
 package com.liftoff.project.service.impl;
 
+import com.liftoff.project.controller.response.CartResponseDTO;
 import com.liftoff.project.exception.cart.CartNotFoundException;
+import com.liftoff.project.exception.product.ProductNotEnoughQuantityException;
+import com.liftoff.project.mapper.CartMapper;
 import com.liftoff.project.model.Cart;
 import com.liftoff.project.model.CartItem;
 import com.liftoff.project.model.Product;
@@ -37,6 +40,7 @@ public class CartServiceImpl implements CartService {
     private final CookieService cookieService;
     private final ProductService productService;
     private final SessionService sessionService;
+    private final CartMapper cartMapper;
 
     @Override
     public void clearCart(HttpServletRequest request) {
@@ -66,34 +70,21 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public void processCart(UUID productUuid, int quantity,
-                            HttpServletRequest request, HttpServletResponse response) {
+    public CartResponseDTO processCart(UUID productUuid, int quantity,
+                                       HttpServletRequest request, HttpServletResponse response) {
         Cart cart = getCartByCookieOrCreateNewCart(request, response);
 
         Product product = productService.getProductEntityByUuid(productUuid);
 
-        boolean productAlreadyInCart = false;
-        for (CartItem cartItem : cart.getCartItems()) {
-            if (cartItem.getProduct().equals(product)) {
-                cartItem.setQuantity(cartItem.getQuantity() + quantity);
-                productAlreadyInCart = true;
-                break;
-            }
+        if (!hasProductEnoughQuantity(product, quantity)) {
+            throw new ProductNotEnoughQuantityException("Not enough quantity of product with UUID: "
+                    + product.getUId());
         }
 
-        if (!productAlreadyInCart) {
-            CartItem cartItem = new CartItem();
-            cartItem.setProduct(product);
-            cartItem.setQuantity(quantity);
-            cartItem.setCart(cart);
+        Cart savedCart = addProductToCart(cart, product, quantity);
 
-            cartItemRepository.save(cartItem);
-        }
-
-        cart.setTotalPrice(cart.getTotalPrice() + (product.getRegularPrice() * quantity));
-        cart.setTotalQuantity(cart.getTotalQuantity() + quantity);
-
-        cartRepository.save(cart);
+        return cartMapper
+                .mapEntityToResponse(savedCart);
     }
 
     @Override
@@ -157,6 +148,33 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+    @Override
+    public Cart addProductToCart(Cart cart, Product product, int quantity) {
+        boolean productAlreadyInCart = false;
+
+        for (CartItem cartItem : cart.getCartItems()) {
+            if (cartItem.getProduct().equals(product)) {
+                cartItem.setQuantity(cartItem.getQuantity() + quantity);
+                productAlreadyInCart = true;
+                break;
+            }
+        }
+
+        if (!productAlreadyInCart) {
+            CartItem cartItem = new CartItem();
+            cartItem.setProduct(product);
+            cartItem.setQuantity(quantity);
+            cartItem.setCart(cart);
+
+            cartItemRepository.save(cartItem);
+        }
+
+        cart.setTotalPrice(cart.getTotalPrice() + (product.getRegularPrice() * quantity));
+        cart.setTotalQuantity(cart.getTotalQuantity() + quantity);
+
+        return cartRepository.save(cart);
+    }
+
     private Cart createCart() {
         Cart cart = new Cart();
 
@@ -177,6 +195,10 @@ public class CartServiceImpl implements CartService {
         cart.setTotalQuantity(0);
 
         return cartRepository.save(cart);
+    }
+
+    private boolean hasProductEnoughQuantity(Product product, int quantity) {
+        return product.getQuantity() >= quantity;
     }
 
 }

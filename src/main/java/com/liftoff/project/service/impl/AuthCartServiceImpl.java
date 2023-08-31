@@ -3,7 +3,7 @@ package com.liftoff.project.service.impl;
 import com.liftoff.project.controller.response.CartItemResponseDTO;
 import com.liftoff.project.controller.response.CartResponseDTO;
 import com.liftoff.project.exception.cart.CartNotFoundException;
-import com.liftoff.project.exception.product.ProductNotFoundException;
+import com.liftoff.project.exception.product.ProductNotEnoughQuantityException;
 import com.liftoff.project.mapper.CartMapper;
 import com.liftoff.project.model.Cart;
 import com.liftoff.project.model.CartItem;
@@ -69,7 +69,7 @@ public class AuthCartServiceImpl implements AuthCartService {
 
     @Override
     @Transactional
-    public String processCartForUser(String username, UUID productUid, int quantity) {
+    public CartResponseDTO processCartForUser(String username, UUID productUid, int quantity) {
         String cartId = findCartIdByUsername(username);
 
         if (cartId == null) {
@@ -83,12 +83,16 @@ public class AuthCartServiceImpl implements AuthCartService {
 
             Product product = productService.getProductEntityByUuid(productUid);
 
-            if (product != null) {
-                addProductToCart(cart, product, quantity);
-                return "Product " + cartId + " added to cart";
-            } else {
-                throw new ProductNotFoundException("Product not found");
+            if (!hasProductEnoughQuantity(product, quantity)) {
+                throw new ProductNotEnoughQuantityException("Not enough quantity of product with UUID: "
+                        + product.getUId());
             }
+
+            Cart savedCart = cartService.addProductToCart(cart, product, quantity);
+
+            return cartMapper
+                    .mapEntityToResponse(savedCart);
+
         } catch (CartNotFoundException ex) {
             throw new CartNotFoundException("Cart not found");
         }
@@ -144,32 +148,8 @@ public class AuthCartServiceImpl implements AuthCartService {
         cartRepository.save(cart);
     }
 
-    private void addProductToCart(Cart cart, Product product, int quantity) {
-        CartItem existingCartItem = cart.getCartItems().stream()
-                .filter(item -> item.getProduct().equals(product))
-                .findFirst()
-                .orElse(null);
-
-        if (existingCartItem != null) {
-            existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
-        } else {
-            CartItem newCartItem = new CartItem();
-            newCartItem.setProduct(product);
-            newCartItem.setQuantity(quantity);
-            newCartItem.setCart(cart);
-            cart.getCartItems().add(newCartItem);
-        }
-
-        double totalPrice = cart.getCartItems().stream()
-                .mapToDouble(item -> item.getProduct().getRegularPrice() * item.getQuantity())
-                .sum();
-        int totalQuantity = cart.getCartItems().stream()
-                .mapToInt(CartItem::getQuantity)
-                .sum();
-        cart.setTotalPrice(totalPrice);
-        cart.setTotalQuantity(totalQuantity);
-
-        cartRepository.save(cart);
+    private boolean hasProductEnoughQuantity(Product product, int quantity) {
+        return product.getQuantity() >= quantity;
     }
 
 }
