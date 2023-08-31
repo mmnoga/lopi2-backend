@@ -103,7 +103,7 @@ CREATE TABLE ORDER_ITEM (
 CREATE TABLE ORDERS (
                          ID BIGINT AUTO_INCREMENT PRIMARY KEY,
                          UID UUID NOT NULL,
-                         USER_ID BIGINT NOT NULL,
+                         USER_ID BIGINT,
                          ORDER_DATE TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                          STATUS VARCHAR(50),
                          TOTAL_PRICE DOUBLE,
