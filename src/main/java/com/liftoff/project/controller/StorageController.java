@@ -1,7 +1,7 @@
 package com.liftoff.project.controller;
 
 import com.liftoff.project.controller.response.FileInfoResponseDTO;
-import com.liftoff.project.exception.FileNotFoundException;
+import com.liftoff.project.exception.storage.FileNotFoundException;
 import com.liftoff.project.service.StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

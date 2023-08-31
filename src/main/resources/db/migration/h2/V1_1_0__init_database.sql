@@ -72,4 +72,80 @@ CREATE TABLE APP_USER (
 );
 
 
+CREATE TABLE ADDRESS (
+                         ID BIGINT AUTO_INCREMENT PRIMARY KEY,
+                         STREET VARCHAR(250),
+                         HOUSE_NUMBER VARCHAR(45),
+                         APARTMENT_NUMBER VARCHAR(45),
+                         POSTAL_CODE VARCHAR(45),
+                         CITY VARCHAR(45),
+                         COUNTRY VARCHAR(45),
+                         PHONE_NUMBER VARCHAR(45),
+                         CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                         UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+
+);
+
+CREATE TABLE ORDER_ITEM (
+                         ID BIGINT AUTO_INCREMENT PRIMARY KEY,
+                         ORDER_ID BIGINT,
+                         PRODUCT_ID BIGINT,
+                         QUANTITY INT,
+                         PRICE_PER_UNIT DOUBLE,
+                         SUBTOTAL DOUBLE,
+                         CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                         UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+
+
+);
+
+
+CREATE TABLE ORDERS (
+                         ID BIGINT AUTO_INCREMENT PRIMARY KEY,
+                         UID UUID NOT NULL,
+                         USER_ID BIGINT NOT NULL,
+                         ORDER_DATE TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                         STATUS VARCHAR(50),
+                         TOTAL_PRICE DOUBLE,
+                         DELIVERY_METHOD VARCHAR(50),
+                         DELIVERY_COST DOUBLE,
+                         SHIPPING_ADDRESS_ID BIGINT,
+                         BILLING_ADDRESS_ID BIGINT,
+                         PAYMENT_METHOD VARCHAR(50),
+                         CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                         UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+
+
+);
+
+CREATE TABLE CARTS (
+                       ID BIGINT AUTO_INCREMENT PRIMARY KEY,
+                       UUID UUID,
+                       USER_ID BIGINT,
+                       TOTAL_PRICE DOUBLE PRECISION,
+                       TOTAL_QUANTITY INT,
+                       CREATED_AT TIMESTAMP,
+                       UPDATED_AT TIMESTAMP,
+                       SESSION_ID BIGINT
+);
+
+CREATE TABLE SESSIONS (
+                          ID BIGINT AUTO_INCREMENT PRIMARY KEY,
+                          UID UUID,
+                          EXPIRATION_TIME TIMESTAMP,
+                          IS_EXPIRED BOOLEAN
+);
+
+ALTER TABLE CARTS
+    ADD FOREIGN KEY (SESSION_ID) REFERENCES SESSIONS(ID);
+
+CREATE TABLE CART_ITEMS (
+                            ID BIGINT AUTO_INCREMENT PRIMARY KEY,
+                            CART_ID BIGINT,
+                            PRODUCT_ID BIGINT,
+                            QUANTITY INT,
+                            FOREIGN KEY (CART_ID) REFERENCES CARTS (ID),
+                            FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCTS (ID)
+);
+
 

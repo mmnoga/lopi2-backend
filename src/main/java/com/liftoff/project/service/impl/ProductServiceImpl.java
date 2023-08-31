@@ -3,9 +3,9 @@ package com.liftoff.project.service.impl;
 import com.liftoff.project.controller.request.ProductRequestDTO;
 import com.liftoff.project.controller.response.PaginatedProductResponseDTO;
 import com.liftoff.project.controller.response.ProductResponseDTO;
-import com.liftoff.project.exception.CategoryNotFoundException;
-import com.liftoff.project.exception.ImageNotFoundException;
-import com.liftoff.project.exception.ProductNotFoundException;
+import com.liftoff.project.exception.category.CategoryNotFoundException;
+import com.liftoff.project.exception.storage.ImageNotFoundException;
+import com.liftoff.project.exception.product.ProductNotFoundException;
 import com.liftoff.project.mapper.ProductMapper;
 import com.liftoff.project.model.Category;
 import com.liftoff.project.model.ImageAsset;
@@ -186,6 +186,12 @@ public class ProductServiceImpl implements ProductService {
         product.setUpdatedAt(Instant.now());
 
         return product;
+    }
+
+    public Product getProductEntityByUuid(UUID productUuid) {
+        return productRepository.findByUId(productUuid)
+                .orElseThrow(() ->
+                        new ProductNotFoundException("Product not found with UUID: " + productUuid));
     }
 
     private void updateProductFromRequest(Product product, ProductRequestDTO req) {

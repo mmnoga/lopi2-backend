@@ -2,8 +2,8 @@ package com.liftoff.project.service;
 
 import com.liftoff.project.controller.request.CategoryRequestDTO;
 import com.liftoff.project.controller.response.CategoryResponseDTO;
-import com.liftoff.project.exception.CategoryNotFoundException;
-import com.liftoff.project.exception.ParentCategoryNotFoundException;
+import com.liftoff.project.exception.category.CategoryNotFoundException;
+import com.liftoff.project.exception.category.ParentCategoryNotFoundException;
 import com.liftoff.project.model.Category;
 
 import java.util.List;

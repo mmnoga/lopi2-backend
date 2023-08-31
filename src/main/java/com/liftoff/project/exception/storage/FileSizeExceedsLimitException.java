@@ -1,14 +1,14 @@
-package com.liftoff.project.exception;
+package com.liftoff.project.exception.storage;
 
 import org.springframework.http.HttpStatus;
 
-public class CategoryNotFoundException extends RuntimeException{
+public class FileSizeExceedsLimitException extends RuntimeException {
     private final HttpStatus status;
     private final String message;
 
-    public CategoryNotFoundException(String message) {
+    public FileSizeExceedsLimitException(String message) {
         super(message);
-        this.status = HttpStatus.NOT_FOUND;
+        this.status = HttpStatus.BAD_REQUEST;
         this.message = message;
     }
 

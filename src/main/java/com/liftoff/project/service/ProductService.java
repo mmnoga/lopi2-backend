@@ -3,9 +3,10 @@ package com.liftoff.project.service;
 import com.liftoff.project.controller.request.ProductRequestDTO;
 import com.liftoff.project.controller.response.PaginatedProductResponseDTO;
 import com.liftoff.project.controller.response.ProductResponseDTO;
-import com.liftoff.project.exception.CategoryNotFoundException;
-import com.liftoff.project.exception.ImageNotFoundException;
-import com.liftoff.project.exception.ProductNotFoundException;
+import com.liftoff.project.exception.category.CategoryNotFoundException;
+import com.liftoff.project.exception.storage.ImageNotFoundException;
+import com.liftoff.project.exception.product.ProductNotFoundException;
+import com.liftoff.project.model.Product;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -107,5 +108,14 @@ public interface ProductService {
      * @throws ProductNotFoundException If the product with the given UUID is not found.
      */
     ProductResponseDTO deleteImageByUrlFromProduct(UUID productUuid, String imageUrl);
+
+    /**
+     * Retrieves a product entity by its unique identifier.
+     *
+     * @param productUuid The unique identifier (UUID) of the product to retrieve.
+     * @return The product entity if found.
+     * @throws ProductNotFoundException If no product is found with the given UUID.
+     */
+    Product getProductEntityByUuid(UUID productUuid);
 
 }

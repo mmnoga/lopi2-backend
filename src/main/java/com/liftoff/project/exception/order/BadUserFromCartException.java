@@ -1,15 +1,14 @@
-package com.liftoff.project.exception;
+package com.liftoff.project.exception.order;
 
 import org.springframework.http.HttpStatus;
 
-public class CannotDeleteCategoryException extends RuntimeException{
-
+public class BadUserFromCartException extends RuntimeException{
     private final HttpStatus status;
     private final String message;
 
-    public CannotDeleteCategoryException(String message) {
+    public BadUserFromCartException(String message) {
         super(message);
-        this.status = HttpStatus.BAD_REQUEST;
+        this.status = HttpStatus.FOUND;
         this.message = message;
     }
 

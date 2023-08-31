@@ -2,8 +2,8 @@ package com.liftoff.project.controller;
 
 import com.liftoff.project.controller.request.CategoryRequestDTO;
 import com.liftoff.project.controller.response.CategoryResponseDTO;
-import com.liftoff.project.exception.CannotDeleteCategoryException;
-import com.liftoff.project.exception.CategoryNotFoundException;
+import com.liftoff.project.exception.category.CannotDeleteCategoryException;
+import com.liftoff.project.exception.category.CategoryNotFoundException;
 import com.liftoff.project.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;

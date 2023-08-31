@@ -1,12 +1,12 @@
-package com.liftoff.project.exception;
+package com.liftoff.project.exception.category;
 
 import org.springframework.http.HttpStatus;
 
-public class ProductNotFoundException extends RuntimeException {
+public class ParentCategoryNotFoundException extends RuntimeException{
     private final HttpStatus status;
     private final String message;
 
-    public ProductNotFoundException(String message) {
+    public ParentCategoryNotFoundException(String message) {
         super(message);
         this.status = HttpStatus.NOT_FOUND;
         this.message = message;

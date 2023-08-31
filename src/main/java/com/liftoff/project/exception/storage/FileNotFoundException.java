@@ -1,14 +1,15 @@
-package com.liftoff.project.exception;
+package com.liftoff.project.exception.storage;
 
 import org.springframework.http.HttpStatus;
 
-public class FileSizeExceedsLimitException extends RuntimeException {
+public class FileNotFoundException extends RuntimeException {
+
     private final HttpStatus status;
     private final String message;
 
-    public FileSizeExceedsLimitException(String message) {
+    public FileNotFoundException(String message) {
         super(message);
-        this.status = HttpStatus.BAD_REQUEST;
+        this.status = HttpStatus.NOT_FOUND;
         this.message = message;
     }
 
@@ -19,4 +20,5 @@ public class FileSizeExceedsLimitException extends RuntimeException {
     public String getMessage() {
         return message;
     }
+
 }

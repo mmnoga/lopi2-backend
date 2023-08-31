@@ -1,15 +1,17 @@
 package com.liftoff.project.exception.handler;
 
-import com.liftoff.project.exception.CannotDeleteCategoryException;
-import com.liftoff.project.exception.CategoryNotFoundException;
-import com.liftoff.project.exception.CookiesNotFoundException;
-import com.liftoff.project.exception.FileNotFoundException;
-import com.liftoff.project.exception.FileSizeExceedsLimitException;
-import com.liftoff.project.exception.ImageNotFoundException;
-import com.liftoff.project.exception.InvalidParentCategoryException;
+import com.liftoff.project.exception.cart.CartNotFoundException;
+import com.liftoff.project.exception.category.CannotDeleteCategoryException;
+import com.liftoff.project.exception.category.CategoryNotFoundException;
+import com.liftoff.project.exception.cookie.CookiesNotFoundException;
+import com.liftoff.project.exception.order.BadUserFromCartException;
+import com.liftoff.project.exception.storage.FileNotFoundException;
+import com.liftoff.project.exception.storage.FileSizeExceedsLimitException;
+import com.liftoff.project.exception.storage.ImageNotFoundException;
+import com.liftoff.project.exception.category.InvalidParentCategoryException;
 import com.liftoff.project.exception.LoginAuthenticationException;
-import com.liftoff.project.exception.ParentCategoryNotFoundException;
-import com.liftoff.project.exception.ProductNotFoundException;
+import com.liftoff.project.exception.category.ParentCategoryNotFoundException;
+import com.liftoff.project.exception.product.ProductNotFoundException;
 import com.liftoff.project.exception.UserExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -93,6 +95,15 @@ public class GlobalExceptionHandler {
         return createErrorResponse(ex.getMessage(), ex.getStatus());
     }
 
+    @ExceptionHandler(CartNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleCartNotFoundException(CartNotFoundException ex) {
+        return createErrorResponse(ex.getMessage(), ex.getStatus());
+    }
+
+    @ExceptionHandler(BadUserFromCartException.class)
+    public ResponseEntity<Map<String, String>> handleBadUserFromCartException(BadUserFromCartException ex) {
+        return createErrorResponse(ex.getMessage(), ex.getStatus());
+    }
 
     private ResponseEntity<Map<String, String>> createErrorResponse(String errorMessage, HttpStatus status) {
         Map<String, String> errorResponse = new HashMap<>();
