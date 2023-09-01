@@ -1,14 +1,17 @@
 package com.liftoff.project.service.impl;
 
+import com.liftoff.project.controller.request.CartRequestDTO;
 import com.liftoff.project.controller.response.CartItemResponseDTO;
 import com.liftoff.project.controller.response.CartResponseDTO;
 import com.liftoff.project.exception.cart.CartNotFoundException;
+import com.liftoff.project.exception.product.ProductNotEnoughQuantityException;
 import com.liftoff.project.exception.product.ProductNotFoundException;
 import com.liftoff.project.mapper.CartMapper;
 import com.liftoff.project.model.Cart;
 import com.liftoff.project.model.CartItem;
 import com.liftoff.project.model.Product;
 import com.liftoff.project.model.Session;
+import com.liftoff.project.repository.CartItemRepository;
 import com.liftoff.project.repository.CartRepository;
 import com.liftoff.project.repository.UserRepository;
 import com.liftoff.project.service.AuthCartService;
@@ -31,6 +34,7 @@ public class AuthCartServiceImpl implements AuthCartService {
 
     private final CartRepository cartRepository;
     private final UserRepository userRepository;
+    private final CartItemRepository cartItemRepository;
     private final CartService cartService;
     private final ProductService productService;
     private final SessionService sessionService;
@@ -69,7 +73,7 @@ public class AuthCartServiceImpl implements AuthCartService {
 
     @Override
     @Transactional
-    public String processCartForUser(String username, UUID productUid, int quantity) {
+    public CartResponseDTO processCartForUser(String username, UUID productUid, int quantity) {
         String cartId = findCartIdByUsername(username);
 
         if (cartId == null) {
@@ -83,12 +87,17 @@ public class AuthCartServiceImpl implements AuthCartService {
 
             Product product = productService.getProductEntityByUuid(productUid);
 
-            if (product != null) {
-                addProductToCart(cart, product, quantity);
-                return "Product " + cartId + " added to cart";
-            } else {
-                throw new ProductNotFoundException("Product not found");
+            if (!cartService
+                    .hasProductEnoughQuantity(product, quantity, cart)) {
+                throw new ProductNotEnoughQuantityException("Not enough quantity of product with UUID: "
+                        + product.getUId());
             }
+
+            Cart savedCart = cartService.addProductToCart(cart, product, quantity);
+
+            return cartMapper
+                    .mapCartToCartResponseDTO(savedCart);
+
         } catch (CartNotFoundException ex) {
             throw new CartNotFoundException("Cart not found");
         }
@@ -119,8 +128,6 @@ public class AuthCartServiceImpl implements AuthCartService {
         cartResponse.setCartItems(cartItemResponseList);
         cartResponse.setTotalPrice(cart.getTotalPrice());
         cartResponse.setTotalQuantity(cart.getTotalQuantity());
-        cartResponse.setCreatedAt(cart.getCreatedAt());
-        cartResponse.setUpdatedAt(cart.getUpdatedAt());
 
         return cartResponse;
     }
@@ -144,32 +151,62 @@ public class AuthCartServiceImpl implements AuthCartService {
         cartRepository.save(cart);
     }
 
-    private void addProductToCart(Cart cart, Product product, int quantity) {
-        CartItem existingCartItem = cart.getCartItems().stream()
-                .filter(item -> item.getProduct().equals(product))
-                .findFirst()
-                .orElse(null);
+    @Override
+    @Transactional
+    public void deleteCartProductByUuidForUser(UUID productUuid, String username) {
+        Cart cart = cartRepository.findByUserUsername(username)
+                .orElseThrow(() -> new CartNotFoundException("Cart not found for user: " + username));
 
-        if (existingCartItem != null) {
-            existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
-        } else {
-            CartItem newCartItem = new CartItem();
-            newCartItem.setProduct(product);
-            newCartItem.setQuantity(quantity);
-            newCartItem.setCart(cart);
-            cart.getCartItems().add(newCartItem);
+        CartItem cartItemToRemove = cart.getCartItems().stream()
+                .filter(cartItem -> cartItem.getProduct().getUId().equals(productUuid))
+                .findFirst()
+                .orElseThrow(() -> new ProductNotFoundException("Product not found in the cart"));
+
+        cartItemToRemove.setCart(null);
+        cart.getCartItems().remove(cartItemToRemove);
+
+        Cart finalCart = cartService.calculateTotalPriceAndTotalQuantity(cart);
+
+        cartItemRepository.delete(cartItemToRemove);
+        cartRepository.save(finalCart);
+    }
+
+    @Override
+    public CartResponseDTO updateCartForUser(List<CartRequestDTO> cartRequestDTOList, String username) {
+        String cartId = findCartIdByUsername(username);
+
+        if (cartId == null) {
+            cartId = createCartForUser(username);
         }
 
-        double totalPrice = cart.getCartItems().stream()
-                .mapToDouble(item -> item.getProduct().getRegularPrice() * item.getQuantity())
-                .sum();
-        int totalQuantity = cart.getCartItems().stream()
-                .mapToInt(CartItem::getQuantity)
-                .sum();
-        cart.setTotalPrice(totalPrice);
-        cart.setTotalQuantity(totalQuantity);
+        try {
+            Cart cart = cartRepository
+                    .findByUuid(UUID.fromString(cartId))
+                    .orElseThrow(() -> new CartNotFoundException("Cart not found"));
 
-        cartRepository.save(cart);
+            for (CartRequestDTO cartRequestDTO : cartRequestDTOList) {
+                UUID productUuid = cartRequestDTO.getProductUuid();
+                Integer newQuantity = cartRequestDTO.getQuantity();
+
+                CartItem cartItem = cart.getCartItems().stream()
+                        .filter(item -> item.getProduct().getUId().equals(productUuid))
+                        .findFirst()
+                        .orElseThrow(() -> new ProductNotFoundException("Product not found in the cart"));
+
+                cartItem.setQuantity(newQuantity);
+            }
+
+            Cart updatedCart = cartService.calculateTotalPriceAndTotalQuantity(cart);
+
+            updatedCart.setUpdatedAt(Instant.now());
+
+            Cart savedCart = cartRepository.save(updatedCart);
+
+            return cartMapper.mapCartToCartResponseDTO(savedCart);
+
+        } catch (CartNotFoundException ex) {
+            throw new CartNotFoundException("Cart not found");
+        }
     }
 
 }

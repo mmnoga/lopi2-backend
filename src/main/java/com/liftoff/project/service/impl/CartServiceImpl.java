@@ -1,6 +1,11 @@
 package com.liftoff.project.service.impl;
 
+import com.liftoff.project.controller.request.CartRequestDTO;
+import com.liftoff.project.controller.response.CartResponseDTO;
 import com.liftoff.project.exception.cart.CartNotFoundException;
+import com.liftoff.project.exception.product.ProductNotEnoughQuantityException;
+import com.liftoff.project.exception.product.ProductNotFoundException;
+import com.liftoff.project.mapper.CartMapper;
 import com.liftoff.project.model.Cart;
 import com.liftoff.project.model.CartItem;
 import com.liftoff.project.model.Product;
@@ -19,7 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,25 +42,17 @@ public class CartServiceImpl implements CartService {
     private final CookieService cookieService;
     private final ProductService productService;
     private final SessionService sessionService;
+    private final CartMapper cartMapper;
 
     @Override
     public void clearCart(HttpServletRequest request) {
         String cartId = cookieService
                 .getCookieValue(cookieName, request);
 
-        cartRepository.findByUuid(UUID.fromString(cartId))
-                .ifPresent(cart -> {
-                    List<CartItem> cartItems = cart.getCartItems();
+        Cart cart = cartRepository.findByUuid(UUID.fromString(cartId))
+                .orElseThrow(() -> new CartNotFoundException("Cart not found"));
 
-                    for (CartItem cartItem : cartItems) {
-                        cartItem.setCart(null);
-                    }
-
-                    cartItems.clear();
-                    cart.setTotalPrice(0.0);
-                    cart.setTotalQuantity(0);
-                    cartRepository.save(cart);
-                });
+        clearCart(cart);
     }
 
     @Override
@@ -66,34 +63,18 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public void processCart(UUID productUuid, int quantity,
+    public Cart processCart(UUID productUuid, int quantity,
                             HttpServletRequest request, HttpServletResponse response) {
         Cart cart = getCartByCookieOrCreateNewCart(request, response);
 
         Product product = productService.getProductEntityByUuid(productUuid);
 
-        boolean productAlreadyInCart = false;
-        for (CartItem cartItem : cart.getCartItems()) {
-            if (cartItem.getProduct().equals(product)) {
-                cartItem.setQuantity(cartItem.getQuantity() + quantity);
-                productAlreadyInCart = true;
-                break;
-            }
+        if (!hasProductEnoughQuantity(product, quantity, cart)) {
+            throw new ProductNotEnoughQuantityException("Not enough quantity of product with UUID: "
+                    + product.getUId());
         }
 
-        if (!productAlreadyInCart) {
-            CartItem cartItem = new CartItem();
-            cartItem.setProduct(product);
-            cartItem.setQuantity(quantity);
-            cartItem.setCart(cart);
-
-            cartItemRepository.save(cartItem);
-        }
-
-        cart.setTotalPrice(cart.getTotalPrice() + (product.getRegularPrice() * quantity));
-        cart.setTotalQuantity(cart.getTotalQuantity() + quantity);
-
-        cartRepository.save(cart);
+        return addProductToCart(cart, product, quantity);
     }
 
     @Override
@@ -157,26 +138,171 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+    @Override
+    public Cart addProductToCart(Cart cart, Product product, int quantity) {
+        boolean productAlreadyInCart = false;
+
+        for (CartItem cartItem : cart.getCartItems()) {
+            if (cartItem.getProduct().equals(product)) {
+                cartItem.setQuantity(cartItem.getQuantity() + quantity);
+                productAlreadyInCart = true;
+                break;
+            }
+        }
+
+        if (!productAlreadyInCart) {
+            CartItem cartItem = new CartItem();
+            cartItem.setProduct(product);
+            cartItem.setQuantity(quantity);
+
+            cart.addCartItem(cartItem);
+        }
+
+        cart.setTotalPrice(cart.getTotalPrice() + (product.getRegularPrice() * quantity));
+        cart.setTotalQuantity(cart.getTotalQuantity() + quantity);
+
+        return cartRepository.save(cart);
+    }
+
+    @Override
+    public boolean hasProductEnoughQuantity(Product product, int quantity, Cart cart) {
+        List<CartItem> existingItems = cart.getCartItems().stream()
+                .filter(cartItem -> cartItem.getProduct().equals(product))
+                .toList();
+
+        int totalExistingQuantity = existingItems.stream()
+                .mapToInt(CartItem::getQuantity)
+                .sum();
+
+        int availableQuantity = product.getQuantity();
+
+        int totalQuantityAfterAddition = totalExistingQuantity + quantity;
+
+        return totalQuantityAfterAddition <= availableQuantity;
+    }
+
+    @Override
+    public void removeProduct(UUID productUuid, HttpServletRequest request) {
+        String cartId = cookieService.getCookieValue(cookieName, request);
+
+        Cart cart = cartRepository.findByUuid(UUID.fromString(cartId))
+                .orElseThrow(() -> new CartNotFoundException("Cart not found"));
+
+        CartItem itemToRemove = cart.getCartItems().stream()
+                .filter(cartItem -> cartItem.getProduct().getUId().equals(productUuid))
+                .findFirst()
+                .orElseThrow(() -> new ProductNotFoundException("Product not found in the cart"));
+
+        Double productPrice = itemToRemove.getProduct().getRegularPrice();
+        Integer productQuantity = itemToRemove.getQuantity();
+        Double productTotalPrice = productPrice * productQuantity;
+
+        cart.setTotalPrice(cart.getTotalPrice() - productTotalPrice);
+        cart.setTotalQuantity(cart.getTotalQuantity() - productQuantity);
+
+        cart.getCartItems().remove(itemToRemove);
+        itemToRemove.setCart(null);
+
+        cartRepository.save(cart);
+        cartItemRepository.delete(itemToRemove);
+    }
+
+    @Override
+    public CartResponseDTO updateCart(List<CartRequestDTO> cartRequestDTOList, HttpServletRequest request) {
+        String cartId = cookieService.getCookieValue(cookieName, request);
+
+        Cart cart = cartRepository.findByUuid(UUID.fromString(cartId))
+                .orElseThrow(() -> new CartNotFoundException("Cart not found"));
+
+        Cart updatedCart = createCartCopy(cart);
+
+        for (CartRequestDTO cartRequestDTO : cartRequestDTOList) {
+            UUID productUuid = cartRequestDTO.getProductUuid();
+            Integer newQuantity = cartRequestDTO.getQuantity();
+
+            CartItem cartItem = updatedCart.getCartItems().stream()
+                    .filter(item -> item.getProduct().getUId().equals(productUuid))
+                    .findFirst()
+                    .orElseThrow(() -> new ProductNotFoundException("Product not found in the cart"));
+
+            if (!hasProductEnoughQuantity(cartItem.getProduct(), newQuantity, cart)) {
+                throw new ProductNotEnoughQuantityException(
+                        "Insufficient quantity of product with UUID: " + productUuid + " in stock");
+            }
+
+            cartItem.setQuantity(newQuantity);
+        }
+
+        Cart finalCart = calculateTotalPriceAndTotalQuantity(updatedCart);
+
+        finalCart.setUpdatedAt(Instant.now());
+
+        Cart savedCart = cartRepository.save(finalCart);
+
+        return cartMapper.mapCartToCartResponseDTO(savedCart);
+    }
+
+    @Override
+    public Cart calculateTotalPriceAndTotalQuantity(Cart cart) {
+        double totalPrice = 0.0;
+        int totalQuantity = 0;
+
+        for (CartItem cartItem : cart.getCartItems()) {
+            Double productPrice = cartItem.getProduct().getRegularPrice();
+            Integer productQuantity = cartItem.getQuantity();
+
+            totalPrice += productPrice * productQuantity;
+            totalQuantity += productQuantity;
+        }
+
+        Cart updatedCart = new Cart();
+        updatedCart.setId(cart.getId());
+        updatedCart.setUuid(cart.getUuid());
+        updatedCart.setUser(cart.getUser());
+        updatedCart.setCartItems(cart.getCartItems());
+        updatedCart.setTotalPrice(totalPrice);
+        updatedCart.setTotalQuantity(totalQuantity);
+        updatedCart.setCreatedAt(cart.getCreatedAt());
+        updatedCart.setUpdatedAt(cart.getUpdatedAt());
+        updatedCart.setSession(cart.getSession());
+
+        return updatedCart;
+    }
+
+    private Cart createCartCopy(Cart cart) {
+        Cart copyCart = new Cart();
+        copyCart.setId(cart.getId());
+        copyCart.setUuid(cart.getUuid());
+        copyCart.setUser(cart.getUser());
+        copyCart.setCartItems(new ArrayList<>(cart.getCartItems()));
+        copyCart.setTotalPrice(cart.getTotalPrice());
+        copyCart.setTotalQuantity(cart.getTotalQuantity());
+        copyCart.setCreatedAt(cart.getCreatedAt());
+        copyCart.setUpdatedAt(cart.getUpdatedAt());
+        copyCart.setSession(cart.getSession());
+
+        return copyCart;
+    }
+
     private Cart createCart() {
         Cart cart = new Cart();
-
         cart.setUuid(UUID.randomUUID());
-        cart.setCartItems(Collections.emptyList());
-        cart.setTotalPrice(0.0);
-        cart.setTotalQuantity(0);
 
         return cartRepository.save(cart);
     }
 
     private Cart createCartWithId(String cartId) {
         Cart cart = new Cart();
-
         cart.setUuid(UUID.fromString(cartId));
-        cart.setCartItems(Collections.emptyList());
-        cart.setTotalPrice(0.0);
-        cart.setTotalQuantity(0);
 
         return cartRepository.save(cart);
+    }
+
+    private void clearCart(Cart cart) {
+        cart.getCartItems()
+                .forEach(cartItem -> cartItem.setCart(null));
+
+        cartRepository.delete(cart);
     }
 
 }

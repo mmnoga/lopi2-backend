@@ -60,4 +60,9 @@ public class Cart {
     @JoinColumn(name = "SESSION_ID")
     private Session session;
 
+    public void addCartItem(CartItem cartItem) {
+        cartItems.add(cartItem);
+        cartItem.setCart(this);
+    }
+
 }
