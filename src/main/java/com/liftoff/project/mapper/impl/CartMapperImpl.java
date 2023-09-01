@@ -18,7 +18,7 @@ public class CartMapperImpl implements CartMapper {
     private final ProductMapper productMapper;
 
     @Override
-    public CartResponseDTO mapEntityToResponse(Cart cart) {
+    public CartResponseDTO mapCartToCartResponseDTO(Cart cart) {
         if (cart == null) {
             return null;
         }
@@ -35,8 +35,6 @@ public class CartMapperImpl implements CartMapper {
                 .collect(Collectors.toList()));
         cartResponseDTO.setTotalPrice(cart.getTotalPrice());
         cartResponseDTO.setTotalQuantity(cart.getTotalQuantity());
-        cartResponseDTO.setCreatedAt(cart.getCreatedAt());
-        cartResponseDTO.setUpdatedAt(cart.getUpdatedAt());
 
         return cartResponseDTO;
     }

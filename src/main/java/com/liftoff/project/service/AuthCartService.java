@@ -1,9 +1,12 @@
 package com.liftoff.project.service;
 
+import com.liftoff.project.controller.request.CartRequestDTO;
 import com.liftoff.project.controller.response.CartResponseDTO;
 import com.liftoff.project.exception.cart.CartNotFoundException;
+import com.liftoff.project.exception.product.ProductNotEnoughQuantityException;
 import com.liftoff.project.exception.product.ProductNotFoundException;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface AuthCartService {
@@ -60,5 +63,27 @@ public interface AuthCartService {
      * @param username the username of the user whose cart will be cleared
      */
     void clearCartForUser(String username);
+
+    /**
+     * Deletes a product with the specified UUID from the user's shopping cart and the associated database record.
+     *
+     * @param productUuid The UUID of the product to be removed from the cart.
+     * @param username    The username of the user whose cart is being modified.
+     * @throws CartNotFoundException     If the user's shopping cart is not found.
+     * @throws ProductNotFoundException If the specified product is not found in the cart.
+     */
+    void deleteCartProductByUuidForUser(UUID productUuid, String username);
+
+    /**
+     * Updates the quantities of products in the user's shopping cart based on the provided list of cart request DTOs.
+     *
+     * @param cartRequestDTOList A list of CartRequestDTO objects specifying the products and their new quantities.
+     * @param username           The username of the user whose cart is being updated.
+     * @return A CartResponseDTO containing the updated cart information.
+     * @throws CartNotFoundException             If the user's shopping cart is not found.
+     * @throws ProductNotFoundException          If a specified product is not found in the cart.
+     * @throws ProductNotEnoughQuantityException If there is not enough quantity of a product in stock.
+     */
+    CartResponseDTO updateCartForUser(List<CartRequestDTO> cartRequestDTOList, String username);
 
 }

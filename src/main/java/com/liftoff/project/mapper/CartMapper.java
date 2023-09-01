@@ -8,12 +8,12 @@ import com.liftoff.project.model.CartItem;
 public interface CartMapper {
 
     /**
-     * Maps the Cart entity to the CartResponseDTO object.
+     * Maps an object of the Cart class to an object of the CartResponseDTO.
      *
-     * @param cart The Cart entity to be mapped.
-     * @return The corresponding CartResponseDTO.
+     * @param cart The Cart object to be mapped to a CartResponseDTO object.
+     * @return A CartResponseDTO object containing the mapped information from the Cart object.
      */
-    CartResponseDTO mapEntityToResponse(Cart cart);
+    CartResponseDTO mapCartToCartResponseDTO(Cart cart);
 
     /**
      * Maps a {@link CartItem} entity to a {@link CartItemResponseDTO}.
