@@ -27,7 +27,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -75,9 +74,7 @@ public class CartServiceImpl implements CartService {
                     + product.getUId());
         }
 
-        Cart updatedCart = addProductToCart(cart, product, quantity);
-
-        return updatedCart;
+        return addProductToCart(cart, product, quantity);
     }
 
     @Override
@@ -171,7 +168,7 @@ public class CartServiceImpl implements CartService {
     public boolean hasProductEnoughQuantity(Product product, int quantity, Cart cart) {
         List<CartItem> existingItems = cart.getCartItems().stream()
                 .filter(cartItem -> cartItem.getProduct().equals(product))
-                .collect(Collectors.toList());
+                .toList();
 
         int totalExistingQuantity = existingItems.stream()
                 .mapToInt(CartItem::getQuantity)
@@ -247,8 +244,8 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Cart calculateTotalPriceAndTotalQuantity(Cart cart) {
-        Double totalPrice = 0.0;
-        Integer totalQuantity = 0;
+        double totalPrice = 0.0;
+        int totalQuantity = 0;
 
         for (CartItem cartItem : cart.getCartItems()) {
             Double productPrice = cartItem.getProduct().getRegularPrice();
