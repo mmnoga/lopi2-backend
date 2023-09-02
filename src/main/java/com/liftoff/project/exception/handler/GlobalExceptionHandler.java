@@ -1,10 +1,13 @@
 package com.liftoff.project.exception.handler;
 
 import com.liftoff.project.exception.cart.CartNotFoundException;
+import com.liftoff.project.exception.cart.EntityNotFoundException;
+import com.liftoff.project.exception.cart.TermsNotAcceptedException;
 import com.liftoff.project.exception.category.CannotDeleteCategoryException;
 import com.liftoff.project.exception.category.CategoryNotFoundException;
 import com.liftoff.project.exception.cookie.CookiesNotFoundException;
 import com.liftoff.project.exception.order.BadUserFromCartException;
+import com.liftoff.project.exception.order.OrderExistsException;
 import com.liftoff.project.exception.storage.FileNotFoundException;
 import com.liftoff.project.exception.storage.FileSizeExceedsLimitException;
 import com.liftoff.project.exception.storage.ImageNotFoundException;
@@ -102,6 +105,21 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BadUserFromCartException.class)
     public ResponseEntity<Map<String, String>> handleBadUserFromCartException(BadUserFromCartException ex) {
+        return createErrorResponse(ex.getMessage(), ex.getStatus());
+    }
+
+    @ExceptionHandler(OrderExistsException.class)
+    public ResponseEntity<Map<String, String>> handleOrderExistsException(OrderExistsException ex) {
+        return createErrorResponse(ex.getMessage(), ex.getStatus());
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleEntityNotFoundException(EntityNotFoundException ex) {
+        return createErrorResponse(ex.getMessage(), ex.getStatus());
+    }
+
+    @ExceptionHandler(TermsNotAcceptedException.class)
+    public ResponseEntity<Map<String, String>> handleTermsNotAcceptedException(TermsNotAcceptedException ex) {
         return createErrorResponse(ex.getMessage(), ex.getStatus());
     }
 

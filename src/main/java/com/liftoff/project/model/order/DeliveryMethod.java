@@ -1,17 +1,36 @@
 package com.liftoff.project.model.order;
 
-public enum DeliveryMethod {
-    IN_POST(10.0),
-    COURIER_SERVICE(20.0),
-    IN_STORE_PICKUP(0.0);
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-    private final double cost;
+@Entity
+@Table(name = "DELIVERY_METHODS")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class DeliveryMethod {
 
-    DeliveryMethod(double cost) {
-        this.cost = cost;
-    }
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long id;
 
-    public double getCost() {
-        return cost;
-    }
+    @Column(name = "NAME", unique = true)
+    private String name;
+
+    @Column(name = "DESCRIPTION")
+    private String description;
+
+    @Column(name = "COST")
+    private Double cost;
+
 }

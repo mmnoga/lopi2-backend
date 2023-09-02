@@ -21,7 +21,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Builder(setterPrefix = "with")
+@Builder
 public class Address {
 
     @Id

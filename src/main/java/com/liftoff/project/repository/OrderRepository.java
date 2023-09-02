@@ -24,4 +24,15 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
      * @return An {@link Optional} containing the order if found, or an empty {@link Optional} if not found.
      */
     Optional<Order> findByUserUsername(String username);
+
+
+
+    /**
+     * Finds a order by Cart UUID.
+     *
+     * @param cartUuid The UUID of the cart.
+     * @return An {@link Optional} containing the order if found, or an empty {@link Optional} if not found.
+     */
+
+    Optional<Order> findByCartUuid(UUID cartUuid);
 }

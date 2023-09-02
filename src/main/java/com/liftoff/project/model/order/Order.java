@@ -1,5 +1,6 @@
 package com.liftoff.project.model.order;
 
+import com.liftoff.project.model.Cart;
 import com.liftoff.project.model.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -13,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,7 +50,7 @@ public class Order {
     private User user;
 
     @Column(name = "ORDER_DATE")
-    private LocalDateTime orderDate;
+    private Instant orderDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "STATUS")
@@ -57,8 +59,8 @@ public class Order {
     @Column(name = "TOTAL_PRICE")
     private Double totalPrice;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "DELIVERY_METHOD")
+    @ManyToOne
+    @JoinColumn(name = "DELIVERY_METHOD_ID")
     private DeliveryMethod deliveryMethod;
 
     @Column(name = "DELIVERY_COST")
@@ -72,9 +74,23 @@ public class Order {
     @JoinColumn(name = "BILLING_ADDRESS_ID")
     private Address billingAddress;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "PAYMENT_METHOD")
+    @ManyToOne
+    @JoinColumn(name = "PAYMENT_METHOD_ID")
     private PaymentMethod paymentMethod;
+
+    @Column(name = "TERMS_ACCEPTED")
+    private Boolean termsAccepted;
+
+    @Column(name = "CART_UUID")
+    private UUID cartUuid;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cart_id", referencedColumnName = "id")
+    private Cart cart;
+
+    @ManyToOne
+    @JoinColumn(name = "CUSTOMER_ID")
+    private Customer customer;
 
     @CreationTimestamp(source = SourceType.DB)
     @Column(name = "CREATED_AT")

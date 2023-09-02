@@ -1,0 +1,118 @@
+package com.liftoff.project.mapper.impl;
+
+import com.liftoff.project.controller.order.request.AddressRequestDTO;
+import com.liftoff.project.controller.order.response.AddressResponseDTO;
+import com.liftoff.project.controller.order.response.CustomerResponseDTO;
+import com.liftoff.project.controller.order.response.OrderDetailsResponseDTO;
+import com.liftoff.project.controller.order.response.OrderSummaryResponseDTO;
+import com.liftoff.project.controller.response.CartItemResponseDTO;
+import com.liftoff.project.mapper.CartMapper;
+import com.liftoff.project.mapper.DeliveryMethodMapper;
+import com.liftoff.project.mapper.OrderMapper;
+import com.liftoff.project.mapper.PaymentMethodMapper;
+import com.liftoff.project.model.order.Address;
+import com.liftoff.project.model.order.Customer;
+import com.liftoff.project.model.order.Order;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Component
+@RequiredArgsConstructor
+public class OrderMapperImpl implements OrderMapper {
+
+    private final CartMapper cartMapper;
+    private final CartItemMapper cartItemMapper;
+    private DeliveryMethodMapper deliveryMethodMapper;
+    private PaymentMethodMapper paymentMethodMapper;
+
+    @Override
+    public OrderSummaryResponseDTO mapOrderToOrderSummaryResponseDTO(Order order) {
+        String customerName = order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName();
+
+        List<CartItemResponseDTO> cartItems = order.getCart().getCartItems().stream()
+                .map(cartItem -> cartItemMapper.mapCartItemToCartItemResponseDTO(cartItem))
+                .collect(Collectors.toList());
+
+        OrderSummaryResponseDTO orderSummaryDTO = OrderSummaryResponseDTO.builder()
+                .customerName(customerName)
+                .orderDate(order.getOrderDate())
+                .cartItems(cartItems)
+                .totalPrice(order.getTotalPrice())
+                .build();
+
+        return orderSummaryDTO;
+    }
+
+    @Override
+    public OrderDetailsResponseDTO mapOrderToOrderDetailsResponseDTO(Order order) {
+        return OrderDetailsResponseDTO.builder()
+                .uId(order.getUuid())
+                .orderDate(order.getOrderDate())
+                .status(order.getStatus())
+                .totalPrice(order.getTotalPrice())
+                .deliveryMethod(deliveryMethodMapper
+                        .mapDeliveryMethodToDeliveryMethodResponseDTO(order.getDeliveryMethod()))
+                .shippingAddress(mapAddressToAddressResponseDTO(order.getShippingAddress()))
+                .billingAddress(mapAddressToAddressResponseDTO(order.getBillingAddress()))
+                .paymentMethod(order.getPaymentMethod())
+                .cart(cartMapper.mapEntityToResponse(order.getCart()))
+                .customer(mapCustomerToCustomerResponseDTO(order.getCustomer()))
+                .createdAt(order.getCreatedAt())
+                .updatedAt(order.getUpdatedAt())
+                .termsAccepted(order.getTermsAccepted())
+                .build();
+    }
+
+    @Override
+    public CustomerResponseDTO mapCustomerToCustomerResponseDTO(Customer customer){
+        if (customer == null) {
+            return null;
+        }
+
+        return CustomerResponseDTO.builder()
+                .customerType(customer.getCustomerType())
+                .nip(customer.getNip())
+                .companyName(customer.getCompanyName())
+                .salutation(customer.getSalutation())
+                .firstName(customer.getFirstName())
+                .lastName(customer.getLastName())
+                .email(customer.getEmail())
+                .build();
+    }
+
+    @Override
+    public AddressResponseDTO mapAddressToAddressResponseDTO(Address address) {
+        if (address == null) {
+            return null;
+        }
+
+        return AddressResponseDTO.builder()
+                .street(address.getStreet())
+                .houseNumber(address.getHouseNumber())
+                .apartmentNumber(address.getApartmentNumber())
+                .postalCode(address.getPostalCode())
+                .city(address.getCity())
+                .country(address.getCountry())
+                .build();
+    }
+
+    @Override
+    public Address mapAddressRequestToAddress(AddressRequestDTO addressRequestDTO) {
+        if (addressRequestDTO == null) {
+            return null;
+        }
+
+        return Address.builder()
+                .street(addressRequestDTO.getStreet())
+                .houseNumber(addressRequestDTO.getHouseNumber())
+                .apartmentNumber(addressRequestDTO.getApartmentNumber())
+                .postalCode(addressRequestDTO.getPostalCode())
+                .city(addressRequestDTO.getCity())
+                .country(addressRequestDTO.getCountry())
+                .build();
+    }
+
+}

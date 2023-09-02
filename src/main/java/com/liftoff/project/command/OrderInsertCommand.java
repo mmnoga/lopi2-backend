@@ -1,31 +1,33 @@
 package com.liftoff.project.command;
 
-import com.liftoff.project.model.Cart;
-import com.liftoff.project.model.CartItem;
+import com.liftoff.project.exception.cart.EntityNotFoundException;
 import com.liftoff.project.model.Product;
-import com.liftoff.project.model.Session;
 import com.liftoff.project.model.User;
 import com.liftoff.project.model.order.Address;
 import com.liftoff.project.model.order.DeliveryMethod;
+import com.liftoff.project.model.order.DeliveryMethod___;
 import com.liftoff.project.model.order.Order;
 import com.liftoff.project.model.order.OrderItem;
 import com.liftoff.project.model.order.OrderStatus;
 import com.liftoff.project.model.order.PaymentMethod;
+import com.liftoff.project.model.order.PaymentMethod___;
 import com.liftoff.project.repository.AddressRepository;
 import com.liftoff.project.repository.CartRepository;
+import com.liftoff.project.repository.DeliveryMethodRepository;
 import com.liftoff.project.repository.OrderItemRepository;
 import com.liftoff.project.repository.OrderRepository;
+import com.liftoff.project.repository.PaymentMethodRepository;
 import com.liftoff.project.repository.ProductRepository;
 import com.liftoff.project.repository.SessionRepository;
 import com.liftoff.project.repository.UserRepository;
 import jakarta.annotation.Priority;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,38 +43,41 @@ public class OrderInsertCommand implements CommandLineRunner {
     private final ProductRepository productRepository;
     private final CartRepository cartRepository;
     private final SessionRepository sessionRepository;
+    private final DeliveryMethodRepository deliveryMethodRepository;
+    private final PaymentMethodRepository paymentMethodRepository;
 
     @Override
+    @Transactional
     public void run(String... args) {
 
         Address address1 = Address.builder()
-                .withPhoneNumber("48555-665-888")
-                .withHouseNumber("5A")
-                .withCountry("Poland")
-                .withPostalCode("92-009")
-                .withCity("Lodz")
-                .withStreet("Krzemieniowa")
-                .withApartmentNumber("")
+                .phoneNumber("48555-665-888")
+                .houseNumber("5A")
+                .country("Poland")
+                .postalCode("92-009")
+                .city("Lodz")
+                .street("Krzemieniowa")
+                .apartmentNumber("")
                 .build();
 
         Address address2 = Address.builder()
-                .withPhoneNumber("48 111-222-333")
-                .withHouseNumber("510")
-                .withCountry("Poland")
-                .withPostalCode("95-112")
-                .withCity("Warsaw")
-                .withStreet("Woronicza")
-                .withApartmentNumber("67")
+                .phoneNumber("48 111-222-333")
+                .houseNumber("510")
+                .country("Poland")
+                .postalCode("95-112")
+                .city("Warsaw")
+                .street("Woronicza")
+                .apartmentNumber("67")
                 .build();
 
         Address address3 = Address.builder()
-                .withPhoneNumber("48 111-333-444")
-                .withHouseNumber("1")
-                .withCountry("Poland")
-                .withPostalCode("00-100")
-                .withCity("Warsaw")
-                .withStreet("Rogalskiego")
-                .withApartmentNumber("2")
+                .phoneNumber("48 111-333-444")
+                .houseNumber("1")
+                .country("Poland")
+                .postalCode("00-100")
+                .city("Warsaw")
+                .street("Rogalskiego")
+                .apartmentNumber("2")
                 .build();
 
 
@@ -96,15 +101,23 @@ public class OrderInsertCommand implements CommandLineRunner {
 
         User user = userRepository.findAll().get(0);
 
+        DeliveryMethod deliveryMethod = deliveryMethodRepository
+                .findByName("COURIER_SERVICE")
+                .orElseThrow(() -> new EntityNotFoundException("Delivery method not found"));
+
+        PaymentMethod paymentMethod = paymentMethodRepository
+                .findByName("CREDIT_CARD")
+                .orElseThrow(() -> new EntityNotFoundException("Payment method not found"));
+
         Order order = Order.builder()
                 .withUuid(UUID.randomUUID())
                 .withStatus(OrderStatus.ACTIVE)
                 .withTotalPrice(10.23)
-                .withOrderDate(LocalDateTime.now())
-                .withDeliveryMethod(DeliveryMethod.COURIER_SERVICE)
-                .withDeliveryCost(DeliveryMethod.COURIER_SERVICE.getCost())
+                .withOrderDate(Instant.now())
+                .withDeliveryMethod(deliveryMethod)
+                .withDeliveryCost(deliveryMethod.getCost())
                 .withShippingAddress(address3)
-                .withPaymentMethod(PaymentMethod.CREDIT_CARD)
+                .withPaymentMethod(paymentMethod)
                 .withBillingAddress(address3)
                 .build();
 
@@ -114,9 +127,20 @@ public class OrderInsertCommand implements CommandLineRunner {
 
         orderRepository.save(order);
 
-
-
-
+        Order order1 = Order.builder()
+                .withUuid(UUID.fromString("f9df3191-0641-4c80-a851-24d86a20c26f"))
+                .withStatus(OrderStatus.ACTIVE)
+                .withTotalPrice(50.23)
+                .withOrderDate(Instant.now())
+                .withDeliveryMethod(deliveryMethod)
+                .withDeliveryCost(deliveryMethod.getCost())
+                .withShippingAddress(address3)
+                .withPaymentMethod(paymentMethod)
+                .withBillingAddress(address3)
+                .build();
+        order1.setUser(user);
+        order1.setOrderItemList(List.of(orderItem1));
+        orderRepository.save(order1);
 
     }
 
