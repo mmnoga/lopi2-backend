@@ -5,12 +5,10 @@ import com.liftoff.project.model.Product;
 import com.liftoff.project.model.User;
 import com.liftoff.project.model.order.Address;
 import com.liftoff.project.model.order.DeliveryMethod;
-import com.liftoff.project.model.order.DeliveryMethod___;
 import com.liftoff.project.model.order.Order;
 import com.liftoff.project.model.order.OrderItem;
 import com.liftoff.project.model.order.OrderStatus;
 import com.liftoff.project.model.order.PaymentMethod;
-import com.liftoff.project.model.order.PaymentMethod___;
 import com.liftoff.project.repository.AddressRepository;
 import com.liftoff.project.repository.CartRepository;
 import com.liftoff.project.repository.DeliveryMethodRepository;
@@ -27,7 +25,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 

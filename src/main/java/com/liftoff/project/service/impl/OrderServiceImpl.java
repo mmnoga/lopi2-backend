@@ -1,6 +1,7 @@
 package com.liftoff.project.service.impl;
 
 import com.liftoff.project.controller.order.request.OrderChangeRequestDTO;
+import com.liftoff.project.controller.order.request.OrderItemRequestDTO;
 import com.liftoff.project.controller.order.request.OrderRequestDTO;
 import com.liftoff.project.controller.order.response.OrderDetailsResponseDTO;
 import com.liftoff.project.controller.order.response.OrderSummaryResponseDTO;
@@ -8,6 +9,8 @@ import com.liftoff.project.exception.cart.CartNotFoundException;
 import com.liftoff.project.exception.cart.EntityNotFoundException;
 import com.liftoff.project.exception.cart.TermsNotAcceptedException;
 import com.liftoff.project.exception.order.OrderExistsException;
+import com.liftoff.project.mapper.AddressMapper;
+import com.liftoff.project.mapper.OrderItemMapper;
 import com.liftoff.project.mapper.OrderMapper;
 import com.liftoff.project.model.Cart;
 import com.liftoff.project.model.CartItem;
@@ -29,18 +32,18 @@ import com.liftoff.project.repository.UserRepository;
 import com.liftoff.project.service.CartService;
 import com.liftoff.project.service.OrderService;
 import com.liftoff.project.service.UserValidationService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+//import static java.util.stream.Nodes.collect;
 
 @Service
 @RequiredArgsConstructor
@@ -57,6 +60,9 @@ public class OrderServiceImpl implements OrderService {
     private final CartRepository cartRepository;
     private final CustomerRepository customerRepository;
     private final OrderMapper orderMapper;
+    private final OrderItemMapper orderItemMapper;
+    private final AddressMapper addressMapper;
+
 
     @Override
     @Transactional
@@ -114,15 +120,6 @@ public class OrderServiceImpl implements OrderService {
 
         // return orderMapper.mapOrderToOrderDetailsResponseDTO(savedOrder);
 
-//        // to poniżej jeszcze może się przydać
-//        if (userFromCart != null) { // teraz trzeba sprawdzić czy user nie ma
-//            // System.out.println(userFromCart.getFirstName());
-//        } else {
-//            if (sessionRepository.findByuId(cartUuid).isPresent()) {
-//                // System.out.println("Mamy koszyk z sesji i możemy działać z nowym zamówieniem");
-//            }
-//        }
-
 
     }
 
@@ -132,6 +129,24 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = orderRepository.findByUuid(orderUuid).orElseThrow(() -> new EntityNotFoundException("Order entity not found"));
 
+        User user  = userRepository.findByUsername(orderRequest.getEmail()).orElseThrow(() -> new EntityNotFoundException("User entity not found"));
+
+        if(orderRequest.getDeliveryMethodName() !=null) order.setDeliveryMethod(deliveryMethodRepository.findByName(orderRequest.getDeliveryMethodName()).orElseThrow(() -> new EntityNotFoundException("DeliveryMethod entity not found")));
+        if(orderRequest.getPaymentMethodName() !=null) order.setPaymentMethod(paymentMethodRepository.findByName(orderRequest.getPaymentMethodName()).orElseThrow(() -> new EntityNotFoundException("PaymentMethod entity not found")));
+       if(orderRequest.getShippingAddress()!=null) order.setShippingAddress(addressMapper.mapAddressRequestDTOToAddress(orderRequest.getShippingAddress()));
+       if(orderRequest.getBillingAddress()!=null) order.setBillingAddress(addressMapper.mapAddressRequestDTOToAddress(orderRequest.getBillingAddress()));
+
+
+
+        if (orderRequest.getOrderItemRequestDTOList().size() > 0) orderRequest.getOrderItemRequestDTOList().clear();
+
+        order.setOrderItemList(orderRequest.getOrderItemRequestDTOList().stream()
+                .map((OrderItemRequestDTO orderItemRequestDTO) -> {
+                    return orderItemMapper.mapOrderItemRequestDTOToOrderItem(orderItemRequestDTO, order);
+                })
+                .collect(Collectors.toList()));
+
+        Order savedOrder = orderRepository.save(order);
     }
 
 
