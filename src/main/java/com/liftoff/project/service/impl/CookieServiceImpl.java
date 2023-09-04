@@ -35,12 +35,12 @@ public class CookieServiceImpl implements CookieService {
                     .path("/")
                     .maxAge(maxAgeSeconds)
                     .sameSite("None")
-                    .domain(request.getServerName())
+//                    .domain("*")
+//                    .domain("lopi-2-shop.vercel.app")
                     .build();
 
             response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-            response.setHeader("Access-Control-Allow-Origin", "*");
-            response.setHeader("Access-Control-Allow-Credentials", "true");
+//            response.setHeader("Access-Control-Allow-Credentials", "true");
         }
     }
 
