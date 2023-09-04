@@ -45,7 +45,7 @@ public class CartController {
             HttpServletRequest request,
             HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Origin", "https://lopi-2-shop.vercel.app");
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
 
         if (quantity <= 0) {
             throw new ProductNotEnoughQuantityException("Quantity must be greater than 0");
