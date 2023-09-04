@@ -1,7 +1,6 @@
 package com.liftoff.project.model.order;
 
 import com.liftoff.project.model.Product;
-import com.liftoff.project.model.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

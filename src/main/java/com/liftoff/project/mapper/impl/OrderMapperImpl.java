@@ -25,8 +25,8 @@ public class OrderMapperImpl implements OrderMapper {
 
     private final CartMapper cartMapper;
     private final CartItemMapper cartItemMapper;
-    private DeliveryMethodMapper deliveryMethodMapper;
-    private PaymentMethodMapper paymentMethodMapper;
+    private final DeliveryMethodMapper deliveryMethodMapper;
+    private final PaymentMethodMapper paymentMethodMapper;
 
     @Override
     public OrderSummaryResponseDTO mapOrderToOrderSummaryResponseDTO(Order order) {

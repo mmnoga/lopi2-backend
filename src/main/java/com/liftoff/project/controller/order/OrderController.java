@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -54,7 +55,7 @@ public class OrderController {
     }
 
 
-    @PostMapping("/change/delivery/method")
+    @PutMapping("/change-delivery-method")
     @Operation(summary = "Change an order delivery method")
     public ResponseEntity<String> changeDeliveryMethod(@Valid @RequestBody OrderChangeRequestDTO orderChangeRequestDTO) {
 
@@ -62,7 +63,7 @@ public class OrderController {
         return ResponseEntity.ok("OK delivery method ");
     }
 
-    @PostMapping("/change/payment/method")
+    @PutMapping("/change-payment-method")
     @Operation(summary = "Change an order delivery payment")
     public ResponseEntity<String> changePaymentMethod(@Valid @RequestBody OrderChangeRequestDTO orderChangeRequestDTO) {
 

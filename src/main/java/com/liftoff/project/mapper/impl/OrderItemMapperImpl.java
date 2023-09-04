@@ -1,10 +1,7 @@
 package com.liftoff.project.mapper.impl;
 
 import com.liftoff.project.controller.order.request.OrderItemRequestDTO;
-import com.liftoff.project.mapper.CartMapper;
-import com.liftoff.project.mapper.DeliveryMethodMapper;
 import com.liftoff.project.mapper.OrderItemMapper;
-import com.liftoff.project.mapper.PaymentMethodMapper;
 import com.liftoff.project.mapper.ProductMapper;
 import com.liftoff.project.model.order.Order;
 import com.liftoff.project.model.order.OrderItem;
@@ -21,13 +18,16 @@ public class OrderItemMapperImpl implements OrderItemMapper {
     @Override
     public OrderItem mapOrderItemRequestDTOToOrderItem(OrderItemRequestDTO orderItemRequestDTO, Order order) {
 
+        if (order == null || orderItemRequestDTO == null) {
+            return null;
+        }
 
-                OrderItem orderItem = OrderItem.builder()
-                        .withOrder(order)
-                        .withProduct( productMapper.mapRequestToEntity(orderItemRequestDTO.getProductRequestDTO()))
-                        .withQuantity(orderItemRequestDTO.getQuantity())
-                        .withSubtotal(orderItemRequestDTO.getSubtotal())
-                        .withUnitPrice(orderItemRequestDTO.getUnitPrice())
+        OrderItem orderItem = OrderItem.builder()
+                .withOrder(order)
+                .withProduct(productMapper.mapRequestToEntity(orderItemRequestDTO.getProductRequestDTO()))
+                .withQuantity(orderItemRequestDTO.getQuantity())
+                .withSubtotal(orderItemRequestDTO.getSubtotal())
+                .withUnitPrice(orderItemRequestDTO.getUnitPrice())
                 .build();
 
         return orderItem;
