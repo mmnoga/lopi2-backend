@@ -13,5 +13,6 @@ public class AddressRequestDTO {
     private String postalCode;
     private String city;
     private String country;
+    private String phoneNumber;
 
 }

@@ -77,9 +77,10 @@ public class OrderInsertCommand implements CommandLineRunner {
                 .apartmentNumber("2")
                 .build();
 
-
-        Product product1 = productRepository.findAll().get(0);
-        Product product2 = productRepository.findAll().get(1);
+        Product product1 = new Product();
+        Product product2 = new Product();
+        if(productRepository.findAll().size()>0) product1 = productRepository.findAll().get(0);
+        if(productRepository.findAll().size()>0)  product2 = productRepository.findAll().get(1);
 
         OrderItem orderItem1 = OrderItem.builder()
                 .withQuantity(2)
@@ -96,7 +97,8 @@ public class OrderInsertCommand implements CommandLineRunner {
                 .build();
         orderItem2.setProduct(product2);
 
-        User user = userRepository.findAll().get(0);
+        User user = new User();
+        if(userRepository.findAll().size() > 0) user = userRepository.findAll().get(0);
 
         DeliveryMethod deliveryMethod = deliveryMethodRepository
                 .findByName("COURIER_SERVICE")

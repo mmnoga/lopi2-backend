@@ -1,27 +1,25 @@
 package com.liftoff.project.mapper.impl;
 
 import com.liftoff.project.controller.order.request.OrderItemRequestDTO;
-import com.liftoff.project.controller.response.CategoryResponseDTO;
-import com.liftoff.project.model.Category;
-import com.liftoff.project.model.User;
+import com.liftoff.project.controller.request.ProductRequestDTO;
 import com.liftoff.project.model.order.Order;
 import com.liftoff.project.model.order.OrderItem;
-import com.liftoff.project.service.CategoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class OrderItemMapperTest {
 
 
     @Mock
     private Order order;
-    @InjectMocks
+
+    @Mock
     private ProductMapperImpl productMapper;
 
     @InjectMocks
@@ -34,7 +32,7 @@ class OrderItemMapperTest {
 
 
     @Test
-    public void shouldReturnNullObjectForNullCategory() {
+    public void shouldReturnNullObjectForNullOrderOrOrderItemRequestDTO() {
         // Given
         Order order = null;
         OrderItemRequestDTO orderItemRequestDTO = null;
@@ -45,7 +43,6 @@ class OrderItemMapperTest {
         // Then
         assertNull(orderItem);
     }
-
 
 
     @Test
@@ -63,8 +60,14 @@ class OrderItemMapperTest {
                 .subtotal(20.20)
                 .build();
 
+        ProductRequestDTO productRequestDTO = ProductRequestDTO.builder()
+                .regularPrice(10.00)
+                .build();
+
+        orderItemRequestDTO.setProductRequestDTO(productRequestDTO);
+
         // When
-        OrderItem orderItem  = orderItemMapper.mapOrderItemRequestDTOToOrderItem(orderItemRequestDTO,order);
+        OrderItem orderItem = orderItemMapper.mapOrderItemRequestDTOToOrderItem(orderItemRequestDTO, order);
 
         // Then
         assertEquals(orderItem.getQuantity(), orderItemRequestDTO.getQuantity());
