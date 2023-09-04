@@ -8,6 +8,7 @@ import com.liftoff.project.exception.category.CategoryNotFoundException;
 import com.liftoff.project.exception.cookie.CookiesNotFoundException;
 import com.liftoff.project.exception.order.BadUserFromCartException;
 import com.liftoff.project.exception.order.OrderExistsException;
+import com.liftoff.project.exception.product.ProductOutOfStockException;
 import com.liftoff.project.exception.storage.FileNotFoundException;
 import com.liftoff.project.exception.storage.FileSizeExceedsLimitException;
 import com.liftoff.project.exception.storage.ImageNotFoundException;
@@ -100,6 +101,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CartNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleCartNotFoundException(CartNotFoundException ex) {
+        return createErrorResponse(ex.getMessage(), ex.getStatus());
+    }
+
+    @ExceptionHandler(ProductOutOfStockException.class)
+    public ResponseEntity<Map<String, String>> handleProductOutOfStockException(ProductOutOfStockException ex) {
         return createErrorResponse(ex.getMessage(), ex.getStatus());
     }
 
