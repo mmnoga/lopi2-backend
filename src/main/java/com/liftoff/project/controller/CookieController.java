@@ -32,7 +32,8 @@ private String serverDomain;
 
 
         this.getServerDomain();
-        ResponseCookie resCookie = ResponseCookie.from("some-unauthorized-user-id", "c2FtLnNtaXRoQGV4YW1wbGUuY29t").httpOnly(true)
+        ResponseCookie resCookie = ResponseCookie.from("some-unauthorized-user-id", "c2FtLnNtaXRoQGV4YW1wbGUuY29t")
+                .httpOnly(true)
                 .secure(true)
                 .path("/api/cookie")
                 .maxAge(1 * 24 * 60 * 60)

@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -25,18 +27,19 @@ public class CookieServiceImpl implements CookieService {
     @Override
     public void setCookie(String name, String value, HttpServletResponse response) {
         if (response != null) {
-            HttpServletRequest request = ((ServletRequestAttributes)
-                    RequestContextHolder
-                            .currentRequestAttributes())
-                    .getRequest();
-            String serverName = request.getServerName();
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 
-            String cookieValue = String.format("%s=%s; SameSite=None; Max-Age=%d; Domain=%s; Path=/",
-                    name, value, maxAgeSeconds, serverName);
+            ResponseCookie cookie = ResponseCookie.from(name, value)
+                    .httpOnly(true)
+                    .secure(true)
+                    .path("/")
+                    .maxAge(maxAgeSeconds)
+                    .sameSite("None")
+                    .domain(request.getServerName())
+                    .build();
 
-            response.setHeader("Set-Cookie", cookieValue);
-            response.setHeader("Access-Control-Allow-Origin", serverName);
-            response.setHeader("Access-Control-Allow-Credentials", "true");
+            response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+            response.setHeader("Access-Control-Allow-Origin", "*");
         }
     }
 
