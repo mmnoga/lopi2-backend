@@ -31,10 +31,12 @@ public class CookieServiceImpl implements CookieService {
                     .getRequest();
             String serverName = request.getServerName();
 
-            String cookieValue = String.format("%s=%s; Secure; SameSite=None; Max-Age=%d; Domain=%s; Path=/",
+            String cookieValue = String.format("%s=%s; SameSite=None; Max-Age=%d; Domain=%s; Path=/",
                     name, value, maxAgeSeconds, serverName);
 
             response.setHeader("Set-Cookie", cookieValue);
+            response.setHeader("Access-Control-Allow-Origin", serverName);
+            response.setHeader("Access-Control-Allow-Credentials", "true");
         }
     }
 
