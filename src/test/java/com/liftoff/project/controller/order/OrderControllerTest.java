@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.UUID;
 
@@ -28,7 +29,7 @@ class OrderControllerTest {
     private OrderService orderService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    //@Test
+    // @Test
     void shouldCreateOrder() {
 
         // given
@@ -51,10 +52,11 @@ class OrderControllerTest {
         //when(orderService.addOrder(cartUuid)).thenReturn(null);
 
         // then
-//        mockMvc.perform(MockMvcRequestBuilders.post("/api/orders/add{cartUuid}", cartUuid)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                       .content("Cart " + cartUuid + " added to Order")
-//                       .andExpect(status().isCreated());
+       // mockMvc.perform(MockMvcRequestBuilders.post("/api/orders/add{cartUuid}", cartUuid)
+
+                //.contentType(MediaType.APPLICATION_JSON)
+                //.content("Cart " + cartUuid + " added to Order")
+                // .andExpect(MockMvcResultMatchers.status().isCreated());
 //                .andExpect(MockMvcResultMatchers.jsonPath("$.name", Matchers.is("New Product")))
 //                .andExpect(MockMvcResultMatchers.jsonPath("$.description", Matchers.is("New Product description")))
 //                .andExpect(MockMvcResultMatchers.jsonPath("$.regularPrice", Matchers.is(19.99)));
