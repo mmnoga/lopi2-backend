@@ -1,10 +1,7 @@
 package com.liftoff.project.mapper.impl;
 
 import com.liftoff.project.controller.order.request.AddressRequestDTO;
-import com.liftoff.project.controller.order.request.OrderItemRequestDTO;
 import com.liftoff.project.model.order.Address;
-import com.liftoff.project.model.order.Order;
-import com.liftoff.project.model.order.OrderItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 class AddressMapperImplTest {
-
 
 
     @Mock
@@ -36,7 +32,7 @@ class AddressMapperImplTest {
         AddressRequestDTO addressRequestDTO = null;
 
         // When
-        Address addres= addressMapper.mapAddressRequestDTOToAddress(addressRequestDTO);
+        Address addres = addressMapper.mapAddressRequestDTOToAddress(addressRequestDTO);
 
         // Then
         assertNull(addres);
@@ -63,8 +59,10 @@ class AddressMapperImplTest {
         assertEquals(address.getStreet(), addressRequestDTO.getStreet());
         assertEquals(address.getHouseNumber(), addressRequestDTO.getHouseNumber());
         assertEquals(address.getApartmentNumber(), addressRequestDTO.getApartmentNumber());
+        assertEquals(address.getPostalCode(), addressRequestDTO.getPostalCode());
+        assertEquals(address.getCity(), addressRequestDTO.getCity());
+        assertEquals(address.getCountry(), addressRequestDTO.getCountry());
         assertEquals(address.getPhoneNumber(), addressRequestDTO.getPhoneNumber());
-
 
 
     }
