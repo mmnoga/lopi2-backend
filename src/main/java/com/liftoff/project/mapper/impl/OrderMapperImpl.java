@@ -16,6 +16,8 @@ import com.liftoff.project.model.order.Order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,11 +30,18 @@ public class OrderMapperImpl implements OrderMapper {
     private final DeliveryMethodMapper deliveryMethodMapper;
     private final PaymentMethodMapper paymentMethodMapper;
 
+
+
     @Override
     public OrderSummaryResponseDTO mapOrderToOrderSummaryResponseDTO(Order order) {
-        String customerName = order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName();
 
-        List<CartItemResponseDTO> cartItems = order.getCart().getCartItems().stream()
+        String customerName = "";
+        if(order.getCustomer() !=null ) customerName = order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName();
+
+        List<CartItemResponseDTO> cartItems = Collections.emptyList();
+
+        if(order.getCart() !=null)
+         cartItems = order.getCart().getCartItems().stream()
                 .map(cartItem -> cartItemMapper.mapCartItemToCartItemResponseDTO(cartItem))
                 .collect(Collectors.toList());
 
@@ -46,6 +55,7 @@ public class OrderMapperImpl implements OrderMapper {
         return orderSummaryDTO;
     }
 
+
     @Override
     public OrderDetailsResponseDTO mapOrderToOrderDetailsResponseDTO(Order order) {
         return OrderDetailsResponseDTO.builder()
@@ -57,7 +67,8 @@ public class OrderMapperImpl implements OrderMapper {
                         .mapDeliveryMethodToDeliveryMethodResponseDTO(order.getDeliveryMethod()))
                 .shippingAddress(mapAddressToAddressResponseDTO(order.getShippingAddress()))
                 .billingAddress(mapAddressToAddressResponseDTO(order.getBillingAddress()))
-                .paymentMethod(order.getPaymentMethod())
+                .paymentMethod(paymentMethodMapper.
+                        mapPaymentMethodToPaymentMethodResponseDTO(order.getPaymentMethod()))
                 .cart(cartMapper.mapEntityToResponse(order.getCart()))
                 .customer(mapCustomerToCustomerResponseDTO(order.getCustomer()))
                 .createdAt(order.getCreatedAt())
@@ -67,7 +78,7 @@ public class OrderMapperImpl implements OrderMapper {
     }
 
     @Override
-    public CustomerResponseDTO mapCustomerToCustomerResponseDTO(Customer customer){
+    public CustomerResponseDTO mapCustomerToCustomerResponseDTO(Customer customer) {
         if (customer == null) {
             return null;
         }

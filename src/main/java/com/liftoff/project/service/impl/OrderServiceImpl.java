@@ -1,7 +1,8 @@
 package com.liftoff.project.service.impl;
 
-import com.liftoff.project.controller.order.request.OrderChangeRequestDTO;
+import com.liftoff.project.controller.order.request.OrderDeliveryMethodRequestDTO;
 import com.liftoff.project.controller.order.request.OrderItemRequestDTO;
+import com.liftoff.project.controller.order.request.OrderPaymentMethodRequestDTO;
 import com.liftoff.project.controller.order.request.OrderRequestDTO;
 import com.liftoff.project.controller.order.response.OrderDetailsResponseDTO;
 import com.liftoff.project.controller.order.response.OrderSummaryResponseDTO;
@@ -27,7 +28,6 @@ import com.liftoff.project.repository.CustomerRepository;
 import com.liftoff.project.repository.DeliveryMethodRepository;
 import com.liftoff.project.repository.OrderRepository;
 import com.liftoff.project.repository.PaymentMethodRepository;
-import com.liftoff.project.repository.SessionRepository;
 import com.liftoff.project.repository.UserRepository;
 import com.liftoff.project.service.CartService;
 import com.liftoff.project.service.OrderService;
@@ -43,7 +43,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-//import static java.util.stream.Nodes.collect;
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +51,6 @@ public class OrderServiceImpl implements OrderService {
 
     private final CartService cartService;
     private final UserRepository userRepository;
-    private final SessionRepository sessionRepository;
     private final UserValidationService userValidationService;
     private final OrderRepository orderRepository;
     private final DeliveryMethodRepository deliveryMethodRepository;
@@ -66,7 +64,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void addOrder(UUID cartUuid) {
+    public OrderSummaryResponseDTO addOrder(UUID cartUuid) {
 
 
         Cart cart = cartService.getCart(cartUuid.toString());
@@ -118,24 +116,29 @@ public class OrderServiceImpl implements OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
-        // return orderMapper.mapOrderToOrderDetailsResponseDTO(savedOrder);
-
-
+        return orderMapper.mapOrderToOrderSummaryResponseDTO(savedOrder);
     }
 
 
-    public void editOrder(OrderRequestDTO orderRequest, UUID orderUuid) {
+    public OrderDetailsResponseDTO editOrder(OrderRequestDTO orderRequest, UUID orderUuid) {
 
 
-        Order order = orderRepository.findByUuid(orderUuid).orElseThrow(() -> new EntityNotFoundException("Order entity not found"));
+        Order order = orderRepository.findByUuid(orderUuid)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Order entity not found"));
 
-        User user  = userRepository.findByUsername(orderRequest.getEmail()).orElseThrow(() -> new EntityNotFoundException("User entity not found"));
-
-        if(orderRequest.getDeliveryMethodName() !=null) order.setDeliveryMethod(deliveryMethodRepository.findByName(orderRequest.getDeliveryMethodName()).orElseThrow(() -> new EntityNotFoundException("DeliveryMethod entity not found")));
-        if(orderRequest.getPaymentMethodName() !=null) order.setPaymentMethod(paymentMethodRepository.findByName(orderRequest.getPaymentMethodName()).orElseThrow(() -> new EntityNotFoundException("PaymentMethod entity not found")));
-       if(orderRequest.getShippingAddress()!=null) order.setShippingAddress(addressMapper.mapAddressRequestDTOToAddress(orderRequest.getShippingAddress()));
-       if(orderRequest.getBillingAddress()!=null) order.setBillingAddress(addressMapper.mapAddressRequestDTOToAddress(orderRequest.getBillingAddress()));
-
+        if (orderRequest.getDeliveryMethodName() != null)
+            order.setDeliveryMethod(deliveryMethodRepository.findByName(orderRequest.getDeliveryMethodName())
+                    .orElseThrow(() ->
+                            new EntityNotFoundException("DeliveryMethod entity not found")));
+        if (orderRequest.getPaymentMethodName() != null)
+            order.setPaymentMethod(paymentMethodRepository.findByName(orderRequest.getPaymentMethodName())
+                    .orElseThrow(() ->
+                            new EntityNotFoundException("PaymentMethod entity not found")));
+        if (orderRequest.getShippingAddress() != null)
+            order.setShippingAddress(addressMapper.mapAddressRequestDTOToAddress(orderRequest.getShippingAddress()));
+        if (orderRequest.getBillingAddress() != null)
+            order.setBillingAddress(addressMapper.mapAddressRequestDTOToAddress(orderRequest.getBillingAddress()));
 
 
         if (orderRequest.getOrderItemRequestDTOList().size() > 0) orderRequest.getOrderItemRequestDTOList().clear();
@@ -146,39 +149,39 @@ public class OrderServiceImpl implements OrderService {
                 })
                 .collect(Collectors.toList()));
 
-        Order savedOrder = orderRepository.save(order);
+        return orderMapper.mapOrderToOrderDetailsResponseDTO(orderRepository.save(order));
     }
 
 
-    public void changeDeliveryMethod(OrderChangeRequestDTO orderChangeRequestDTO) {
+    public OrderDetailsResponseDTO changeOrderDeliveryMethod(OrderDeliveryMethodRequestDTO orderChangeRequestDTO, UUID uuid) {
 
-
-        Order order = orderRepository.findByUuid(orderChangeRequestDTO.getUuid()).orElseThrow(() -> new EntityNotFoundException("Order entity not found"));
-
+        Order order = orderRepository.findByUuid(uuid)
+                .orElseThrow(() -> new EntityNotFoundException("Order entity not found"));
 
         DeliveryMethod deliveryMethod = deliveryMethodRepository
                 .findByName(orderChangeRequestDTO.getDeliveryMethodName())
                 .orElseThrow(() -> new EntityNotFoundException("Delivery method not found"));
 
-
         order.setDeliveryMethod(deliveryMethod);
 
-        Order savedOrder = orderRepository.save(order);
+        return orderMapper.mapOrderToOrderDetailsResponseDTO(orderRepository.save(order));
     }
 
-    public void changePaymentMethod(OrderChangeRequestDTO orderChangeRequestDTO) {
+    public OrderDetailsResponseDTO changeOrderPaymentMethod(OrderPaymentMethodRequestDTO paymentMethodRequestDTO, UUID uuid) {
 
 
-        Order order = orderRepository.findByUuid(orderChangeRequestDTO.getUuid()).orElseThrow(() -> new EntityNotFoundException("Order entity not found"));
+        Order order = orderRepository.findByUuid(uuid)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Order entity not found"));
 
         PaymentMethod paymentMethod = paymentMethodRepository
-                .findByName(orderChangeRequestDTO.getPaymentMethodName())
-                .orElseThrow(() -> new EntityNotFoundException("Payment method not found"));
-
+                .findByName(paymentMethodRequestDTO.getPaymentMethodName())
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Payment method not found"));
 
         order.setPaymentMethod(paymentMethod);
 
-        Order savedOrder = orderRepository.save(order);
+        return orderMapper.mapOrderToOrderDetailsResponseDTO(orderRepository.save(order));
     }
 
     @Override

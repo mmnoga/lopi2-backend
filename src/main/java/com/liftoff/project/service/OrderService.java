@@ -1,11 +1,10 @@
 package com.liftoff.project.service;
 
-import com.liftoff.project.controller.order.request.OrderChangeRequestDTO;
+import com.liftoff.project.controller.order.request.OrderDeliveryMethodRequestDTO;
+import com.liftoff.project.controller.order.request.OrderPaymentMethodRequestDTO;
 import com.liftoff.project.controller.order.request.OrderRequestDTO;
 import com.liftoff.project.controller.order.response.OrderDetailsResponseDTO;
 import com.liftoff.project.controller.order.response.OrderSummaryResponseDTO;
-import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,7 +16,7 @@ public interface OrderService {
      *
      * @param cartUuid The UUID of the cart that its items be added as orderItems .
      */
-    void addOrder(UUID cartUuid);
+    OrderSummaryResponseDTO addOrder(UUID cartUuid);
 
 
     /**
@@ -27,11 +26,11 @@ public interface OrderService {
      * @param orderRequest The DTO of the order to be edited.
      *
      */
-    void editOrder(OrderRequestDTO orderRequest, UUID orderUuid);
+    OrderDetailsResponseDTO editOrder(OrderRequestDTO orderRequest, UUID orderUuid);
 
 
-    void changeDeliveryMethod(OrderChangeRequestDTO orderChangeRequestDTO);
-    void changePaymentMethod(OrderChangeRequestDTO orderChangeRequestDTO);
+    OrderDetailsResponseDTO changeOrderDeliveryMethod(OrderDeliveryMethodRequestDTO orderChangeRequestDTO, UUID uuid);
+    OrderDetailsResponseDTO changeOrderPaymentMethod(OrderPaymentMethodRequestDTO paymentMethodRequestDTO, UUID uuid);
 
 
     OrderDetailsResponseDTO createOrder(OrderRequestDTO orderRequest, UUID cartUuid);

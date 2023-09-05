@@ -20,7 +20,7 @@ public class OrderDetailsResponseDTO {
     private DeliveryMethodResponseDTO deliveryMethod;
     private AddressResponseDTO shippingAddress;
     private AddressResponseDTO billingAddress;
-    private PaymentMethod paymentMethod;
+    private PaymentMethodResponseDTO paymentMethod;
     private CartResponseDTO cart;
     private CustomerResponseDTO customer;
     private Instant createdAt;

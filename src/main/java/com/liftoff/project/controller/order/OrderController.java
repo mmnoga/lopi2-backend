@@ -1,6 +1,7 @@
 package com.liftoff.project.controller.order;
 
-import com.liftoff.project.controller.order.request.OrderChangeRequestDTO;
+import com.liftoff.project.controller.order.request.OrderDeliveryMethodRequestDTO;
+import com.liftoff.project.controller.order.request.OrderPaymentMethodRequestDTO;
 import com.liftoff.project.controller.order.request.OrderRequestDTO;
 import com.liftoff.project.controller.order.response.OrderDetailsResponseDTO;
 import com.liftoff.project.controller.order.response.OrderSummaryResponseDTO;
@@ -38,36 +39,38 @@ public class OrderController {
 
     @PostMapping("/add")
     @Operation(summary = "Add an order from cart")
-    public ResponseEntity<String> createOrder(@RequestParam UUID cartUuid) {
-
-        orderService.addOrder(cartUuid);
-
-        return ResponseEntity.ok("Cart " + cartUuid + " added to Order");
+    public ResponseEntity<OrderSummaryResponseDTO> createOrder(
+            @RequestParam UUID cartUuid) {
+        return ResponseEntity.ok(orderService.addOrder(cartUuid));
     }
 
     @PostMapping("/edit")
     @Operation(summary = "Edit order")
-    public ResponseEntity<String> editOrder(@Valid @RequestBody OrderRequestDTO orderRequest, @RequestParam UUID orderUuid) {
+    public ResponseEntity<OrderDetailsResponseDTO> editOrder(
+            @Valid @RequestBody OrderRequestDTO orderRequest,
+            @RequestParam UUID orderUuid) {
 
-        orderService.editOrder(orderRequest, orderUuid);
-        return ResponseEntity.ok("OK delivery method ");
+        return ResponseEntity.ok(orderService.editOrder(orderRequest, orderUuid));
     }
 
 
     @PutMapping("/change-delivery-method")
     @Operation(summary = "Change an order delivery method")
-    public ResponseEntity<String> changeDeliveryMethod(@Valid @RequestBody OrderChangeRequestDTO orderChangeRequestDTO) {
+    public ResponseEntity<OrderDetailsResponseDTO> changeOrderDeliveryMethod(
+            @Valid @RequestBody OrderDeliveryMethodRequestDTO orderChangeRequestDTO,
+            @RequestParam UUID uuid) {
 
-        orderService.changeDeliveryMethod(orderChangeRequestDTO);
-        return ResponseEntity.ok("OK delivery method ");
+        return ResponseEntity.ok(orderService.changeOrderDeliveryMethod(orderChangeRequestDTO, uuid));
     }
 
     @PutMapping("/change-payment-method")
     @Operation(summary = "Change an order delivery payment")
-    public ResponseEntity<String> changePaymentMethod(@Valid @RequestBody OrderChangeRequestDTO orderChangeRequestDTO) {
+    public ResponseEntity<OrderDetailsResponseDTO> changeOrderPaymentMethod(
+            @Valid @RequestBody OrderPaymentMethodRequestDTO paymentMethodRequestDTO,
+            @RequestParam UUID uuid) {
 
-        orderService.changePaymentMethod(orderChangeRequestDTO);
-        return ResponseEntity.ok("OK changePaymentMethod ");
+        orderService.changeOrderPaymentMethod(paymentMethodRequestDTO, uuid);
+        return ResponseEntity.ok(orderService.changeOrderPaymentMethod(paymentMethodRequestDTO, uuid));
     }
 
     @PostMapping("/create")
