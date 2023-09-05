@@ -4,10 +4,12 @@ import com.liftoff.project.repository.ExampleRepository;
 import jakarta.annotation.Priority;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
 @Priority(1)
+@Profile("dev")
 public class ExampleInsertCommand implements CommandLineRunner {
 
     private final ExampleRepository exampleRepository;
