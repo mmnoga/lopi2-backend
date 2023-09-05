@@ -7,6 +7,7 @@ import lombok.Data;
 @Builder
 public class PaymentMethodResponseDTO {
 
+
     private String name;
     private String description;
 

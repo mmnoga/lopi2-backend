@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 public class DeliveryMethodMapperImpl implements DeliveryMethodMapper {
     @Override
     public DeliveryMethodResponseDTO mapDeliveryMethodToDeliveryMethodResponseDTO(DeliveryMethod deliveryMethod) {
+
+        if (deliveryMethod == null) return null;
         return DeliveryMethodResponseDTO.builder()
                 .name(deliveryMethod.getName())
                 .description(deliveryMethod.getDescription())
@@ -19,6 +21,8 @@ public class DeliveryMethodMapperImpl implements DeliveryMethodMapper {
 
     @Override
     public DeliveryMethod mapDeliveryMethodRequestDTOToEntity(DeliveryMethodRequestDTO deliveryMethodRequestDTO) {
+
+        if (deliveryMethodRequestDTO == null) return null;
         return DeliveryMethod.builder()
                 .name(deliveryMethodRequestDTO.getName())
                 .description(deliveryMethodRequestDTO.getDescription())

@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 public class PaymentMethodMapperImpl implements PaymentMethodMapper {
     @Override
     public PaymentMethodResponseDTO mapPaymentMethodToPaymentMethodResponseDTO(PaymentMethod paymentMethod) {
+
+        if (paymentMethod == null) return null;
         return PaymentMethodResponseDTO.builder()
                 .name(paymentMethod.getName())
                 .description(paymentMethod.getDescription())
@@ -18,6 +20,8 @@ public class PaymentMethodMapperImpl implements PaymentMethodMapper {
 
     @Override
     public PaymentMethod mapPaymentMethodRequestDTOToEntity(PaymentMethodRequestDTO paymentMethodRequestDTO) {
+
+        if (paymentMethodRequestDTO == null) return null;
         return PaymentMethod.builder()
                 .name(paymentMethodRequestDTO.getName())
                 .description(paymentMethodRequestDTO.getDescription())
