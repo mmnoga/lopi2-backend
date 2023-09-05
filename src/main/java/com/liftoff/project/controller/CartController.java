@@ -61,7 +61,10 @@ public class CartController {
 
     @GetMapping()
     @Operation(summary = "View cart")
-    public ResponseEntity<CartResponseDTO> getCart(HttpServletRequest request) {
+    public ResponseEntity<CartResponseDTO> getCart(HttpServletRequest request, HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+
         Cart cart = cartService
                 .getCartByCookieOrCreateNewCart(request, null);
 
