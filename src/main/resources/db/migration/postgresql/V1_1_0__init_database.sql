@@ -59,7 +59,7 @@ CREATE TABLE PRODUCTS_IMAGE_ASSETS (
 );
 
 CREATE TABLE APP_USER (
-                          ID BIGINT PRIMARY KEY,
+                          ID SERIAL PRIMARY KEY,
                           FIRST_NAME VARCHAR(250) NOT NULL,
                           LAST_NAME VARCHAR(250) NOT NULL,
                           USER_NAME VARCHAR(100) NOT NULL UNIQUE,
