@@ -20,7 +20,7 @@ import java.util.UUID;
 @Component
 @Priority(1)
 @AllArgsConstructor
-@Profile("dev")
+@Profile("!prod")
 public class ProductInsertCommand implements CommandLineRunner {
 
     private final ProductRepository productRepository;

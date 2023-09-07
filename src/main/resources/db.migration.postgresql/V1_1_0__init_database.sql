@@ -71,6 +71,13 @@ CREATE TABLE APP_USER (
                           UUID UUID DEFAULT RANDOM_UUID()
 );
 
+CREATE TABLE SESSIONS (
+                          ID BIGINT AUTO_INCREMENT PRIMARY KEY,
+                          UID UUID,
+                          EXPIRATION_TIME TIMESTAMP,
+                          IS_EXPIRED BOOLEAN
+);
+
 CREATE TABLE CARTS (
                        ID BIGINT AUTO_INCREMENT PRIMARY KEY,
                        UUID UUID,
@@ -79,18 +86,9 @@ CREATE TABLE CARTS (
                        TOTAL_QUANTITY INT,
                        CREATED_AT TIMESTAMP,
                        UPDATED_AT TIMESTAMP,
-                       SESSION_ID BIGINT
+                       SESSION_ID BIGINT,
+                       FOREIGN KEY (SESSION_ID) REFERENCES SESSIONS(ID)
 );
-
-CREATE TABLE SESSIONS (
-                          ID BIGINT AUTO_INCREMENT PRIMARY KEY,
-                          UID UUID,
-                          EXPIRATION_TIME TIMESTAMP,
-                          IS_EXPIRED BOOLEAN
-);
-
-ALTER TABLE CARTS
-    ADD FOREIGN KEY (SESSION_ID) REFERENCES SESSIONS(ID);
 
 CREATE TABLE CART_ITEMS (
                             ID BIGINT AUTO_INCREMENT PRIMARY KEY,
