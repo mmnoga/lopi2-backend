@@ -1,12 +1,12 @@
 CREATE TABLE EXAMPLE (
-                         ID BIGINT AUTO_INCREMENT  PRIMARY KEY,
+                         ID SERIAL PRIMARY KEY,
                          FIRST_NAME VARCHAR(250) NOT NULL,
                          LAST_NAME VARCHAR(250) NOT NULL,
                          CAREER VARCHAR(250) DEFAULT NULL
 );
 
 CREATE TABLE CATEGORIES (
-                            ID BIGINT AUTO_INCREMENT PRIMARY KEY,
+                            ID SERIAL PRIMARY KEY,
                             UID UUID NOT NULL,
                             PARENT_ID LONG,
                             NAME VARCHAR(100),
@@ -18,7 +18,7 @@ CREATE TABLE CATEGORIES (
 );
 
 CREATE TABLE PRODUCTS (
-                          ID BIGINT AUTO_INCREMENT PRIMARY KEY,
+                          ID SERIAL PRIMARY KEY,
                           UID UUID NOT NULL,
                           NAME VARCHAR(45),
                           SKU VARCHAR(45),
@@ -46,7 +46,7 @@ CREATE TABLE PRODUCTS_CATEGORIES (
 );
 
 CREATE TABLE IMAGE_ASSETS (
-                              ID BIGINT AUTO_INCREMENT PRIMARY KEY,
+                              ID SERIAL PRIMARY KEY,
                               ASSET_URL VARCHAR(255)
 );
 
@@ -59,7 +59,7 @@ CREATE TABLE PRODUCTS_IMAGE_ASSETS (
 );
 
 CREATE TABLE APP_USER (
-                          ID BIGINT AUTO_INCREMENT  PRIMARY KEY,
+                          ID SERIAL PRIMARY KEY,
                           FIRST_NAME VARCHAR(250) NOT NULL,
                           LAST_NAME VARCHAR(250) NOT NULL,
                           USER_NAME VARCHAR(100) NOT NULL UNIQUE,
@@ -72,14 +72,14 @@ CREATE TABLE APP_USER (
 );
 
 CREATE TABLE SESSIONS (
-                          ID BIGINT AUTO_INCREMENT PRIMARY KEY,
+                          ID SERIAL PRIMARY KEY,
                           UID UUID,
                           EXPIRATION_TIME TIMESTAMP,
                           IS_EXPIRED BOOLEAN
 );
 
 CREATE TABLE CARTS (
-                       ID BIGINT AUTO_INCREMENT PRIMARY KEY,
+                       ID SERIAL PRIMARY KEY,
                        UUID UUID,
                        USER_ID BIGINT,
                        TOTAL_PRICE DOUBLE PRECISION,
@@ -91,7 +91,7 @@ CREATE TABLE CARTS (
 );
 
 CREATE TABLE CART_ITEMS (
-                            ID BIGINT AUTO_INCREMENT PRIMARY KEY,
+                            ID SERIAL PRIMARY KEY,
                             CART_ID BIGINT,
                             PRODUCT_ID BIGINT,
                             QUANTITY INT,
