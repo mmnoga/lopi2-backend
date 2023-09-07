@@ -8,7 +8,7 @@ CREATE TABLE EXAMPLE (
 CREATE TABLE CATEGORIES (
                             ID SERIAL PRIMARY KEY,
                             UID UUID NOT NULL,
-                            PARENT_ID LONG,
+                            PARENT_ID BIGINT,
                             NAME VARCHAR(100),
                             DESCRIPTION VARCHAR(1000),
                             ICON VARCHAR(45),
@@ -22,10 +22,10 @@ CREATE TABLE PRODUCTS (
                           UID UUID NOT NULL,
                           NAME VARCHAR(45),
                           SKU VARCHAR(45),
-                          REGULAR_PRICE DOUBLE,
-                          DISCOUNT_PRICE DOUBLE,
-                          DISCOUNT_PRICE_END_DATE DATETIME,
-                          LOWEST_PRICE DOUBLE,
+                          REGULAR_PRICE DOUBLE PRECISION,
+                          DISCOUNT_PRICE DOUBLE PRECISION,
+                          DISCOUNT_PRICE_END_DATE TIMESTAMP,
+                          LOWEST_PRICE DOUBLE PRECISION,
                           DESCRIPTION VARCHAR(4000),
                           SHORT_DESCRIPTION VARCHAR(500),
                           NOTE VARCHAR(100),
@@ -68,7 +68,7 @@ CREATE TABLE APP_USER (
                           CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                           UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                           IS_ENABLED BOOLEAN DEFAULT TRUE,
-                          UUID UUID DEFAULT RANDOM_UUID()
+                          UUID UUID DEFAULT gen_random_uuid()
 );
 
 CREATE TABLE SESSIONS (
