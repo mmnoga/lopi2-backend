@@ -1,5 +1,6 @@
 package com.liftoff.project.controller.order;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liftoff.project.controller.order.response.OrderSummaryResponseDTO;
@@ -42,6 +43,9 @@ class OrderControllerTest {
     @MockBean
     private OrderService orderService;
 
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+    private Instant instant1;
+
     @Test
     void shouldCreateOrder() throws Exception {
 
@@ -61,11 +65,11 @@ class OrderControllerTest {
 
         Instant instant = localDate.atStartOfDay(zoneId).toInstant();
 
-        Instant instant1 =  Instant.now();
+        this.instant1 =  Instant.now();
 
         OrderSummaryResponseDTO orderSummaryResponseDTO = OrderSummaryResponseDTO.builder()
                 .customerName("ALA")
-                //.orderDate(instant)
+                //.orderDate(instant1)
                 .totalPrice(30.30)
                 .cartItems(cartItems)
                 .build();
@@ -74,7 +78,7 @@ class OrderControllerTest {
         when(orderService.addOrder(cartUuid)).thenReturn(orderSummaryResponseDTO);
 
         // then
-         mockMvc.perform(MockMvcRequestBuilders.post("/api/orders/add{cartUuid}", cartUuid)
+         mockMvc.perform(MockMvcRequestBuilders.post("/api/orders/add?cartUuid={cartUuid}", cartUuid)
         .contentType(MediaType.APPLICATION_JSON)
                          .content(asJsonString(orderSummaryResponseDTO)))
                  .andExpect(status().isCreated())

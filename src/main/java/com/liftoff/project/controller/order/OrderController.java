@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +42,7 @@ public class OrderController {
     @Operation(summary = "Add an order from cart")
     public ResponseEntity<OrderSummaryResponseDTO> createOrder(
             @RequestParam UUID cartUuid) {
-        return ResponseEntity.ok(orderService.addOrder(cartUuid));
+        return new ResponseEntity<OrderSummaryResponseDTO>(orderService.addOrder(cartUuid), HttpStatus.CREATED);
     }
 
     @PostMapping("/edit")
