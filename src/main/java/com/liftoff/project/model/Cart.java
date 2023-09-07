@@ -40,7 +40,6 @@ public class Cart {
     @JoinColumn(name = "USER_ID")
     private User user;
 
-    //@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "CART_ID", referencedColumnName = "ID")
     private List<CartItem> cartItems = new ArrayList<>();

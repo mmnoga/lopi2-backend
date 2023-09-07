@@ -45,7 +45,7 @@ public class OrderController {
         return new ResponseEntity<OrderSummaryResponseDTO>(orderService.addOrder(cartUuid), HttpStatus.CREATED);
     }
 
-    @PostMapping("/edit")
+    @PutMapping("/edit")
     @Operation(summary = "Edit order")
     public ResponseEntity<OrderDetailsResponseDTO> editOrder(
             @Valid @RequestBody OrderRequestDTO orderRequest,
@@ -86,11 +86,11 @@ public class OrderController {
 
     @GetMapping("/summary")
     public List<OrderSummaryResponseDTO> getOrdersSummary() {
-        return orderService.getAllOrdersSummary();
+        return ResponseEntity.ok(orderService.getAllOrdersSummary()).getBody();
     }
 
     @GetMapping("/details")
     public List<OrderDetailsResponseDTO> getOrdersDetails() {
-        return orderService.getAllOrdersDetails();
+        return ResponseEntity.ok(orderService.getAllOrdersDetails()).getBody();
     }
 }

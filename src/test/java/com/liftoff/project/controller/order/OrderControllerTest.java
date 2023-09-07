@@ -1,13 +1,11 @@
 package com.liftoff.project.controller.order;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liftoff.project.controller.order.response.OrderSummaryResponseDTO;
 import com.liftoff.project.controller.response.CartItemResponseDTO;
 import com.liftoff.project.controller.response.ProductResponseDTO;
 import com.liftoff.project.service.OrderService;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
@@ -20,15 +18,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -43,8 +39,9 @@ class OrderControllerTest {
     @MockBean
     private OrderService orderService;
 
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-    private Instant instant1;
+    @Autowired
+    private ObjectMapper objectMapper;
+
 
     @Test
     void shouldCreateOrder() throws Exception {
@@ -60,16 +57,12 @@ class OrderControllerTest {
                         .build())
                 .build());
 
-        LocalDate localDate = LocalDate.of(2023, 9, 5);
-        ZoneId zoneId = ZoneId.of("UTC");
 
-        Instant instant = localDate.atStartOfDay(zoneId).toInstant();
-
-        this.instant1 =  Instant.now();
+        Instant instant = Instant.now();
 
         OrderSummaryResponseDTO orderSummaryResponseDTO = OrderSummaryResponseDTO.builder()
                 .customerName("ALA")
-                //.orderDate(instant1)
+                .orderDate(instant)
                 .totalPrice(30.30)
                 .cartItems(cartItems)
                 .build();
@@ -78,13 +71,13 @@ class OrderControllerTest {
         when(orderService.addOrder(cartUuid)).thenReturn(orderSummaryResponseDTO);
 
         // then
-         mockMvc.perform(MockMvcRequestBuilders.post("/api/orders/add?cartUuid={cartUuid}", cartUuid)
-        .contentType(MediaType.APPLICATION_JSON)
-                         .content(asJsonString(orderSummaryResponseDTO)))
-                 .andExpect(status().isCreated())
-                 .andExpect(MockMvcResultMatchers.jsonPath("$.customerName", Matchers.is("ALA")))
-                // .andExpect(MockMvcResultMatchers.jsonPath("$.orderDate", Matchers.is(instant)))
-                 .andExpect(MockMvcResultMatchers.jsonPath("$.totalPrice", Matchers.is(30.30)));
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/orders/add?cartUuid={cartUuid}", cartUuid)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(orderSummaryResponseDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.customerName").value("ALA"))
+                .andExpect(jsonPath("$.orderDate").value(instant.toString()))
+                .andExpect(jsonPath("$.totalPrice").value(30.30));
     }
 
 
