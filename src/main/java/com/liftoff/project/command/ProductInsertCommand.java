@@ -149,7 +149,7 @@ public class ProductInsertCommand implements CommandLineRunner {
                 .images(List.of(melittaImage1, melittaImage2))
                 .build();
 
-        Product savedMelitta = productRepository.save(kawaMelitta);
+        productRepository.save(kawaMelitta);
 
         ImageAsset mildanoImage1 = ImageAsset.builder()
                 .assetUrl("https://storage.googleapis.com/download/storage/v1/b/lopi-2-dev.appspot.com/o/images%2F0d04d744-c83c-434a-ad8d-3591a33a24ef.jpeg?generation=1692295199044423&alt=media")
@@ -157,7 +157,7 @@ public class ProductInsertCommand implements CommandLineRunner {
         imageAssetRepository.save(mildanoImage1);
 
         Product kawaMildano = Product.builder()
-                .uId(UUID.randomUUID())
+                .uId(UUID.fromString("143a761d-2015-48fb-96bf-b02e04752bd4"))
                 .name("MK Cafe Mildano 0,25 kg")
                 .description("MK Cafe Mildano to doskonała kawa bezkofeinowa o wyjątkowo pełnym smaku " +
                         "i aromacie. Wyróżnia się nie tylko naturalnością, ale przede wszystkim wyczuwalnymi " +
@@ -174,7 +174,7 @@ public class ProductInsertCommand implements CommandLineRunner {
                 .images(List.of(mildanoImage1))
                 .build();
 
-        Product mildanoSaved = productRepository.save(kawaMildano);
+        productRepository.save(kawaMildano);
 
         ImageAsset davidoffImage1 = ImageAsset.builder()
                 .assetUrl("https://storage.googleapis.com/download/storage/v1/b/lopi-2-dev.appspot.com/o/images%2F053d572f-4e91-4c3b-b3bb-c3a56acbe369.png?generation=1692295632904709&alt=media")
@@ -203,7 +203,7 @@ public class ProductInsertCommand implements CommandLineRunner {
                 .images(List.of(davidoffImage1, davidoffImage2))
                 .build();
 
-        Product davidoffSaved = productRepository.save(kawaDavidoff);
+        productRepository.save(kawaDavidoff);
 
         ImageAsset mkImage1 = ImageAsset.builder()
                 .assetUrl("https://storage.googleapis.com/download/storage/v1/b/lopi-2-dev.appspot.com/o/images%2Fe7781aca-3bf2-4646-9e60-70917e4131e8.png?generation=1692296025764900&alt=media")
@@ -231,7 +231,7 @@ public class ProductInsertCommand implements CommandLineRunner {
                 .images(List.of(mkImage1, mkImage2))
                 .build();
 
-        Product mkSaved = productRepository.save(kawaMK);
+        productRepository.save(kawaMK);
 
         Product testProductIN_PREPARATION = Product.builder()
                 .uId(UUID.fromString("da4611cc-9a91-44fc-9abe-47d2178cbfb3"))

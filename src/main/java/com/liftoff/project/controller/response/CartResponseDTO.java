@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,7 +18,5 @@ public class CartResponseDTO {
     private List<CartItemResponseDTO> cartItems;
     private Double totalPrice;
     private Integer totalQuantity;
-    private Instant createdAt;
-    private Instant updatedAt;
 
 }

@@ -113,6 +113,4 @@ class StorageControllerTest {
         verifyNoMoreInteractions(storageService);
     }
 
-    // Dodaj więcej testów w miarę potrzeb...
-
 }

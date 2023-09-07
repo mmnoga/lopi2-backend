@@ -1,7 +1,7 @@
 package com.liftoff.project.controller;
 
 
-import com.liftoff.project.exception.cookie.CookiesNotFoundException;
+import com.liftoff.project.exception.cookie.CookieNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -32,7 +32,8 @@ private String serverDomain;
 
 
         this.getServerDomain();
-        ResponseCookie resCookie = ResponseCookie.from("some-unauthorized-user-id", "c2FtLnNtaXRoQGV4YW1wbGUuY29t").httpOnly(true)
+        ResponseCookie resCookie = ResponseCookie.from("some-unauthorized-user-id", "c2FtLnNtaXRoQGV4YW1wbGUuY29t")
+                .httpOnly(true)
                 .secure(true)
                 .path("/api/cookie")
                 .maxAge(1 * 24 * 60 * 60)
@@ -78,7 +79,7 @@ private String serverDomain;
 
         } catch (RuntimeException ex) {
 
-            throw new CookiesNotFoundException("Array of Cookie is empty");
+            throw new CookieNotFoundException("Array of Cookie is empty");
         }
 
     }

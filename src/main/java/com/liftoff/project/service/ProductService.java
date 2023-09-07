@@ -4,9 +4,10 @@ import com.liftoff.project.controller.request.ProductRequestDTO;
 import com.liftoff.project.controller.response.PaginatedProductResponseDTO;
 import com.liftoff.project.controller.response.ProductResponseDTO;
 import com.liftoff.project.exception.category.CategoryNotFoundException;
-import com.liftoff.project.exception.storage.ImageNotFoundException;
 import com.liftoff.project.exception.product.ProductNotFoundException;
+import com.liftoff.project.exception.storage.ImageNotFoundException;
 import com.liftoff.project.model.Product;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -15,13 +16,12 @@ import java.util.UUID;
 
 public interface ProductService {
     /**
-     * Retrieves a paginated list of products as ProductResponseDTO object.
+     * Retrieves a paginated list of products.
      *
-     * @param page The page number to retrieve.
-     * @param size The number of products per page.
-     * @return The list of ProductResponseDTO objects representing the products on the specified page.
+     * @param pageable The pagination information including page number, page size, and sorting.
+     * @return A PaginatedProductResponseDTO containing the paginated list of products.
      */
-    PaginatedProductResponseDTO getProducts(int page, int size);
+    PaginatedProductResponseDTO getProducts(Pageable pageable);
 
     /**
      * Retrieves a specific product by its UUID as the ProductResponseDTO object.

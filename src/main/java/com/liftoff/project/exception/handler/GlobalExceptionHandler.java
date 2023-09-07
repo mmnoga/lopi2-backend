@@ -1,22 +1,24 @@
 package com.liftoff.project.exception.handler;
 
+import com.liftoff.project.exception.auth.LoginAuthenticationException;
+import com.liftoff.project.exception.auth.UserExistsException;
+import com.liftoff.project.exception.auth.UserNotFoundException;
 import com.liftoff.project.exception.cart.CartNotFoundException;
 import com.liftoff.project.exception.cart.EntityNotFoundException;
 import com.liftoff.project.exception.cart.TermsNotAcceptedException;
 import com.liftoff.project.exception.category.CannotDeleteCategoryException;
 import com.liftoff.project.exception.category.CategoryNotFoundException;
-import com.liftoff.project.exception.cookie.CookiesNotFoundException;
+import com.liftoff.project.exception.category.InvalidParentCategoryException;
+import com.liftoff.project.exception.category.ParentCategoryNotFoundException;
+import com.liftoff.project.exception.cookie.CookieNotFoundException;
 import com.liftoff.project.exception.order.BadUserFromCartException;
 import com.liftoff.project.exception.order.OrderExistsException;
+import com.liftoff.project.exception.product.ProductNotEnoughQuantityException;
+import com.liftoff.project.exception.product.ProductNotFoundException;
 import com.liftoff.project.exception.product.ProductOutOfStockException;
 import com.liftoff.project.exception.storage.FileNotFoundException;
 import com.liftoff.project.exception.storage.FileSizeExceedsLimitException;
 import com.liftoff.project.exception.storage.ImageNotFoundException;
-import com.liftoff.project.exception.category.InvalidParentCategoryException;
-import com.liftoff.project.exception.LoginAuthenticationException;
-import com.liftoff.project.exception.category.ParentCategoryNotFoundException;
-import com.liftoff.project.exception.product.ProductNotFoundException;
-import com.liftoff.project.exception.UserExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -93,8 +95,8 @@ public class GlobalExceptionHandler {
         return createErrorResponse(ex.getMessage(), ex.getStatus());
     }
 
-    @ExceptionHandler(CookiesNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleCookiesNotFoundException(CookiesNotFoundException ex) {
+    @ExceptionHandler(CookieNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleCookiesNotFoundException(CookieNotFoundException ex) {
 
         return createErrorResponse(ex.getMessage(), ex.getStatus());
     }
@@ -106,6 +108,17 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ProductOutOfStockException.class)
     public ResponseEntity<Map<String, String>> handleProductOutOfStockException(ProductOutOfStockException ex) {
+        return createErrorResponse(ex.getMessage(), ex.getStatus());
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleUserNotFoundException(UserNotFoundException ex) {
+        return createErrorResponse(ex.getMessage(), ex.getStatus());
+    }
+
+    @ExceptionHandler(ProductNotEnoughQuantityException.class)
+    public ResponseEntity<Map<String, String>> handleProductNotEnoughQuantityException
+            (ProductNotEnoughQuantityException ex) {
         return createErrorResponse(ex.getMessage(), ex.getStatus());
     }
 

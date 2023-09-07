@@ -14,7 +14,7 @@ public class FirebaseMockConfig {
     @Bean
     @Primary
     public FirebaseConfig firebaseConfig() throws IOException {
-        FirebaseConfig firebaseConfig = new FirebaseConfig(); // Create a real instance of FirebaseConfig
+        FirebaseConfig firebaseConfig = new FirebaseConfig();
 
         FirebaseApp mockFirebaseApp = Mockito.mock(FirebaseApp.class);
         Mockito.when(mockFirebaseApp.getName()).thenReturn("DEFAULT");

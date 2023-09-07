@@ -69,7 +69,7 @@ public class OrderMapperImpl implements OrderMapper {
                 .billingAddress(mapAddressToAddressResponseDTO(order.getBillingAddress()))
                 .paymentMethod(paymentMethodMapper.
                         mapPaymentMethodToPaymentMethodResponseDTO(order.getPaymentMethod()))
-                .cart(cartMapper.mapEntityToResponse(order.getCart()))
+                .cart(cartMapper.mapCartToCartResponseDTO(order.getCart()))
                 .customer(mapCustomerToCustomerResponseDTO(order.getCustomer()))
                 .createdAt(order.getCreatedAt())
                 .updatedAt(order.getUpdatedAt())

@@ -97,4 +97,19 @@ public class ProductMapperImpl implements ProductMapper {
         return categoryResponse;
     }
 
+    private Category mapCategoryResponse(CategoryResponseDTO categoryResponseDTO) {
+        Category category = new Category();
+        category.setUId(categoryResponseDTO.getUId());
+        category.setName(categoryResponseDTO.getName());
+        category.setDescription(categoryResponseDTO.getDescription());
+
+        List<Category> subcategories = categoryResponseDTO.getSubcategories()
+                .stream()
+                .map(this::mapCategoryResponse)
+                .collect(Collectors.toList());
+        category.setSubcategories(subcategories);
+
+        return category;
+    }
+
 }
