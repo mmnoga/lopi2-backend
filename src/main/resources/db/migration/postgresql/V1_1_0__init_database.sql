@@ -1,12 +1,12 @@
 CREATE TABLE EXAMPLE (
-                         ID SERIAL PRIMARY KEY,
+                         ID BIGSERIAL PRIMARY KEY,
                          FIRST_NAME VARCHAR(250) NOT NULL,
                          LAST_NAME VARCHAR(250) NOT NULL,
                          CAREER VARCHAR(250) DEFAULT NULL
 );
 
 CREATE TABLE CATEGORIES (
-                            ID SERIAL PRIMARY KEY,
+                            ID BIGSERIAL PRIMARY KEY,
                             UID UUID NOT NULL,
                             PARENT_ID BIGINT,
                             NAME VARCHAR(100),
@@ -18,7 +18,7 @@ CREATE TABLE CATEGORIES (
 );
 
 CREATE TABLE PRODUCTS (
-                          ID SERIAL PRIMARY KEY,
+                          ID BIGSERIAL PRIMARY KEY,
                           UID UUID NOT NULL,
                           NAME VARCHAR(45),
                           SKU VARCHAR(45),
@@ -31,7 +31,7 @@ CREATE TABLE PRODUCTS (
                           NOTE VARCHAR(100),
                           STATUS VARCHAR(50),
                           PRODUCTSCOL VARCHAR(45),
-                          QUANTITY INT,
+                          QUANTITY INTEGER,
                           CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                           UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                           ARCHIVED_AT TIMESTAMP
@@ -46,7 +46,7 @@ CREATE TABLE PRODUCTS_CATEGORIES (
 );
 
 CREATE TABLE IMAGE_ASSETS (
-                              ID SERIAL PRIMARY KEY,
+                              ID BIGSERIAL PRIMARY KEY,
                               ASSET_URL VARCHAR(255)
 );
 
@@ -59,7 +59,7 @@ CREATE TABLE PRODUCTS_IMAGE_ASSETS (
 );
 
 CREATE TABLE APP_USER (
-                          ID SERIAL PRIMARY KEY,
+                          ID BIGSERIAL PRIMARY KEY,
                           FIRST_NAME VARCHAR(250) NOT NULL,
                           LAST_NAME VARCHAR(250) NOT NULL,
                           USER_NAME VARCHAR(100) NOT NULL UNIQUE,
@@ -72,18 +72,18 @@ CREATE TABLE APP_USER (
 );
 
 CREATE TABLE SESSIONS (
-                          ID SERIAL PRIMARY KEY,
+                          ID BIGSERIAL PRIMARY KEY,
                           UID UUID,
                           EXPIRATION_TIME TIMESTAMP,
                           IS_EXPIRED BOOLEAN
 );
 
 CREATE TABLE CARTS (
-                       ID SERIAL PRIMARY KEY,
+                       ID BIGSERIAL PRIMARY KEY,
                        UUID UUID,
                        USER_ID BIGINT,
                        TOTAL_PRICE DOUBLE PRECISION,
-                       TOTAL_QUANTITY INT,
+                       TOTAL_QUANTITY INTEGER,
                        CREATED_AT TIMESTAMP,
                        UPDATED_AT TIMESTAMP,
                        SESSION_ID BIGINT,
@@ -91,10 +91,10 @@ CREATE TABLE CARTS (
 );
 
 CREATE TABLE CART_ITEMS (
-                            ID SERIAL PRIMARY KEY,
+                            ID BIGSERIAL PRIMARY KEY,
                             CART_ID BIGINT,
                             PRODUCT_ID BIGINT,
-                            QUANTITY INT,
+                            QUANTITY INTEGER,
                             FOREIGN KEY (CART_ID) REFERENCES CARTS (ID),
                             FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCTS (ID)
 );
