@@ -83,7 +83,7 @@ public class CartController {
             HttpServletRequest request,
             HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:4000");
 
         CartResponseDTO cartResponseDTO = cartService.updateCart(cartRequestDTOList, request);
 
@@ -96,7 +96,7 @@ public class CartController {
             HttpServletRequest request,
             HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:4000");
 
         cartService.clearCart(request);
 
@@ -110,7 +110,7 @@ public class CartController {
             HttpServletRequest request,
             HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:4000");
 
         cartService.removeProduct(productUuid, request);
 
