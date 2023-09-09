@@ -13,29 +13,21 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/cart")
-@CrossOrigin("*")
+//@CrossOrigin("*")
 @RequiredArgsConstructor
 @Tag(name = "Shopping Cart", description = "Shopping Cart management")
 public class CartController {
 
     private final CartService cartService;
     private final CartMapper cartMapper;
+
 
     @PostMapping("/add")
     @Operation(summary = "Add specified quantity of product by ID")
@@ -76,48 +68,47 @@ public class CartController {
         return ResponseEntity.ok(cartResponseDTO);
     }
 
+    @CrossOrigin(
+            origins = "http://localhost:4000",
+            methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT},
+            allowCredentials = "true"
+    )
     @PutMapping
     @Operation(summary = "Update products quantity by ID and new quantity")
     public ResponseEntity<CartResponseDTO> updateCart(
             @Valid @RequestBody List<CartRequestDTO> cartRequestDTOList,
-            HttpServletRequest request,
-            HttpServletResponse response) {
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-        response.setHeader("Access-Control-Allow-Headers", "x-requested-with, authorization, Content-Type, Authorization, credential, X-XSRF-TOKEN");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Max-Age", "3600");
-
+            HttpServletRequest request) {
 
         CartResponseDTO cartResponseDTO = cartService.updateCart(cartRequestDTOList, request);
 
         return ResponseEntity.ok(cartResponseDTO);
     }
 
+    @CrossOrigin(
+            origins = "http://localhost:4000",
+            methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT},
+            allowCredentials = "true"
+    )
     @DeleteMapping("/clear")
     @Operation(summary = "Clear cart contents")
     public ResponseEntity<String> clearCart(
-            HttpServletRequest request,
-            HttpServletResponse response) {
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-        response.setHeader("Access-Control-Allow-Headers", "x-requested-with, authorization, Content-Type, Authorization, credential, X-XSRF-TOKEN");
+            HttpServletRequest request) {
 
         cartService.clearCart(request);
 
         return ResponseEntity.ok("Cart has been cleared");
     }
 
+    @CrossOrigin(
+            origins = "http://localhost:4000",
+            methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT},
+            allowCredentials = "true"
+    )
     @DeleteMapping("/{productUuid}")
     @Operation(summary = "Remove product by ID")
     public ResponseEntity<String> removeProductFromCart(
             @PathVariable UUID productUuid,
-            HttpServletRequest request,
-            HttpServletResponse response) {
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+            HttpServletRequest request) {
 
         cartService.removeProduct(productUuid, request);
 
