@@ -82,8 +82,12 @@ public class CartController {
             @Valid @RequestBody List<CartRequestDTO> cartRequestDTOList,
             HttpServletRequest request,
             HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+        response.setHeader("Access-Control-Allow-Headers", "x-requested-with, authorization, Content-Type, Authorization, credential, X-XSRF-TOKEN");
         response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost:4000");
+        response.setHeader("Access-Control-Max-Age", "3600");
+
 
         CartResponseDTO cartResponseDTO = cartService.updateCart(cartRequestDTOList, request);
 
@@ -96,7 +100,9 @@ public class CartController {
             HttpServletRequest request,
             HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost:4000");
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+        response.setHeader("Access-Control-Allow-Headers", "x-requested-with, authorization, Content-Type, Authorization, credential, X-XSRF-TOKEN");
 
         cartService.clearCart(request);
 
@@ -110,7 +116,8 @@ public class CartController {
             HttpServletRequest request,
             HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost:4000");
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
 
         cartService.removeProduct(productUuid, request);
 
