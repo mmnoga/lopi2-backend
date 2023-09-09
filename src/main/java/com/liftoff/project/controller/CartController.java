@@ -61,7 +61,9 @@ public class CartController {
 
     @GetMapping()
     @Operation(summary = "View cart")
-    public ResponseEntity<CartResponseDTO> getCart(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<CartResponseDTO> getCart(
+            HttpServletRequest request,
+            HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
 
@@ -78,7 +80,10 @@ public class CartController {
     @Operation(summary = "Update products quantity by ID and new quantity")
     public ResponseEntity<CartResponseDTO> updateCart(
             @Valid @RequestBody List<CartRequestDTO> cartRequestDTOList,
-            HttpServletRequest request) {
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
 
         CartResponseDTO cartResponseDTO = cartService.updateCart(cartRequestDTOList, request);
 
@@ -87,7 +92,12 @@ public class CartController {
 
     @DeleteMapping("/clear")
     @Operation(summary = "Clear cart contents")
-    public ResponseEntity<String> clearCart(HttpServletRequest request) {
+    public ResponseEntity<String> clearCart(
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+
         cartService.clearCart(request);
 
         return ResponseEntity.ok("Cart has been cleared");
@@ -97,7 +107,11 @@ public class CartController {
     @Operation(summary = "Remove product by ID")
     public ResponseEntity<String> removeProductFromCart(
             @PathVariable UUID productUuid,
-            HttpServletRequest request) {
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+
         cartService.removeProduct(productUuid, request);
 
         return ResponseEntity.ok("Product has been removed from cart");
