@@ -4,7 +4,9 @@ import com.liftoff.project.controller.order.request.OrderDeliveryMethodRequestDT
 import com.liftoff.project.controller.order.request.OrderItemRequestDTO;
 import com.liftoff.project.controller.order.request.OrderPaymentMethodRequestDTO;
 import com.liftoff.project.controller.order.request.OrderRequestDTO;
+import com.liftoff.project.controller.order.response.OrderDetailsListResponseDTO;
 import com.liftoff.project.controller.order.response.OrderDetailsResponseDTO;
+import com.liftoff.project.controller.order.response.OrderSummaryListResponseDTO;
 import com.liftoff.project.controller.order.response.OrderSummaryResponseDTO;
 import com.liftoff.project.exception.cart.CartNotFoundException;
 import com.liftoff.project.exception.cart.EntityNotFoundException;
@@ -235,21 +237,33 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderSummaryResponseDTO> getAllOrdersSummary() {
+    public OrderSummaryListResponseDTO getAllOrdersSummary() {
         List<Order> orders = orderRepository.findAll();
 
-        return orders.stream()
-                .map(orderMapper::mapOrderToOrderSummaryResponseDTO)
-                .collect(Collectors.toList());
+        return OrderSummaryListResponseDTO.builder()
+                .orderSummaryResponseDTOList(orders.stream()
+                        .map(orderMapper::mapOrderToOrderSummaryResponseDTO)
+                        .collect(Collectors.toList()))
+                .build();
+//
+//        return orders.stream()
+//                .map(orderMapper::mapOrderToOrderSummaryResponseDTO)
+//                .collect(Collectors.toList());
     }
 
     @Override
-    public List<OrderDetailsResponseDTO> getAllOrdersDetails() {
+    public OrderDetailsListResponseDTO getAllOrdersDetails() {
         List<Order> orders = orderRepository.findAll();
 
-        return orders.stream()
-                .map(orderMapper::mapOrderToOrderDetailsResponseDTO)
-                .collect(Collectors.toList());
+
+        return OrderDetailsListResponseDTO.builder()
+                .orderDetailsResponseDTOList(orders.stream()
+                        .map(orderMapper::mapOrderToOrderDetailsResponseDTO)
+                        .collect(Collectors.toList()))
+                .build();
+//        return orders.stream()
+//                .map(orderMapper::mapOrderToOrderDetailsResponseDTO)
+//                .collect(Collectors.toList());
     }
 
     private User getUserFromAuthenticatedUser() {

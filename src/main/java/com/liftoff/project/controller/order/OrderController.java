@@ -3,7 +3,9 @@ package com.liftoff.project.controller.order;
 import com.liftoff.project.controller.order.request.OrderDeliveryMethodRequestDTO;
 import com.liftoff.project.controller.order.request.OrderPaymentMethodRequestDTO;
 import com.liftoff.project.controller.order.request.OrderRequestDTO;
+import com.liftoff.project.controller.order.response.OrderDetailsListResponseDTO;
 import com.liftoff.project.controller.order.response.OrderDetailsResponseDTO;
+import com.liftoff.project.controller.order.response.OrderSummaryListResponseDTO;
 import com.liftoff.project.controller.order.response.OrderSummaryResponseDTO;
 import com.liftoff.project.service.OrderService;
 import com.liftoff.project.service.PaymentMethodService;
@@ -85,12 +87,12 @@ public class OrderController {
     }
 
     @GetMapping("/summary")
-    public List<OrderSummaryResponseDTO> getOrdersSummary() {
-        return ResponseEntity.ok(orderService.getAllOrdersSummary()).getBody();
+    public ResponseEntity<OrderSummaryListResponseDTO> getOrdersSummary() {
+        return ResponseEntity.ok(orderService.getAllOrdersSummary());
     }
 
     @GetMapping("/details")
-    public List<OrderDetailsResponseDTO> getOrdersDetails() {
-        return ResponseEntity.ok(orderService.getAllOrdersDetails()).getBody();
+    public ResponseEntity<OrderDetailsListResponseDTO> getOrdersDetails() {
+        return ResponseEntity.ok(orderService.getAllOrdersDetails());
     }
 }

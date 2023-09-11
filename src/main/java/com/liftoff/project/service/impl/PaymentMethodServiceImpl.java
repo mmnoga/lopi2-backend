@@ -1,5 +1,6 @@
 package com.liftoff.project.service.impl;
 
+import com.liftoff.project.controller.order.PaymentMethodListResponseDTO;
 import com.liftoff.project.controller.order.request.PaymentMethodRequestDTO;
 import com.liftoff.project.controller.order.response.PaymentMethodResponseDTO;
 import com.liftoff.project.exception.cart.EntityNotFoundException;
@@ -21,11 +22,17 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
     private final PaymentMethodMapper paymentMethodMapper;
 
     @Override
-    public List<PaymentMethodResponseDTO> getPaymentMethods() {
-        return
-                paymentMethodRepository.findAll().stream()
+    public PaymentMethodListResponseDTO getPaymentMethods() {
+
+        List<PaymentMethod> methodList = paymentMethodRepository.findAll();
+
+        return PaymentMethodListResponseDTO.builder()
+                .methodResponseDTOList(methodList.stream()
                         .map(paymentMethodMapper::mapPaymentMethodToPaymentMethodResponseDTO)
-                        .collect(Collectors.toList());
+                        .collect(Collectors.toList()))
+                .build();
+
+
     }
 
     @Override

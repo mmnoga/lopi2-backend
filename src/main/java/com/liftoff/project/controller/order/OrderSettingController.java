@@ -34,14 +34,15 @@ public class OrderSettingController {
     private final DeliveryMethodService deliveryMethodService;
 
     @GetMapping("/payment-method")
-    public List<PaymentMethodResponseDTO> getPaymentMethods() {
-        return paymentMethodService.getPaymentMethods();
+    public ResponseEntity<PaymentMethodListResponseDTO> getPaymentMethods() {
+
+        return ResponseEntity.ok(paymentMethodService.getPaymentMethods());
     }
 
     @PostMapping("/payment-method")
-    public PaymentMethodResponseDTO addPaymentMethod(
+    public ResponseEntity<PaymentMethodResponseDTO> addPaymentMethod(
             @Valid @RequestBody PaymentMethodRequestDTO paymentMethodRequestDTO) {
-        return paymentMethodService.addPaymentMethod(paymentMethodRequestDTO);
+        return ResponseEntity.ok(paymentMethodService.addPaymentMethod(paymentMethodRequestDTO));
     }
 
     @DeleteMapping("/payment-method/{name}")
@@ -51,10 +52,10 @@ public class OrderSettingController {
     }
 
     @PutMapping("/payment-method/{name}")
-    public PaymentMethodResponseDTO updatePaymentMethodByName(
+    public ResponseEntity<PaymentMethodResponseDTO> updatePaymentMethodByName(
             @PathVariable String name,
             @Valid @RequestBody PaymentMethodRequestDTO paymentMethodRequestDTO) {
-        return paymentMethodService.editPaymentMethod(name, paymentMethodRequestDTO);
+        return ResponseEntity.ok(paymentMethodService.editPaymentMethod(name, paymentMethodRequestDTO));
     }
 
     @GetMapping("/delivery-method")
