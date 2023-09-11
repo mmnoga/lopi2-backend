@@ -18,6 +18,7 @@ import com.liftoff.project.repository.UserRepository;
 import jakarta.annotation.Priority;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -29,6 +30,7 @@ import java.util.UUID;
 @Component
 @Priority(1)
 @AllArgsConstructor
+@Profile("!prod")
 public class ProductInsertCommand implements CommandLineRunner {
 
     private final ProductRepository productRepository;
