@@ -22,6 +22,7 @@ import jakarta.annotation.Priority;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -31,6 +32,7 @@ import java.util.UUID;
 @Component
 @Priority(2)
 @AllArgsConstructor
+@Profile("!prod")
 public class OrderInsertCommand implements CommandLineRunner {
 
     private final AddressRepository addressRepository;
