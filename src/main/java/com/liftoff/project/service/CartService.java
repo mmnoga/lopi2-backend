@@ -1,14 +1,14 @@
 package com.liftoff.project.service;
 
-import com.liftoff.project.controller.request.CartRequestDTO;
 import com.liftoff.project.controller.response.CartResponseDTO;
 import com.liftoff.project.exception.cart.CartNotFoundException;
+import com.liftoff.project.exception.product.ProductNotEnoughQuantityException;
+import com.liftoff.project.exception.product.ProductNotFoundException;
 import com.liftoff.project.model.Cart;
 import com.liftoff.project.model.Product;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface CartService {
@@ -87,13 +87,18 @@ public interface CartService {
     void removeProduct(UUID productUuid, HttpServletRequest request);
 
     /**
-     * Updates the shopping cart with the provided list of cart request DTOs.
+     * Updates the cart content based on the provided product UUID and quantity.
      *
-     * @param cartRequestDTOList The list of CartRequestDTO objects containing product updates.
-     * @param request            The HttpServletRequest containing additional information about the request.
-     * @return A CartResponseDTO representing the updated shopping cart after applying the changes.
+     * @param productUuid UUID of the product to be updated in the cart.
+     * @param quantity    New quantity of the product in the cart.
+     * @param request     HttpServletRequest object containing the HTTP request.
+     * @return A CartResponseDTO object representing the updated customer's cart.
+     * @throws ProductNotEnoughQuantityException Thrown when the provided quantity is less than or equal to zero.
+     * @throws CartNotFoundException            Thrown when the customer's cart cannot be found.
+     * @throws ProductNotFoundException         Thrown when the product cannot be found in the cart.
+     * @throws ProductNotEnoughQuantityException Thrown when the product quantity is insufficient.
      */
-    CartResponseDTO updateCart(List<CartRequestDTO> cartRequestDTOList, HttpServletRequest request);
+    CartResponseDTO updateCart(UUID productUuid, int quantity, HttpServletRequest request);
 
     /**
      * Calculates the total price and total quantity of items in the provided shopping cart.

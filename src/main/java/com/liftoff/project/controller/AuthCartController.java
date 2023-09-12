@@ -1,6 +1,5 @@
 package com.liftoff.project.controller;
 
-import com.liftoff.project.controller.request.CartRequestDTO;
 import com.liftoff.project.controller.response.CartResponseDTO;
 import com.liftoff.project.service.AuthCartService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,7 +7,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,12 +19,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -74,13 +71,14 @@ public class AuthCartController {
             security = @SecurityRequirement(name = "bearerAuth"))
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CartResponseDTO> updateCartForAuthenticated(
+            @RequestParam UUID productUuid,
+            @RequestParam(defaultValue = "1") @Min(1) int quantity,
             @Parameter(in = ParameterIn.HEADER, name = "Authorization")
-            @AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody @Valid List<CartRequestDTO> cartRequestDTOList) {
+            @AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
 
         CartResponseDTO cartResponseDTO = authCartService
-                .updateCartForUser(cartRequestDTOList, username);
+                .updateCartForUser(productUuid, quantity, username);
 
         return ResponseEntity.ok(cartResponseDTO);
     }

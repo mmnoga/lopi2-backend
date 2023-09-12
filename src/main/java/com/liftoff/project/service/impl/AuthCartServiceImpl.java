@@ -1,6 +1,5 @@
 package com.liftoff.project.service.impl;
 
-import com.liftoff.project.controller.request.CartRequestDTO;
 import com.liftoff.project.controller.response.CartItemResponseDTO;
 import com.liftoff.project.controller.response.CartResponseDTO;
 import com.liftoff.project.exception.cart.CartNotFoundException;
@@ -172,7 +171,11 @@ public class AuthCartServiceImpl implements AuthCartService {
     }
 
     @Override
-    public CartResponseDTO updateCartForUser(List<CartRequestDTO> cartRequestDTOList, String username) {
+    public CartResponseDTO updateCartForUser(UUID productUuid, int quantity, String username) {
+        if (quantity <= 0) {
+            throw new ProductNotEnoughQuantityException("Quantity must be greater than zero");
+        }
+
         String cartId = findCartIdByUsername(username);
 
         if (cartId == null) {
@@ -184,17 +187,12 @@ public class AuthCartServiceImpl implements AuthCartService {
                     .findByUuid(UUID.fromString(cartId))
                     .orElseThrow(() -> new CartNotFoundException("Cart not found"));
 
-            for (CartRequestDTO cartRequestDTO : cartRequestDTOList) {
-                UUID productUuid = cartRequestDTO.getProductUuid();
-                Integer newQuantity = cartRequestDTO.getQuantity();
+            CartItem cartItem = cart.getCartItems().stream()
+                    .filter(item -> item.getProduct().getUId().equals(productUuid))
+                    .findFirst()
+                    .orElseThrow(() -> new ProductNotFoundException("Product not found in the cart"));
 
-                CartItem cartItem = cart.getCartItems().stream()
-                        .filter(item -> item.getProduct().getUId().equals(productUuid))
-                        .findFirst()
-                        .orElseThrow(() -> new ProductNotFoundException("Product not found in the cart"));
-
-                cartItem.setQuantity(newQuantity);
-            }
+            cartItem.setQuantity(quantity);
 
             Cart updatedCart = cartService.calculateTotalPriceAndTotalQuantity(cart);
 

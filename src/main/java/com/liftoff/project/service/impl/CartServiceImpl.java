@@ -1,6 +1,5 @@
 package com.liftoff.project.service.impl;
 
-import com.liftoff.project.controller.request.CartRequestDTO;
 import com.liftoff.project.controller.response.CartResponseDTO;
 import com.liftoff.project.exception.cart.CartNotFoundException;
 import com.liftoff.project.exception.product.ProductNotEnoughQuantityException;
@@ -208,7 +207,10 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartResponseDTO updateCart(List<CartRequestDTO> cartRequestDTOList, HttpServletRequest request) {
+    public CartResponseDTO updateCart(UUID productUuid, int quantity, HttpServletRequest request) {
+        if (quantity <= 0) {
+            throw new ProductNotEnoughQuantityException("Quantity must be greater than zero");
+        }
         String cartId = cookieService.getCookieValue(cookieName, request);
 
         Cart cart = cartRepository.findByUuid(UUID.fromString(cartId))
@@ -216,22 +218,17 @@ public class CartServiceImpl implements CartService {
 
         Cart updatedCart = createCartCopy(cart);
 
-        for (CartRequestDTO cartRequestDTO : cartRequestDTOList) {
-            UUID productUuid = cartRequestDTO.getProductUuid();
-            Integer newQuantity = cartRequestDTO.getQuantity();
+        CartItem cartItem = updatedCart.getCartItems().stream()
+                .filter(item -> item.getProduct().getUId().equals(productUuid))
+                .findFirst()
+                .orElseThrow(() -> new ProductNotFoundException("Product not found in the cart"));
 
-            CartItem cartItem = updatedCart.getCartItems().stream()
-                    .filter(item -> item.getProduct().getUId().equals(productUuid))
-                    .findFirst()
-                    .orElseThrow(() -> new ProductNotFoundException("Product not found in the cart"));
-
-            if (!hasProductEnoughQuantity(cartItem.getProduct(), newQuantity, cart)) {
-                throw new ProductNotEnoughQuantityException(
-                        "Insufficient quantity of product with UUID: " + productUuid + " in stock");
-            }
-
-            cartItem.setQuantity(newQuantity);
+        if (!hasProductEnoughQuantity(cartItem.getProduct(), quantity, cart)) {
+            throw new ProductNotEnoughQuantityException(
+                    "Insufficient quantity of product with UUID: " + productUuid + " in stock");
         }
+
+        cartItem.setQuantity(quantity);
 
         Cart finalCart = calculateTotalPriceAndTotalQuantity(updatedCart);
 
