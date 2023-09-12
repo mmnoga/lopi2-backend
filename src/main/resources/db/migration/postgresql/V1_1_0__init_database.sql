@@ -98,3 +98,4 @@ CREATE TABLE CART_ITEMS (
                             FOREIGN KEY (CART_ID) REFERENCES CARTS (ID),
                             FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCTS (ID)
 );
+

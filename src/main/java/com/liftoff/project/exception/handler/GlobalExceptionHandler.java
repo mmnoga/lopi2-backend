@@ -1,20 +1,24 @@
 package com.liftoff.project.exception.handler;
 
-import com.liftoff.project.exception.category.CannotDeleteCategoryException;
+import com.liftoff.project.exception.auth.LoginAuthenticationException;
+import com.liftoff.project.exception.auth.UserExistsException;
+import com.liftoff.project.exception.auth.UserNotFoundException;
 import com.liftoff.project.exception.cart.CartNotFoundException;
+import com.liftoff.project.exception.cart.EntityNotFoundException;
+import com.liftoff.project.exception.cart.TermsNotAcceptedException;
+import com.liftoff.project.exception.category.CannotDeleteCategoryException;
 import com.liftoff.project.exception.category.CategoryNotFoundException;
+import com.liftoff.project.exception.category.InvalidParentCategoryException;
+import com.liftoff.project.exception.category.ParentCategoryNotFoundException;
 import com.liftoff.project.exception.cookie.CookieNotFoundException;
+import com.liftoff.project.exception.order.BadUserFromCartException;
+import com.liftoff.project.exception.order.OrderExistsException;
 import com.liftoff.project.exception.product.ProductNotEnoughQuantityException;
+import com.liftoff.project.exception.product.ProductNotFoundException;
+import com.liftoff.project.exception.product.ProductOutOfStockException;
 import com.liftoff.project.exception.storage.FileNotFoundException;
 import com.liftoff.project.exception.storage.FileSizeExceedsLimitException;
 import com.liftoff.project.exception.storage.ImageNotFoundException;
-import com.liftoff.project.exception.category.InvalidParentCategoryException;
-import com.liftoff.project.exception.auth.LoginAuthenticationException;
-import com.liftoff.project.exception.category.ParentCategoryNotFoundException;
-import com.liftoff.project.exception.product.ProductNotFoundException;
-import com.liftoff.project.exception.product.ProductOutOfStockException;
-import com.liftoff.project.exception.auth.UserExistsException;
-import com.liftoff.project.exception.auth.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -115,6 +119,26 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ProductNotEnoughQuantityException.class)
     public ResponseEntity<Map<String, String>> handleProductNotEnoughQuantityException
             (ProductNotEnoughQuantityException ex) {
+        return createErrorResponse(ex.getMessage(), ex.getStatus());
+    }
+
+    @ExceptionHandler(BadUserFromCartException.class)
+    public ResponseEntity<Map<String, String>> handleBadUserFromCartException(BadUserFromCartException ex) {
+        return createErrorResponse(ex.getMessage(), ex.getStatus());
+    }
+
+    @ExceptionHandler(OrderExistsException.class)
+    public ResponseEntity<Map<String, String>> handleOrderExistsException(OrderExistsException ex) {
+        return createErrorResponse(ex.getMessage(), ex.getStatus());
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleEntityNotFoundException(EntityNotFoundException ex) {
+        return createErrorResponse(ex.getMessage(), ex.getStatus());
+    }
+
+    @ExceptionHandler(TermsNotAcceptedException.class)
+    public ResponseEntity<Map<String, String>> handleTermsNotAcceptedException(TermsNotAcceptedException ex) {
         return createErrorResponse(ex.getMessage(), ex.getStatus());
     }
 

@@ -1,19 +1,29 @@
 package com.liftoff.project.command;
 
+import com.liftoff.project.model.Cart;
+import com.liftoff.project.model.CartItem;
 import com.liftoff.project.model.Category;
 import com.liftoff.project.model.ImageAsset;
 import com.liftoff.project.model.Product;
 import com.liftoff.project.model.ProductStatus;
+import com.liftoff.project.model.Session;
+import com.liftoff.project.model.User;
+import com.liftoff.project.repository.CartItemRepository;
+import com.liftoff.project.repository.CartRepository;
 import com.liftoff.project.repository.CategoryRepository;
 import com.liftoff.project.repository.ImageAssetRepository;
 import com.liftoff.project.repository.ProductRepository;
+import com.liftoff.project.repository.SessionRepository;
+import com.liftoff.project.repository.UserRepository;
 import jakarta.annotation.Priority;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,6 +36,12 @@ public class ProductInsertCommand implements CommandLineRunner {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ImageAssetRepository imageAssetRepository;
+    private final SessionRepository sessionRepository;
+    private final CartRepository cartRepository;
+    private final CartItemRepository cartItemRepository;
+    private final UserRepository userRepository;
+
+
 
     @Override
     public void run(String... args) {
@@ -241,6 +257,56 @@ public class ProductInsertCommand implements CommandLineRunner {
                 testProductIN_PREPARATION,
                 testProductCLOSED,
                 testProductACTIVE));
+
+
+
+        ///////////
+        Session session1 = new Session();
+        session1.setId(1L);
+        session1.setUId(UUID.fromString("7b2b9688-de45-445e-bdf3-a0a7d4ffe733"));
+        session1.setExpirationTime(Instant.now().plus(30, ChronoUnit.DAYS));
+        session1.setExpired(false);
+        sessionRepository.save(session1);
+
+        Cart cart1 = new Cart();
+        cart1.setUuid(UUID.fromString("7b2b9688-de45-445e-bdf3-a0a7d4ffe733"));
+        cart1.setUser(null);
+        cart1.setTotalPrice(150.0);
+        cart1.setTotalQuantity(3);
+        cart1.setSession(session1);
+
+        CartItem cartItem1 = new CartItem();
+        cartItem1.setProduct(kawaDavidoff);
+        cartItem1.setQuantity(2);
+
+
+        cart1.setCartItems(List.of(cartItem1));
+        cartRepository.save(cart1);
+
+        ////////////////////////////////
+
+        User user = userRepository.findById(1L).orElse(null);
+
+        Cart cart2 = new Cart();
+        cart2.setUuid(UUID.fromString("7b2b9688-de45-445e-bdf3-a0a7d4ffe734"));
+        cart2.setUser(user);
+        cart2.setTotalPrice(300.00);
+        cart2.setTotalQuantity(3);
+
+        CartItem cartItem2 = new CartItem();
+        cartItem2.setProduct(kawaMK);
+        cartItem2.setQuantity(3);
+
+
+        CartItem cartItem3 = new CartItem();
+        cartItem3.setProduct(kawaMildano);
+        cartItem3.setQuantity(1);
+
+        cart2.setCartItems(List.of(cartItem2, cartItem3));
+        cartRepository.save(cart2);
+
+
+
 
     }
 

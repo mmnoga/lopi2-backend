@@ -1,15 +1,15 @@
-package com.liftoff.project.exception.auth;
+package com.liftoff.project.exception.cart;
 
 import org.springframework.http.HttpStatus;
 
-public class UserNotFoundException extends RuntimeException {
+public class TermsNotAcceptedException extends RuntimeException {
 
     private final HttpStatus status;
     private final String message;
 
-    public UserNotFoundException(String message) {
+    public TermsNotAcceptedException(String message) {
         super(message);
-        this.status = HttpStatus.NOT_FOUND;
+        this.status = HttpStatus.BAD_REQUEST;
         this.message = message;
     }
 
@@ -20,4 +20,5 @@ public class UserNotFoundException extends RuntimeException {
     public String getMessage() {
         return message;
     }
+
 }
