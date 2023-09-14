@@ -26,6 +26,7 @@ public class ProductMapperImpl implements ProductMapper {
                 .sku(product.getSku())
                 .regularPrice(product.getRegularPrice())
                 .discountPrice(product.getDiscountPrice())
+                .discountPriceEndDate(product.getDiscountPriceEndDate())
                 .lowestPrice(product.getLowestPrice())
                 .description(product.getDescription())
                 .shortDescription(product.getShortDescription())

@@ -11,6 +11,7 @@ import com.liftoff.project.exception.category.CategoryNotFoundException;
 import com.liftoff.project.exception.category.InvalidParentCategoryException;
 import com.liftoff.project.exception.category.ParentCategoryNotFoundException;
 import com.liftoff.project.exception.cookie.CookieNotFoundException;
+import com.liftoff.project.exception.product.InvalidDiscountException;
 import com.liftoff.project.exception.order.BadUserFromCartException;
 import com.liftoff.project.exception.order.OrderExistsException;
 import com.liftoff.project.exception.product.ProductNotEnoughQuantityException;
@@ -122,16 +123,22 @@ public class GlobalExceptionHandler {
         return createErrorResponse(ex.getMessage(), ex.getStatus());
     }
 
+    @ExceptionHandler(InvalidDiscountException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidDiscountException
+            (InvalidDiscountException ex) {
+        return createErrorResponse(ex.getMessage(), ex.getStatus());
+    }
+  
     @ExceptionHandler(BadUserFromCartException.class)
     public ResponseEntity<Map<String, String>> handleBadUserFromCartException(BadUserFromCartException ex) {
         return createErrorResponse(ex.getMessage(), ex.getStatus());
     }
-
+  
     @ExceptionHandler(OrderExistsException.class)
     public ResponseEntity<Map<String, String>> handleOrderExistsException(OrderExistsException ex) {
         return createErrorResponse(ex.getMessage(), ex.getStatus());
     }
-
+  
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleEntityNotFoundException(EntityNotFoundException ex) {
         return createErrorResponse(ex.getMessage(), ex.getStatus());

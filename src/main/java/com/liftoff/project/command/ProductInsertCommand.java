@@ -167,7 +167,7 @@ public class ProductInsertCommand implements CommandLineRunner {
                 .sku("4991")
                 .regularPrice(12.88)
                 .discountPrice(11.00)
-                .discountPriceEndDate(LocalDateTime.now().plusDays(10))
+                .discountPriceEndDate(LocalDateTime.now().plusDays(15))
                 .lowestPrice(10.00)
                 .shortDescription("MK Cafe Mildano to doskonała kawa bezkofeinowa o wyjątkowo pełnym smaku i aromacie.")
                 .status(ProductStatus.ACTIVE)
@@ -195,7 +195,7 @@ public class ProductInsertCommand implements CommandLineRunner {
                 .sku(" 4831")
                 .regularPrice(23.90)
                 .discountPrice(22.90)
-                .discountPriceEndDate(LocalDateTime.now().plusDays(15))
+                .discountPriceEndDate(LocalDateTime.now().minusDays(15))
                 .lowestPrice(22.90)
                 .shortDescription("Davidoff Espresso Intense 57 to  kompozycja pochodząca z renomowanej " +
                         "i docenianej na całym świecie palarni.")
@@ -223,7 +223,7 @@ public class ProductInsertCommand implements CommandLineRunner {
                 .sku(" 4884")
                 .regularPrice(16.99)
                 .discountPrice(15.99)
-                .discountPriceEndDate(LocalDateTime.now().plusDays(5))
+                .discountPriceEndDate(LocalDateTime.now().minusDays(5))
                 .lowestPrice(15.99)
                 .shortDescription("MK Cafe Premium Crema to znakomita kompozycja o wyraźnych " +
                         "nutach miodu, orzechów i karmelu.")

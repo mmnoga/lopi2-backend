@@ -287,7 +287,7 @@ class ProductControllerTest {
 
         List<ProductResponseDTO> expectedResponse = Arrays.asList(productResponseDTO1, productResponseDTO2);
 
-        when(productService.getProductsByCategoryId(categoryId)).thenReturn(expectedResponse);
+        when(productService.getProductsByCategoryUuid(categoryId)).thenReturn(expectedResponse);
 
         // when & then
         mockMvc.perform(get("/api/products/by-category/{categoryId}", categoryId))
@@ -306,11 +306,11 @@ class ProductControllerTest {
         // given
         UUID categoryId = UUID.fromString("f28bd377-3a7d-44fe-bbc9-adeb3bea03fa");
 
-        when(productService.getProductsByCategoryId(categoryId)).thenReturn(Collections.emptyList());
+        when(productService.getProductsByCategoryUuid(categoryId)).thenReturn(Collections.emptyList());
 
         // when & then
         mockMvc.perform(get("/api/products/by-category/{categoryId}", categoryId))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -318,7 +318,7 @@ class ProductControllerTest {
         // given
         UUID categoryId = UUID.fromString("f28bd377-3a7d-44fe-bbc9-adeb3bea03fa");
 
-        when(productService.getProductsByCategoryId(categoryId))
+        when(productService.getProductsByCategoryUuid(categoryId))
                 .thenThrow(new CategoryNotFoundException("Category with UUID " + categoryId + " not found."));
 
         // when & then

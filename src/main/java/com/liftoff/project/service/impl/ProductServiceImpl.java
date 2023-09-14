@@ -4,8 +4,8 @@ import com.liftoff.project.controller.request.ProductRequestDTO;
 import com.liftoff.project.controller.response.PaginatedProductResponseDTO;
 import com.liftoff.project.controller.response.ProductResponseDTO;
 import com.liftoff.project.exception.category.CategoryNotFoundException;
-import com.liftoff.project.exception.storage.ImageNotFoundException;
 import com.liftoff.project.exception.product.ProductNotFoundException;
+import com.liftoff.project.exception.storage.ImageNotFoundException;
 import com.liftoff.project.mapper.ProductMapper;
 import com.liftoff.project.model.Category;
 import com.liftoff.project.model.ImageAsset;
@@ -62,18 +62,6 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findByUId(productUuid)
                 .orElseThrow(() -> new ProductNotFoundException("Product with UUID " + productUuid + " not found."));
         return productMapper.mapEntityToResponse(product);
-    }
-
-    @Override
-    public List<ProductResponseDTO> getProductsByCategoryId(UUID categoryId) {
-        Category category = categoryRepository.findByUId(categoryId)
-                .orElseThrow(() -> new CategoryNotFoundException("Category with UUID " + categoryId + " not found."));
-
-        List<Product> products = category.getProducts()
-                .stream().toList();
-        return products.stream()
-                .map(productMapper::mapEntityToResponse)
-                .collect(Collectors.toList());
     }
 
     @Override
@@ -192,6 +180,21 @@ public class ProductServiceImpl implements ProductService {
                         new ProductNotFoundException("Product not found with UUID: " + productUuid));
     }
 
+    @Override
+    public List<ProductResponseDTO> getProductsByCategoryUuid(UUID categoryUuid) {
+
+        Category category = categoryRepository.findByUId(categoryUuid)
+                .orElseThrow(() ->
+                        new CategoryNotFoundException("Category with UUID " + categoryUuid + " not found."));
+
+        List<Product> products =
+                retrieveProductsFromCategoryAndSubcategories(category);
+
+        return products.stream()
+                .map(productMapper::mapEntityToResponse)
+                .collect(Collectors.toList());
+    }
+
     private void updateProductFromRequest(Product product, ProductRequestDTO req) {
         if (req.getName() != null) product.setName(req.getName());
         if (req.getSku() != null) product.setSku(req.getSku());
@@ -204,6 +207,22 @@ public class ProductServiceImpl implements ProductService {
         if (req.getNote() != null) product.setNote(req.getNote());
         if (req.getProductscol() != null) product.setProductscol(req.getProductscol());
         if (req.getQuantity() != null) product.setQuantity(req.getQuantity());
+    }
+
+    private List<Product> retrieveProductsFromCategoryAndSubcategories(
+            Category category) {
+
+        List<Product> productsInCategory = category.getProducts();
+        List<Product> products = new ArrayList<>(productsInCategory);
+
+        List<Category> subcategories = category.getSubcategories();
+        for (Category subcategory : subcategories) {
+            List<Product> productsInSubcategory =
+                    retrieveProductsFromCategoryAndSubcategories(subcategory);
+            products.addAll(productsInSubcategory);
+        }
+
+        return products;
     }
 
 }

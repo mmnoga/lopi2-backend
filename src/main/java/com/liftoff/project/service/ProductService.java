@@ -35,11 +35,11 @@ public interface ProductService {
     /**
      * Retrieves a list of products that belong to the category with the specified UUID.
      *
-     * @param categoryId The UUID of the category for witch the products are to be retrieved.
-     * @return The list of ProductResponseDTO objects representing the products in the specified category.
+     * @param categoryUuid The UUID of the category to retrieve products for.
+     * @return A list of product response DTOs representing the products in the category.
      * @throws CategoryNotFoundException If the category with the given UUID is not found.
      */
-    List<ProductResponseDTO> getProductsByCategoryId(UUID categoryId);
+    List<ProductResponseDTO> getProductsByCategoryUuid(UUID categoryUuid);
 
     /**
      * Retrieves a list of n most recently added active products.

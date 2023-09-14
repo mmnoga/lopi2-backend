@@ -1,11 +1,13 @@
 package com.liftoff.project.repository;
 
+import com.liftoff.project.model.Category;
 import com.liftoff.project.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -32,5 +34,25 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "AND p.createdAt IS NOT NULL " +
             "ORDER BY p.createdAt DESC LIMIT :n")
     List<Product> findTopNRecentActiveProducts(@Param("n") int n);
+
+    /**
+     * Finds products with a discount price greater than the specified value
+     * and a discount price end date after the specified date and not null.
+     *
+     * @param discountPrice The minimum discount price to search for.
+     * @param discountPriceEndDate The date to compare with the discount price end date.
+     * @return A list of products that meet the specified criteria.
+     */
+    List<Product> findProductsByDiscountPriceGreaterThanAndDiscountPriceEndDateAfterAndDiscountPriceEndDateIsNotNull(
+            Double discountPrice, LocalDateTime discountPriceEndDate);
+
+    /**
+     * Retrieves a list of products with a non-null discount price greater than the specified value.
+     *
+     * @param discountPrice The minimum discount price to filter products by.
+     * @return A list of products with a discount price greater than the specified value and not null.
+     */
+    List<Product> findProductsByDiscountPriceNotNullAndDiscountPriceGreaterThan(
+            Double discountPrice);
 
 }

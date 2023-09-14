@@ -3,7 +3,6 @@ package com.liftoff.project.controller;
 import com.liftoff.project.controller.request.ProductRequestDTO;
 import com.liftoff.project.controller.response.PaginatedProductResponseDTO;
 import com.liftoff.project.controller.response.ProductResponseDTO;
-import com.liftoff.project.exception.category.CategoryNotFoundException;
 import com.liftoff.project.exception.product.ProductNotFoundException;
 import com.liftoff.project.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -163,20 +162,15 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/by-category/{categoryId}")
+    @GetMapping("/by-category/{categoryUuid}")
     @Operation(summary = "Get products by category ID",
             description = "Retrieves a list of products belonging to the specified category.")
-    public ResponseEntity<List<ProductResponseDTO>> getProductsByCategory(@PathVariable UUID categoryId) {
-        try {
-            List<ProductResponseDTO> products = productService.getProductsByCategoryId(categoryId);
-            if (products.isEmpty()) {
-                return ResponseEntity.noContent().build();
-            } else {
-                return ResponseEntity.ok(products);
-            }
-        } catch (CategoryNotFoundException ex) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<List<ProductResponseDTO>> getProductsByCategory(
+            @PathVariable UUID categoryUuid) {
+
+        return ResponseEntity.ok(
+                productService
+                        .getProductsByCategoryUuid(categoryUuid));
     }
 
 }
