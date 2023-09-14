@@ -2,6 +2,7 @@ package com.liftoff.project.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.liftoff.project.Lopi2Application;
 import com.liftoff.project.controller.request.ProductRequestDTO;
 import com.liftoff.project.controller.response.PaginatedProductResponseDTO;
 import com.liftoff.project.controller.response.ProductResponseDTO;
@@ -23,6 +24,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -54,6 +56,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
+@ActiveProfiles("test")
 class ProductControllerTest {
 
     @Autowired

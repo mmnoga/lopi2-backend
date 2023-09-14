@@ -147,7 +147,7 @@ CREATE TABLE PAYMENT_METHODS (
 
 CREATE TABLE DELIVERY_METHODS (
                                  ID BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                 NAME VARCHAR(255) UNIQUE,
+                                 NAME VARCHAR(255),
                                  DESCRIPTION VARCHAR(255),
                                  COST DOUBLE PRECISION
 );

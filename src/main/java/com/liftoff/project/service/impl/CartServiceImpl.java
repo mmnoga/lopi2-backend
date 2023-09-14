@@ -133,7 +133,7 @@ public class CartServiceImpl implements CartService {
 
             return cartRepository.save(newCart);
         } else {
-            return null;
+            throw new CartNotFoundException("Cart not found or cannot be created");
         }
     }
 

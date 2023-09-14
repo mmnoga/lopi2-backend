@@ -32,7 +32,7 @@ import java.util.UUID;
 @Component
 @Priority(2)
 @AllArgsConstructor
-@Profile("!prod")
+@Profile("!prod & !test")
 public class OrderInsertCommand implements CommandLineRunner {
 
     private final AddressRepository addressRepository;

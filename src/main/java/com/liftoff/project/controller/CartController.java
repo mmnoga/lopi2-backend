@@ -67,7 +67,7 @@ public class CartController {
         response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
 
         Cart cart = cartService
-                .getCartByCookieOrCreateNewCart(request, null);
+                .getCartByCookieOrCreateNewCart(request, response);
 
         CartResponseDTO cartResponseDTO = cartMapper
                 .mapCartToCartResponseDTO(cart);

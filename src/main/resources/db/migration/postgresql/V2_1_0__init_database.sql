@@ -1,7 +1,3 @@
-
-
--------------------------------------------------------------
-
 CREATE TABLE ADDRESS (
                          ID BIGSERIAL PRIMARY KEY,
                          STREET VARCHAR(250),
@@ -12,8 +8,7 @@ CREATE TABLE ADDRESS (
                          COUNTRY VARCHAR(45),
                          PHONE_NUMBER VARCHAR(45),
                          CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                         UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-
+                         UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE ORDER_ITEM (
@@ -24,11 +19,8 @@ CREATE TABLE ORDER_ITEM (
                          PRICE_PER_UNIT DOUBLE PRECISION,
                          SUBTOTAL DOUBLE PRECISION,
                          CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                         UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-
-
+                         UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-
 
 CREATE TABLE ORDERS (
                          ID BIGSERIAL PRIMARY KEY,
@@ -48,8 +40,6 @@ CREATE TABLE ORDERS (
                          CART_UUID UUID,
                          CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                          UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-
-
 );
 
 CREATE TABLE CUSTOMERS (
@@ -62,6 +52,7 @@ CREATE TABLE CUSTOMERS (
                            LAST_NAME VARCHAR(255),
                            EMAIL VARCHAR(255)
 );
+
 CREATE TABLE PAYMENT_METHODS (
                                  ID BIGSERIAL PRIMARY KEY,
                                  NAME VARCHAR(255) UNIQUE,

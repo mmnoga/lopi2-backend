@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Priority(1)
-@Profile("!prod")
+@Profile("!prod & !test")
 public class ExampleInsertCommand implements CommandLineRunner {
 
     private final ExampleRepository exampleRepository;

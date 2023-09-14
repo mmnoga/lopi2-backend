@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Priority(2)
-@Profile("!prod")
+@Profile("!prod & !test")
 public class ExampleReadCommand implements CommandLineRunner {
 
     private final ExampleRepository exampleRepository;
