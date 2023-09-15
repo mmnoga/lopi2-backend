@@ -144,6 +144,7 @@ public class GlobalExceptionHandler {
     }
 
 
+
     private ResponseEntity<Map<String, String>> createErrorResponse(String errorMessage, HttpStatus status) {
         Map<String, String> errorResponse = new HashMap<>();
         errorResponse.put("message", errorMessage);
