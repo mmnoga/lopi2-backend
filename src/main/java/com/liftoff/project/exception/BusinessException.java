@@ -1,12 +1,12 @@
-package com.liftoff.project.exception.order;
+package com.liftoff.project.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class BadUserFromCartException extends RuntimeException{
+public class BusinessException extends RuntimeException {
     private final HttpStatus status;
     private final String message;
 
-    public BadUserFromCartException(String message) {
+    public BusinessException(String message) {
         super(message);
         this.status = HttpStatus.FOUND;
         this.message = message;
@@ -21,3 +21,4 @@ public class BadUserFromCartException extends RuntimeException{
     }
 
 }
+

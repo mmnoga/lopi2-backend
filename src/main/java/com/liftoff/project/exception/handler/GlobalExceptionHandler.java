@@ -1,7 +1,8 @@
 package com.liftoff.project.exception.handler;
 
+import com.liftoff.project.exception.BusinessException;
+import com.liftoff.project.exception.TechnicalException;
 import com.liftoff.project.exception.auth.LoginAuthenticationException;
-import com.liftoff.project.exception.auth.UserExistsException;
 import com.liftoff.project.exception.auth.UserNotFoundException;
 import com.liftoff.project.exception.cart.CartNotFoundException;
 import com.liftoff.project.exception.cart.EntityNotFoundException;
@@ -12,8 +13,6 @@ import com.liftoff.project.exception.category.InvalidParentCategoryException;
 import com.liftoff.project.exception.category.ParentCategoryNotFoundException;
 import com.liftoff.project.exception.cookie.CookieNotFoundException;
 import com.liftoff.project.exception.product.InvalidDiscountException;
-import com.liftoff.project.exception.order.BadUserFromCartException;
-import com.liftoff.project.exception.order.OrderExistsException;
 import com.liftoff.project.exception.product.ProductNotEnoughQuantityException;
 import com.liftoff.project.exception.product.ProductNotFoundException;
 import com.liftoff.project.exception.product.ProductOutOfStockException;
@@ -90,12 +89,6 @@ public class GlobalExceptionHandler {
         return createErrorResponse(ex.getBindingResult().getFieldErrors().get(0).getDefaultMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(UserExistsException.class)
-    public ResponseEntity<Map<String, String>> handleUserExistsException(UserExistsException ex) {
-
-        return createErrorResponse(ex.getMessage(), ex.getStatus());
-    }
-
     @ExceptionHandler(CookieNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleCookiesNotFoundException(CookieNotFoundException ex) {
 
@@ -128,17 +121,8 @@ public class GlobalExceptionHandler {
             (InvalidDiscountException ex) {
         return createErrorResponse(ex.getMessage(), ex.getStatus());
     }
-  
-    @ExceptionHandler(BadUserFromCartException.class)
-    public ResponseEntity<Map<String, String>> handleBadUserFromCartException(BadUserFromCartException ex) {
-        return createErrorResponse(ex.getMessage(), ex.getStatus());
-    }
-  
-    @ExceptionHandler(OrderExistsException.class)
-    public ResponseEntity<Map<String, String>> handleOrderExistsException(OrderExistsException ex) {
-        return createErrorResponse(ex.getMessage(), ex.getStatus());
-    }
-  
+
+
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleEntityNotFoundException(EntityNotFoundException ex) {
         return createErrorResponse(ex.getMessage(), ex.getStatus());
@@ -148,6 +132,17 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleTermsNotAcceptedException(TermsNotAcceptedException ex) {
         return createErrorResponse(ex.getMessage(), ex.getStatus());
     }
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<Map<String, String>> handleBusinessException(BusinessException ex) {
+        return createErrorResponse(ex.getMessage(), ex.getStatus());
+    }
+
+    @ExceptionHandler(TechnicalException.class)
+    public ResponseEntity<Map<String, String>> handleTechnicalException(TechnicalException ex) {
+        return createErrorResponse(ex.getMessage(), ex.getStatus());
+    }
+
 
     private ResponseEntity<Map<String, String>> createErrorResponse(String errorMessage, HttpStatus status) {
         Map<String, String> errorResponse = new HashMap<>();

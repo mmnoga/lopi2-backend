@@ -8,10 +8,10 @@ import com.liftoff.project.controller.order.response.OrderDetailsListResponseDTO
 import com.liftoff.project.controller.order.response.OrderDetailsResponseDTO;
 import com.liftoff.project.controller.order.response.OrderSummaryListResponseDTO;
 import com.liftoff.project.controller.order.response.OrderSummaryResponseDTO;
+import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.exception.cart.CartNotFoundException;
 import com.liftoff.project.exception.cart.EntityNotFoundException;
 import com.liftoff.project.exception.cart.TermsNotAcceptedException;
-import com.liftoff.project.exception.order.OrderExistsException;
 import com.liftoff.project.mapper.AddressMapper;
 import com.liftoff.project.mapper.OrderItemMapper;
 import com.liftoff.project.mapper.OrderMapper;
@@ -74,7 +74,7 @@ public class OrderServiceImpl implements OrderService {
         User userFromCart = cart.getUser();
 
         if (orderRepository.findByCartUuid(cartUuid).isPresent())
-            throw new OrderExistsException("This order already exists! Try editing instead of adding");
+            throw new BusinessException("This order already exists! Try editing instead of adding");
 
         if (userFromCart != null && this.getUserFromAuthenticatedUser() != null)
             userValidationService.validateAuthenticatedUserFromCart(this.getUserFromAuthenticatedUser(), userFromCart);

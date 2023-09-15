@@ -1,12 +1,12 @@
-package com.liftoff.project.exception.order;
+package com.liftoff.project.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class OrderExistsException extends RuntimeException{
+public class TechnicalException extends RuntimeException {
     private final HttpStatus status;
     private final String message;
 
-    public OrderExistsException(String message) {
+    public TechnicalException(String message) {
         super(message);
         this.status = HttpStatus.FOUND;
         this.message = message;
@@ -21,3 +21,4 @@ public class OrderExistsException extends RuntimeException{
     }
 
 }
+
