@@ -40,7 +40,7 @@ public class RequestFilterConfig implements Filter {
                 allowedMethods.contains(requestMethod)) {
             httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
             httpResponse.setHeader("Access-Control-Allow-Origin", requestOrigin);
-            httpResponse.setHeader("Access-Control-Allow-Methods", requestMethod);
+            httpResponse.setHeader("Access-Control-Allow-Methods", String.join(", ", allowedMethods));
         }
 
         filterChain.doFilter(servletRequest, servletResponse);
