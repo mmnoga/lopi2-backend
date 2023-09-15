@@ -28,7 +28,7 @@ public class RequestFilterConfig implements Filter {
             ServletResponse servletResponse,
             FilterChain filterChain) throws IOException, ServletException {
 
-        List<String> allowedMethods = Arrays.asList("GET", "POST", "DELETE", "PUT");
+        List<String> allowedMethods = Arrays.asList("GET", "POST", "DELETE", "PUT", "OPTIONS");
 
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
