@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -157,7 +158,12 @@ public class CartServiceImpl implements CartService {
             cart.addCartItem(cartItem);
         }
 
-        cart.setTotalPrice(cart.getTotalPrice() + (product.getRegularPrice() * quantity));
+        if (isDiscountPriceValid(product)) {
+            cart.setTotalPrice(cart.getTotalPrice() + (product.getDiscountPrice() * quantity));
+        } else {
+            cart.setTotalPrice(cart.getTotalPrice() + (product.getRegularPrice() * quantity));
+        }
+
         cart.setTotalQuantity(cart.getTotalQuantity() + quantity);
 
         return cartRepository.save(cart);
@@ -193,8 +199,13 @@ public class CartServiceImpl implements CartService {
                 .orElseThrow(() -> new ProductNotFoundException("Product not found in the cart"));
 
         Double productPrice = itemToRemove.getProduct().getRegularPrice();
+        Double productDiscountPrice = itemToRemove.getProduct().getDiscountPrice();
         Integer productQuantity = itemToRemove.getQuantity();
-        Double productTotalPrice = productPrice * productQuantity;
+
+        Double productTotalPrice = (productDiscountPrice != null
+                && isDiscountPriceValid(itemToRemove.getProduct()))
+                ? productDiscountPrice * productQuantity
+                : productPrice * productQuantity;
 
         cart.setTotalPrice(cart.getTotalPrice() - productTotalPrice);
         cart.setTotalQuantity(cart.getTotalQuantity() - productQuantity);
@@ -245,25 +256,22 @@ public class CartServiceImpl implements CartService {
         int totalQuantity = 0;
 
         for (CartItem cartItem : cart.getCartItems()) {
-            Double productPrice = cartItem.getProduct().getRegularPrice();
+            Product product = cartItem.getProduct();
             Integer productQuantity = cartItem.getQuantity();
 
-            totalPrice += productPrice * productQuantity;
+            if (isDiscountPriceValid(product)) {
+                totalPrice += (product.getDiscountPrice() * productQuantity);
+            } else {
+                totalPrice += (product.getRegularPrice() * productQuantity);
+            }
+
             totalQuantity += productQuantity;
         }
 
-        Cart updatedCart = new Cart();
-        updatedCart.setId(cart.getId());
-        updatedCart.setUuid(cart.getUuid());
-        updatedCart.setUser(cart.getUser());
-        updatedCart.setCartItems(cart.getCartItems());
-        updatedCart.setTotalPrice(totalPrice);
-        updatedCart.setTotalQuantity(totalQuantity);
-        updatedCart.setCreatedAt(cart.getCreatedAt());
-        updatedCart.setUpdatedAt(cart.getUpdatedAt());
-        updatedCart.setSession(cart.getSession());
+        cart.setTotalPrice(totalPrice);
+        cart.setTotalQuantity(totalQuantity);
 
-        return updatedCart;
+        return cartRepository.save(cart);
     }
 
     private Cart createCartCopy(Cart cart) {
@@ -300,6 +308,13 @@ public class CartServiceImpl implements CartService {
                 .forEach(cartItem -> cartItem.setCart(null));
 
         cartRepository.delete(cart);
+    }
+
+    private boolean isDiscountPriceValid(Product product) {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        
+        return product.getDiscountPriceEndDate() != null
+                && product.getDiscountPriceEndDate().isAfter(currentDateTime);
     }
 
 }
