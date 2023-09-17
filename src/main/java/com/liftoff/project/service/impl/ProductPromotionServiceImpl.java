@@ -1,7 +1,7 @@
 package com.liftoff.project.service.impl;
 
 import com.liftoff.project.controller.response.ProductResponseDTO;
-import com.liftoff.project.exception.category.CategoryNotFoundException;
+import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.exception.product.InvalidDiscountException;
 import com.liftoff.project.exception.product.ProductNotFoundException;
 import com.liftoff.project.mapper.ProductMapper;
@@ -47,7 +47,7 @@ public class ProductPromotionServiceImpl implements ProductPromotionService {
 
         Category category = categoryRepository.findByUId(categoryUuid)
                 .orElseThrow(() ->
-                        new CategoryNotFoundException("Category with UUID " + categoryUuid + " not found."));
+                        new BusinessException("Category with UUID: " + categoryUuid + " not found."));
 
         List<Product> productsOnSale = new ArrayList<>();
         LocalDateTime currentDateTime = LocalDateTime.now();
@@ -66,7 +66,7 @@ public class ProductPromotionServiceImpl implements ProductPromotionService {
 
         Category category = categoryRepository.findByUId(categoryUuid)
                 .orElseThrow(() ->
-                        new CategoryNotFoundException("Category with UUID " + categoryUuid + " not found."));
+                        new BusinessException("Category with UUID: " + categoryUuid + " not found."));
 
         List<Product> productsOnSale = new ArrayList<>();
         LocalDateTime currentDateTime = LocalDateTime.now();
@@ -93,7 +93,7 @@ public class ProductPromotionServiceImpl implements ProductPromotionService {
 
         Category category = categoryRepository.findByUId(categoryUuid)
                 .orElseThrow(() ->
-                        new CategoryNotFoundException("Category with UUID " + categoryUuid + " not found."));
+                        new BusinessException("Category with UUID: " + categoryUuid + " not found."));
 
         List<Product> productsOnSale = new ArrayList<>();
         LocalDateTime currentDateTime = LocalDateTime.now();
@@ -123,7 +123,7 @@ public class ProductPromotionServiceImpl implements ProductPromotionService {
             LocalDateTime discountPriceEndDate) {
 
         Product product = productRepository.findByUId(productUuid)
-                .orElseThrow(() -> new ProductNotFoundException("Product with UUID " + productUuid + " not found"));
+                .orElseThrow(() -> new BusinessException("Product with UUID: " + productUuid + " not found"));
 
         Double regularPrice = product.getRegularPrice();
         Double discountPrice = regularPrice - (regularPrice * (percentageDiscount / 100.0));
@@ -147,10 +147,10 @@ public class ProductPromotionServiceImpl implements ProductPromotionService {
             LocalDateTime discountPriceEndDate) {
 
         Product product = productRepository.findByUId(productUuid)
-                .orElseThrow(() -> new ProductNotFoundException("Product with UUID " + productUuid + " not found"));
+                .orElseThrow(() -> new BusinessException("Product with UUID: " + productUuid + " not found"));
 
         if (discountPrice >= product.getRegularPrice()) {
-            throw new InvalidDiscountException("Discount price cannot be greater than or equal to regular price");
+            throw new BusinessException("Discount price cannot be greater than or equal to regular price");
         }
 
         product.setDiscountPrice(discountPrice);
@@ -172,7 +172,7 @@ public class ProductPromotionServiceImpl implements ProductPromotionService {
             LocalDateTime discountPriceEndDate) {
 
         Category category = categoryRepository.findByUId(categoryUuid)
-                .orElseThrow(() -> new CategoryNotFoundException("Category with UUID " + categoryUuid + " not found."));
+                .orElseThrow(() -> new BusinessException("Category with UUID: " + categoryUuid + " not found."));
 
         List<Product> productsToUpdate = new ArrayList<>();
 
@@ -212,7 +212,7 @@ public class ProductPromotionServiceImpl implements ProductPromotionService {
             UUID categoryUuid) {
 
         Category category = categoryRepository.findByUId(categoryUuid)
-                .orElseThrow(() -> new CategoryNotFoundException("Category with UUID " + categoryUuid + " not found."));
+                .orElseThrow(() -> new BusinessException("Category with UUID: " + categoryUuid + " not found."));
 
         List<Product> productsToClear = new ArrayList<>();
         collectProductsToClearInCategory(category, productsToClear);

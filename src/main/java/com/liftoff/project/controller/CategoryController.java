@@ -2,8 +2,8 @@ package com.liftoff.project.controller;
 
 import com.liftoff.project.controller.request.CategoryRequestDTO;
 import com.liftoff.project.controller.response.CategoryResponseDTO;
+import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.exception.category.CannotDeleteCategoryException;
-import com.liftoff.project.exception.category.CategoryNotFoundException;
 import com.liftoff.project.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
@@ -70,7 +70,7 @@ public class CategoryController {
         try {
             categoryService.deleteCategoryByUuid(categoryUuid);
             return ResponseEntity.ok("Category with UUID " + categoryUuid + " has been successfully deleted.");
-        } catch (CategoryNotFoundException e) {
+        } catch (BusinessException e) {
             return ResponseEntity.notFound().build();
         } catch (CannotDeleteCategoryException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

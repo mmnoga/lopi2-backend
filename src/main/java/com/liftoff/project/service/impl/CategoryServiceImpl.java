@@ -2,10 +2,9 @@ package com.liftoff.project.service.impl;
 
 import com.liftoff.project.controller.request.CategoryRequestDTO;
 import com.liftoff.project.controller.response.CategoryResponseDTO;
+import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.exception.category.CannotDeleteCategoryException;
-import com.liftoff.project.exception.category.CategoryNotFoundException;
 import com.liftoff.project.exception.category.InvalidParentCategoryException;
-import com.liftoff.project.exception.category.ParentCategoryNotFoundException;
 import com.liftoff.project.mapper.CategoryMapper;
 import com.liftoff.project.model.Category;
 import com.liftoff.project.repository.CategoryRepository;
@@ -42,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     public CategoryResponseDTO getCategoryByUuId(UUID categoryUuid) {
         Category category = categoryRepository.findByUId(categoryUuid)
-                .orElseThrow(() -> new CategoryNotFoundException("Category with UUID " + categoryUuid + " not found."));
+                .orElseThrow(() -> new BusinessException("Category with UUID " + categoryUuid + " not found."));
         return categoryMapper.mapEntityToResponse(category);
     }
 
@@ -56,8 +55,8 @@ public class CategoryServiceImpl implements CategoryService {
         UUID parentCategoryId = categoryRequestDTO.getParentCategoryId();
         if (parentCategoryId != null) {
             Category parentCategory = categoryRepository.findByUId(parentCategoryId)
-                    .orElseThrow(() -> new ParentCategoryNotFoundException(
-                            "Parent category with UUID " + parentCategoryId + " not found."));
+                    .orElseThrow(() -> new BusinessException(
+                            "Parent category with UUID: " + parentCategoryId + " not found."));
             newCategory.setParentCategory(parentCategory);
         }
 
@@ -77,14 +76,14 @@ public class CategoryServiceImpl implements CategoryService {
 
             categoryRepository.delete(category);
         } else {
-            throw new CategoryNotFoundException("Category with UUID " + categoryUuid + " not found.");
+            throw new BusinessException("Category with UUID: " + categoryUuid + " not found.");
         }
     }
 
     @Override
     public CategoryResponseDTO updateCategory(UUID categoryUuid, CategoryRequestDTO categoryRequestDTO) {
         Category existingCategory = categoryRepository.findByUId(categoryUuid)
-                .orElseThrow(() -> new CategoryNotFoundException("Category with UUID " + categoryUuid + " not found."));
+                .orElseThrow(() -> new BusinessException("Category with UUID: " + categoryUuid + " not found."));
 
         existingCategory.setName(categoryRequestDTO.getName());
         existingCategory.setDescription(categoryRequestDTO.getDescription());
@@ -99,8 +98,8 @@ public class CategoryServiceImpl implements CategoryService {
 
             Category parentCategory = categoryRepository.findByUId(parentCategoryId)
                     .orElseThrow(() ->
-                            new ParentCategoryNotFoundException(
-                                    "Parent category with UUID " + parentCategoryId + " not found."));
+                            new BusinessException(
+                                    "Parent category with UUID: " + parentCategoryId + " not found."));
 
             existingCategory.setParentCategory(parentCategory);
         } else {
@@ -119,7 +118,7 @@ public class CategoryServiceImpl implements CategoryService {
             if (categoryOptional.isPresent()) {
                 existingCategories.add(categoryOptional.get());
             } else {
-                throw new ParentCategoryNotFoundException("Parent category with UUID " + categoryUuid + " not found.");
+                throw new BusinessException("Parent category with UUID: " + categoryUuid + " not found.");
             }
         }
         return existingCategories;
@@ -129,7 +128,7 @@ public class CategoryServiceImpl implements CategoryService {
     public int getProductQuantityInCategory(UUID categoryUuId) {
         Category category = categoryRepository.findByUId(categoryUuId)
                 .orElseThrow(() ->
-                        new CategoryNotFoundException("Category with UUID " + categoryUuId + " not found."));
+                        new BusinessException("Category with UUID: " + categoryUuId + " not found."));
         return calculateProductQuantityInCategory(category);
     }
 

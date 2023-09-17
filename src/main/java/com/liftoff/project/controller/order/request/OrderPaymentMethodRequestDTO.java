@@ -10,7 +10,7 @@ import lombok.Data;
 public class OrderPaymentMethodRequestDTO {
 
     @NotBlank(message = "PaymentMethodName cannot be blank")
-    @Size(max = 30, message = "PostalCode cannot exceed 30 characters")
+    @Size(max = 30, message = "PaymentMethodName cannot exceed 30 characters")
     private String paymentMethodName;
 
 }

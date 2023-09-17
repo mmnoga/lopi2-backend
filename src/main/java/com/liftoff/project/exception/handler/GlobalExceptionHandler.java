@@ -2,15 +2,10 @@ package com.liftoff.project.exception.handler;
 
 import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.exception.TechnicalException;
-import com.liftoff.project.exception.auth.LoginAuthenticationException;
-import com.liftoff.project.exception.auth.UserNotFoundException;
-import com.liftoff.project.exception.cart.CartNotFoundException;
 import com.liftoff.project.exception.cart.EntityNotFoundException;
 import com.liftoff.project.exception.cart.TermsNotAcceptedException;
 import com.liftoff.project.exception.category.CannotDeleteCategoryException;
-import com.liftoff.project.exception.category.CategoryNotFoundException;
 import com.liftoff.project.exception.category.InvalidParentCategoryException;
-import com.liftoff.project.exception.category.ParentCategoryNotFoundException;
 import com.liftoff.project.exception.cookie.CookieNotFoundException;
 import com.liftoff.project.exception.product.InvalidDiscountException;
 import com.liftoff.project.exception.product.ProductNotEnoughQuantityException;
@@ -36,15 +31,15 @@ public class GlobalExceptionHandler {
         return createErrorResponse(ex.getMessage(), ex.getStatus());
     }
 
-    @ExceptionHandler(CategoryNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleCategoryNotFoundException(CategoryNotFoundException ex) {
-        return createErrorResponse(ex.getMessage(), ex.getStatus());
-    }
+//    @ExceptionHandler(CategoryNotFoundException.class)
+//    public ResponseEntity<Map<String, String>> handleCategoryNotFoundException(CategoryNotFoundException ex) {
+//        return createErrorResponse(ex.getMessage(), ex.getStatus());
+//    }
 
-    @ExceptionHandler(ParentCategoryNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleParentCategoryNotFoundException(ParentCategoryNotFoundException ex) {
-        return createErrorResponse(ex.getMessage(), ex.getStatus());
-    }
+//    @ExceptionHandler(ParentCategoryNotFoundException.class)
+//    public ResponseEntity<Map<String, String>> handleParentCategoryNotFoundException(ParentCategoryNotFoundException ex) {
+//        return createErrorResponse(ex.getMessage(), ex.getStatus());
+//    }
 
     @ExceptionHandler(CannotDeleteCategoryException.class)
     public ResponseEntity<Map<String, String>> handleCannotDeleteCategoryException(CannotDeleteCategoryException ex) {
@@ -78,10 +73,10 @@ public class GlobalExceptionHandler {
         return createErrorResponse(ex.getMessage(), ex.getStatus());
     }
 
-    @ExceptionHandler(LoginAuthenticationException.class)
-    public ResponseEntity<Map<String, String>> handleInvalidLoginException(LoginAuthenticationException ex) {
-        return createErrorResponse(ex.getMessage(), ex.getStatus());
-    }
+//    @ExceptionHandler(LoginAuthenticationException.class)
+//    public ResponseEntity<Map<String, String>> handleInvalidLoginException(LoginAuthenticationException ex) {
+//        return createErrorResponse(ex.getMessage(), ex.getStatus());
+//    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleInvalidLoginFieldsException(MethodArgumentNotValidException ex) {
@@ -95,20 +90,20 @@ public class GlobalExceptionHandler {
         return createErrorResponse(ex.getMessage(), ex.getStatus());
     }
 
-    @ExceptionHandler(CartNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleCartNotFoundException(CartNotFoundException ex) {
-        return createErrorResponse(ex.getMessage(), ex.getStatus());
-    }
+//    @ExceptionHandler(CartNotFoundException.class)
+//    public ResponseEntity<Map<String, String>> handleCartNotFoundException(CartNotFoundException ex) {
+//        return createErrorResponse(ex.getMessage(), ex.getStatus());
+//    }
 
     @ExceptionHandler(ProductOutOfStockException.class)
     public ResponseEntity<Map<String, String>> handleProductOutOfStockException(ProductOutOfStockException ex) {
         return createErrorResponse(ex.getMessage(), ex.getStatus());
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleUserNotFoundException(UserNotFoundException ex) {
-        return createErrorResponse(ex.getMessage(), ex.getStatus());
-    }
+//    @ExceptionHandler(UserNotFoundException.class)
+//    public ResponseEntity<Map<String, String>> handleUserNotFoundException(UserNotFoundException ex) {
+//        return createErrorResponse(ex.getMessage(), ex.getStatus());
+//    }
 
     @ExceptionHandler(ProductNotEnoughQuantityException.class)
     public ResponseEntity<Map<String, String>> handleProductNotEnoughQuantityException

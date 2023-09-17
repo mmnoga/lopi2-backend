@@ -2,11 +2,10 @@ package com.liftoff.project.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.liftoff.project.Lopi2Application;
 import com.liftoff.project.controller.request.ProductRequestDTO;
 import com.liftoff.project.controller.response.PaginatedProductResponseDTO;
 import com.liftoff.project.controller.response.ProductResponseDTO;
-import com.liftoff.project.exception.category.CategoryNotFoundException;
+import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.exception.product.ProductNotFoundException;
 import com.liftoff.project.model.Product;
 import com.liftoff.project.model.ProductStatus;
@@ -319,7 +318,7 @@ class ProductControllerTest {
         UUID categoryId = UUID.fromString("f28bd377-3a7d-44fe-bbc9-adeb3bea03fa");
 
         when(productService.getProductsByCategoryUuid(categoryId))
-                .thenThrow(new CategoryNotFoundException("Category with UUID " + categoryId + " not found."));
+                .thenThrow(new BusinessException("Category with UUID " + categoryId + " not found."));
 
         // when & then
         mockMvc.perform(get("/api/products/by-category/{categoryId}", categoryId))
