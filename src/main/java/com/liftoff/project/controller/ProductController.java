@@ -3,7 +3,7 @@ package com.liftoff.project.controller;
 import com.liftoff.project.controller.request.ProductRequestDTO;
 import com.liftoff.project.controller.response.PaginatedProductResponseDTO;
 import com.liftoff.project.controller.response.ProductResponseDTO;
-import com.liftoff.project.exception.product.ProductNotFoundException;
+import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -114,7 +114,7 @@ public class ProductController {
         try {
             ProductResponseDTO updatedProduct = productService.addImageToProduct(productUuid, imageFile);
             return ResponseEntity.ok(updatedProduct);
-        } catch (ProductNotFoundException ex) {
+        } catch (BusinessException ex) {
             throw new ResponseStatusException(ex.getStatus(), ex.getMessage(), ex);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
@@ -130,7 +130,7 @@ public class ProductController {
         try {
             ProductResponseDTO updatedProduct = productService.deleteImageByUrlFromProduct(productUuid, imageUrl);
             return ResponseEntity.ok(updatedProduct);
-        } catch (ProductNotFoundException ex) {
+        } catch (BusinessException ex) {
             throw new ResponseStatusException(ex.getStatus(), ex.getMessage(), ex);
         }
     }
@@ -142,7 +142,7 @@ public class ProductController {
         try {
             productService.deleteProductByUuId(productUuid);
             return ResponseEntity.noContent().build();
-        } catch (ProductNotFoundException ex) {
+        } catch (BusinessException ex) {
             throw new ResponseStatusException(ex.getStatus(), ex.getMessage(), ex);
         }
     }
@@ -155,7 +155,7 @@ public class ProductController {
         try {
             ProductResponseDTO updatedProduct = productService.updateProductByUuid(productUuid, productRequestDTO);
             return ResponseEntity.ok(updatedProduct);
-        } catch (ProductNotFoundException ex) {
+        } catch (BusinessException ex) {
             return ResponseEntity.notFound().build();
         }
     }

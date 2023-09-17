@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liftoff.project.controller.request.CategoryRequestDTO;
 import com.liftoff.project.controller.response.CategoryResponseDTO;
 import com.liftoff.project.exception.BusinessException;
-import com.liftoff.project.exception.category.InvalidParentCategoryException;
 import com.liftoff.project.model.Category;
 import com.liftoff.project.service.CategoryService;
 import org.hamcrest.Matchers;
@@ -222,7 +221,7 @@ class CategoryControllerTest {
         String errorMessage = "Category cannot be its own parent.";
 
         Mockito.when(categoryService.updateCategory(Mockito.eq(categoryUuid), Mockito.any(CategoryRequestDTO.class)))
-                .thenThrow(new InvalidParentCategoryException(errorMessage));
+                .thenThrow(new BusinessException(errorMessage));
 
         // when & then
         mockMvc.perform(MockMvcRequestBuilders.put("/api/categories/{categoryUuid}", categoryUuid)

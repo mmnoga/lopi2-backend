@@ -6,7 +6,6 @@ import com.liftoff.project.controller.request.ProductRequestDTO;
 import com.liftoff.project.controller.response.PaginatedProductResponseDTO;
 import com.liftoff.project.controller.response.ProductResponseDTO;
 import com.liftoff.project.exception.BusinessException;
-import com.liftoff.project.exception.product.ProductNotFoundException;
 import com.liftoff.project.model.Product;
 import com.liftoff.project.model.ProductStatus;
 import com.liftoff.project.service.ProductService;
@@ -201,7 +200,7 @@ class ProductControllerTest {
         UUID productUuid = UUID.randomUUID();
 
         // when
-        Mockito.doThrow(new ProductNotFoundException("Product with UUID " + productUuid + " not found."))
+        Mockito.doThrow(new BusinessException("Product with UUID " + productUuid + " not found."))
                 .when(productService).deleteProductByUuId(eq(productUuid));
 
         // then
@@ -249,7 +248,7 @@ class ProductControllerTest {
 
         // when
         when(productService.updateProductByUuid(eq(productUuid), any(ProductRequestDTO.class)))
-                .thenThrow(new ProductNotFoundException("Product with UUID " + productUuid + " not found."));
+                .thenThrow(new BusinessException("Product with UUID " + productUuid + " not found."));
 
         // then
         mockMvc.perform(put("/api/products/{productUuid}", productUuid)

@@ -2,8 +2,6 @@ package com.liftoff.project.service.impl;
 
 import com.liftoff.project.controller.response.ProductResponseDTO;
 import com.liftoff.project.exception.BusinessException;
-import com.liftoff.project.exception.product.InvalidDiscountException;
-import com.liftoff.project.exception.product.ProductNotFoundException;
 import com.liftoff.project.mapper.ProductMapper;
 import com.liftoff.project.model.Category;
 import com.liftoff.project.model.Product;
@@ -305,7 +303,7 @@ public class ProductPromotionServiceImpl implements ProductPromotionService {
 
         for (Product product : category.getProducts()) {
             if (product.getDiscountPrice() >= product.getRegularPrice()) {
-                throw new InvalidDiscountException("Discount price cannot be greater than or equal to regular price");
+                throw new BusinessException("Discount price cannot be greater than or equal to regular price");
             }
 
             double regularPrice = product.getRegularPrice();

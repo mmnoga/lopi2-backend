@@ -5,7 +5,6 @@ import com.liftoff.project.controller.response.PaginatedProductResponseDTO;
 import com.liftoff.project.controller.response.ProductResponseDTO;
 import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.exception.TechnicalException;
-import com.liftoff.project.exception.product.ProductNotFoundException;
 import com.liftoff.project.model.Product;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -66,7 +65,7 @@ public interface ProductService {
      * @param productUuid       The UUID of the product to be updated.
      * @param productRequestDTO The ProductRequestDTO object containing the updated details of the product.
      * @return The ProductResponseDTO object representing the updated product.
-     * @throws ProductNotFoundException If the product with the given UUID is not found.
+     * @throws BusinessException If the product with the given UUID is not found.
      */
     ProductResponseDTO updateProductByUuid(UUID productUuid, ProductRequestDTO productRequestDTO);
 

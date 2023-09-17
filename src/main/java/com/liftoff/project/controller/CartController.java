@@ -1,7 +1,7 @@
 package com.liftoff.project.controller;
 
 import com.liftoff.project.controller.response.CartResponseDTO;
-import com.liftoff.project.exception.product.ProductNotEnoughQuantityException;
+import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.mapper.CartMapper;
 import com.liftoff.project.model.Cart;
 import com.liftoff.project.service.CartService;
@@ -41,7 +41,7 @@ public class CartController {
             HttpServletResponse response) {
 
         if (quantity <= 0) {
-            throw new ProductNotEnoughQuantityException("Quantity must be greater than 0");
+            throw new BusinessException("Quantity must be greater than 0");
         }
 
         Cart savedCart = cartService

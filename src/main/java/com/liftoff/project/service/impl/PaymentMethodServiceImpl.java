@@ -3,7 +3,7 @@ package com.liftoff.project.service.impl;
 import com.liftoff.project.controller.order.PaymentMethodListResponseDTO;
 import com.liftoff.project.controller.order.request.PaymentMethodRequestDTO;
 import com.liftoff.project.controller.order.response.PaymentMethodResponseDTO;
-import com.liftoff.project.exception.cart.EntityNotFoundException;
+import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.mapper.PaymentMethodMapper;
 import com.liftoff.project.model.order.PaymentMethod;
 import com.liftoff.project.repository.PaymentMethodRepository;
@@ -52,7 +52,7 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
     public void deletePaymentMethodByName(String name) {
         PaymentMethod paymentMethod = paymentMethodRepository.findByName(name)
                 .orElseThrow(() ->
-                        new EntityNotFoundException("Payment method not found"));
+                        new BusinessException("Payment method not found"));
         paymentMethodRepository.delete(paymentMethod);
     }
 
@@ -60,7 +60,7 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
     public PaymentMethodResponseDTO editPaymentMethod(String name, PaymentMethodRequestDTO paymentMethodRequestDTO) {
         PaymentMethod existingPaymentMethod = paymentMethodRepository.findByName(name)
                 .orElseThrow(() ->
-                        new EntityNotFoundException("Payment method not found"));
+                        new BusinessException("Payment method not found"));
 
 
         existingPaymentMethod.setName(paymentMethodRequestDTO.getName());

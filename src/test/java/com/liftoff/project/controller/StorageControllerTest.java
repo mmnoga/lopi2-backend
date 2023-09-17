@@ -1,7 +1,7 @@
 package com.liftoff.project.controller;
 
 import com.liftoff.project.controller.response.FileInfoResponseDTO;
-import com.liftoff.project.exception.storage.FileNotFoundException;
+import com.liftoff.project.exception.TechnicalException;
 import com.liftoff.project.service.StorageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -88,7 +88,7 @@ class StorageControllerTest {
     }
 
     @Test
-    void shouldDeleteFileByItsName() throws FileNotFoundException {
+    void shouldDeleteFileByItsName() throws TechnicalException {
         String fileName = "to-delete-test-file.txt";
 
         ResponseEntity<String> response = storageController.deleteFile(fileName);
@@ -101,10 +101,10 @@ class StorageControllerTest {
     }
 
     @Test
-    void shouldResponseFileNotFoundOnDeleteNoExistingFile() throws FileNotFoundException {
+    void shouldResponseFileNotFoundOnDeleteNoExistingFile() throws TechnicalException {
         String fileName = "non-existent-file.txt";
 
-        doThrow(new FileNotFoundException("File not found")).when(storageService).deleteFile(fileName);
+        doThrow(new TechnicalException("File not found")).when(storageService).deleteFile(fileName);
 
         ResponseEntity<String> response = storageController.deleteFile(fileName);
 

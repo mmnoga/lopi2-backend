@@ -3,8 +3,6 @@ package com.liftoff.project.service.impl;
 import com.liftoff.project.controller.request.CategoryRequestDTO;
 import com.liftoff.project.controller.response.CategoryResponseDTO;
 import com.liftoff.project.exception.BusinessException;
-import com.liftoff.project.exception.category.CannotDeleteCategoryException;
-import com.liftoff.project.exception.category.InvalidParentCategoryException;
 import com.liftoff.project.mapper.CategoryMapper;
 import com.liftoff.project.model.Category;
 import com.liftoff.project.repository.CategoryRepository;
@@ -71,7 +69,7 @@ public class CategoryServiceImpl implements CategoryService {
             Category category = categoryOptional.get();
 
             if (category.containsProducts() || category.containsSubcategories() || category.isSubcategory()) {
-                throw new CannotDeleteCategoryException("Category cannot be deleted due to existing products, subcategories, or being a subcategory.");
+                throw new BusinessException("Category cannot be deleted due to existing products, subcategories, or being a subcategory.");
             }
 
             categoryRepository.delete(category);
@@ -93,7 +91,7 @@ public class CategoryServiceImpl implements CategoryService {
         UUID parentCategoryId = categoryRequestDTO.getParentCategoryId();
         if (parentCategoryId != null) {
             if (parentCategoryId.equals(categoryUuid)) {
-                throw new InvalidParentCategoryException("Category cannot be its own parent.");
+                throw new BusinessException("Category cannot be its own parent.");
             }
 
             Category parentCategory = categoryRepository.findByUId(parentCategoryId)

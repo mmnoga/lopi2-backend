@@ -2,11 +2,11 @@ package com.liftoff.project.service.impl;
 
 import com.liftoff.project.controller.order.request.DeliveryMethodRequestDTO;
 import com.liftoff.project.controller.order.response.DeliveryMethodResponseDTO;
+import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.mapper.DeliveryMethodMapper;
 import com.liftoff.project.model.order.DeliveryMethod;
 import com.liftoff.project.repository.DeliveryMethodRepository;
 import com.liftoff.project.service.DeliveryMethodService;
-import com.liftoff.project.exception.cart.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +44,7 @@ public class DeliveryMethodServiceImpl implements DeliveryMethodService {
     @Override
     public void deleteDeliveryMethodByName(String name) {
         DeliveryMethod deliveryMethod = deliveryMethodRepository.findByName(name)
-                .orElseThrow(() -> new EntityNotFoundException("Delivery method not found"));
+                .orElseThrow(() -> new BusinessException("Delivery method not found"));
 
         deliveryMethodRepository.delete(deliveryMethod);
     }
@@ -53,7 +53,7 @@ public class DeliveryMethodServiceImpl implements DeliveryMethodService {
     public DeliveryMethodResponseDTO editDeliveryMethod(String name, DeliveryMethodRequestDTO deliveryMethodRequestDTO) {
         DeliveryMethod existingDeliveryMethod = deliveryMethodRepository.findByName(name)
                 .orElseThrow(() ->
-                        new EntityNotFoundException("Delivery method not found"));
+                        new BusinessException("Delivery method not found"));
 
         existingDeliveryMethod.setName(deliveryMethodRequestDTO.getName());
         existingDeliveryMethod.setDescription(deliveryMethodRequestDTO.getDescription());

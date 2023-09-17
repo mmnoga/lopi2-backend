@@ -2,8 +2,6 @@ package com.liftoff.project.service;
 
 import com.liftoff.project.controller.response.CartResponseDTO;
 import com.liftoff.project.exception.BusinessException;
-import com.liftoff.project.exception.product.ProductNotEnoughQuantityException;
-import com.liftoff.project.exception.product.ProductNotFoundException;
 
 import java.util.UUID;
 
@@ -38,8 +36,8 @@ public interface AuthCartService {
      * @param productUid The UUID of the product to be added.
      * @param quantity   The quantity of the product to be added.
      * @return A message indicating the success of adding the product to the cart.
-     * @throws BusinessException        If the user's cart is not found.
-     * @throws ProductNotFoundException If the product with the given UUID is not found.
+     * @throws BusinessException If the user's cart is not found.
+     * @throws BusinessException If the product with the given UUID is not found.
      */
     CartResponseDTO processCartForUser(String username, UUID productUid, int quantity);
 
@@ -67,8 +65,8 @@ public interface AuthCartService {
      *
      * @param productUuid The UUID of the product to be removed from the cart.
      * @param username    The username of the user whose cart is being modified.
-     * @throws BusinessException        If the user's shopping cart is not found.
-     * @throws ProductNotFoundException If the specified product is not found in the cart.
+     * @throws BusinessException If the user's shopping cart is not found.
+     * @throws BusinessException If the specified product is not found in the cart.
      */
     void deleteCartProductByUuidForUser(UUID productUuid, String username);
 
@@ -79,9 +77,9 @@ public interface AuthCartService {
      * @param quantity    The new quantity of the product to be set in the cart. Must be greater than zero.
      * @param username    The username of the user whose cart is to be updated.
      * @return A {@link CartResponseDTO} containing the updated cart information.
-     * @throws ProductNotEnoughQuantityException If the specified quantity is less than or equal to zero.
-     * @throws BusinessException                 If the user's cart is not found.
-     * @throws ProductNotFoundException          If the specified product is not found in the cart.
+     * @throws BusinessException If the specified quantity is less than or equal to zero.
+     * @throws BusinessException If the user's cart is not found.
+     * @throws BusinessException If the specified product is not found in the cart.
      */
     CartResponseDTO updateCartForUser(UUID productUuid, int quantity, String username);
 

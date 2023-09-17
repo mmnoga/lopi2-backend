@@ -2,8 +2,6 @@ package com.liftoff.project.service;
 
 import com.liftoff.project.controller.response.CartResponseDTO;
 import com.liftoff.project.exception.BusinessException;
-import com.liftoff.project.exception.product.ProductNotEnoughQuantityException;
-import com.liftoff.project.exception.product.ProductNotFoundException;
 import com.liftoff.project.model.Cart;
 import com.liftoff.project.model.Product;
 import jakarta.servlet.http.HttpServletRequest;
@@ -93,10 +91,10 @@ public interface CartService {
      * @param quantity    New quantity of the product in the cart.
      * @param request     HttpServletRequest object containing the HTTP request.
      * @return A CartResponseDTO object representing the updated customer's cart.
-     * @throws ProductNotEnoughQuantityException Thrown when the provided quantity is less than or equal to zero.
-     * @throws BusinessException                 Thrown when the customer's cart cannot be found.
-     * @throws ProductNotFoundException          Thrown when the product cannot be found in the cart.
-     * @throws ProductNotEnoughQuantityException Thrown when the product quantity is insufficient.
+     * @throws BusinessException Thrown when the provided quantity is less than or equal to zero.
+     * @throws BusinessException Thrown when the customer's cart cannot be found.
+     * @throws BusinessException Thrown when the product cannot be found in the cart.
+     * @throws BusinessException Thrown when the product quantity is insufficient.
      */
     CartResponseDTO updateCart(UUID productUuid, int quantity, HttpServletRequest request);
 

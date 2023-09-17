@@ -1,8 +1,7 @@
 package com.liftoff.project.service;
 
 import com.liftoff.project.controller.response.FileInfoResponseDTO;
-import com.liftoff.project.exception.storage.FileNotFoundException;
-import com.liftoff.project.exception.storage.FileSizeExceedsLimitException;
+import com.liftoff.project.exception.TechnicalException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -14,8 +13,8 @@ public interface StorageService {
      *
      * @param file The {@link MultipartFile} to be uploaded.
      * @return The URL of the uploaded file in the storage bucket.
-     * @throws IOException                   If an I/O error occurs while uploading the file.
-     * @throws FileSizeExceedsLimitException If the size of the uploaded file exceeds the maximum allowed limit.
+     * @throws IOException        If an I/O error occurs while uploading the file.
+     * @throws TechnicalException If the size of the uploaded file exceeds the maximum allowed limit.
      */
     String uploadFile(MultipartFile file) throws IOException;
 
@@ -31,8 +30,8 @@ public interface StorageService {
      *
      * @param fileName the name of the file to be deleted
      * @return {@code true} if the file was successfully deleted
-     * @throws FileNotFoundException if the specified file is not found
+     * @throws TechnicalException if the specified file is not found
      */
-    boolean deleteFile(String fileName) throws FileNotFoundException;
+    boolean deleteFile(String fileName) throws TechnicalException;
 
 }
