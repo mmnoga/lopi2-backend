@@ -28,6 +28,8 @@ import java.time.Instant;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderItemRequestDTO {
 
         private ProductRequestDTO productRequestDTO;

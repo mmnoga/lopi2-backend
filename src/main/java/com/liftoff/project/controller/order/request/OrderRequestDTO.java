@@ -4,13 +4,17 @@ import com.liftoff.project.model.order.CustomerType;
 import com.liftoff.project.model.order.Salutation;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderRequestDTO {
 
     @NotNull
