@@ -171,7 +171,8 @@ CREATE TABLE CUSTOMERS (
                            SALUTATION VARCHAR(50),
                            FIRST_NAME VARCHAR(255),
                            LAST_NAME VARCHAR(255),
-                           EMAIL VARCHAR(255)
+                           EMAIL VARCHAR(255),
+                           PHONE_NUMBER VARCHAR(255)
 );
 ALTER TABLE CARTS
     ADD FOREIGN KEY (SESSION_ID) REFERENCES SESSIONS(ID);

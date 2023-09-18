@@ -44,6 +44,15 @@ public interface OrderService {
      */
     OrderDetailsResponseDTO changeOrderPaymentMethod(OrderPaymentMethodRequestDTO paymentMethodRequestDTO, UUID uuid);
 
+
+    /**
+     * Edit existed order`s payment method.
+     *
+     * @param uuid                    The UUID of the order to be edited.
+     * @param paymentMethod The String of the order`s paymentMethodName to be edited.
+     */
+    OrderDetailsResponseDTO changeOrderPaymentMethod(String paymentMethod, UUID uuid);
+
     /**
      * Add order from OrderRequestDTO.
      *

@@ -88,7 +88,7 @@ public class Order {
     @JoinColumn(name = "cart_id", referencedColumnName = "id")
     private Cart cart;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "CUSTOMER_ID")
     private Customer customer;
 

@@ -8,6 +8,7 @@ import com.liftoff.project.controller.order.response.OrderDetailsListResponseDTO
 import com.liftoff.project.controller.order.response.OrderDetailsResponseDTO;
 import com.liftoff.project.controller.order.response.OrderSummaryListResponseDTO;
 import com.liftoff.project.controller.order.response.OrderSummaryResponseDTO;
+import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.exception.cart.CartNotFoundException;
 import com.liftoff.project.exception.cart.EntityNotFoundException;
 import com.liftoff.project.exception.cart.TermsNotAcceptedException;
@@ -182,6 +183,23 @@ public class OrderServiceImpl implements OrderService {
                         new EntityNotFoundException("Payment method not found"));
 
         order.setPaymentMethod(paymentMethod);
+
+        return orderMapper.mapOrderToOrderDetailsResponseDTO(orderRepository.save(order));
+    }
+
+    public OrderDetailsResponseDTO changeOrderPaymentMethod(String paymentMethod, UUID uuid) {
+
+
+        Order order = orderRepository.findByUuid(uuid)
+                .orElseThrow(() ->
+                        new BusinessException("Order entity not found"));
+
+        PaymentMethod foundPaymentMethod = paymentMethodRepository
+                .findByName(paymentMethod)
+                .orElseThrow(() ->
+                        new BusinessException("Payment method not found"));
+
+        order.setPaymentMethod(foundPaymentMethod);
 
         return orderMapper.mapOrderToOrderDetailsResponseDTO(orderRepository.save(order));
     }

@@ -16,9 +16,11 @@ import com.liftoff.project.model.order.Order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Component
@@ -30,20 +32,22 @@ public class OrderMapperImpl implements OrderMapper {
     private final DeliveryMethodMapper deliveryMethodMapper;
     private final PaymentMethodMapper paymentMethodMapper;
 
+    private static final String PATTERN_FORMAT = "dd.MM.yyyy";
 
 
     @Override
     public OrderSummaryResponseDTO mapOrderToOrderSummaryResponseDTO(Order order) {
 
         String customerName = "";
-        if(order.getCustomer() !=null ) customerName = order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName();
+        if (order.getCustomer() != null)
+            customerName = order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName();
 
         List<CartItemResponseDTO> cartItems = Collections.emptyList();
 
-        if(order.getCart() !=null)
-         cartItems = order.getCart().getCartItems().stream()
-                .map(cartItem -> cartItemMapper.mapCartItemToCartItemResponseDTO(cartItem))
-                .collect(Collectors.toList());
+        if (order.getCart() != null)
+            cartItems = order.getCart().getCartItems().stream()
+                    .map(cartItem -> cartItemMapper.mapCartItemToCartItemResponseDTO(cartItem))
+                    .collect(Collectors.toList());
 
         OrderSummaryResponseDTO orderSummaryDTO = OrderSummaryResponseDTO.builder()
                 .customerName(customerName)
@@ -58,22 +62,35 @@ public class OrderMapperImpl implements OrderMapper {
 
     @Override
     public OrderDetailsResponseDTO mapOrderToOrderDetailsResponseDTO(Order order) {
+//        return OrderDetailsResponseDTO.builder()
+//                .uId(order.getUuid())
+//                .orderDate(order.getOrderDate())
+//                .status(order.getStatus())
+//                .totalPrice(order.getTotalPrice())
+//                .deliveryMethod(deliveryMethodMapper
+//                        .mapDeliveryMethodToDeliveryMethodResponseDTO(order.getDeliveryMethod()))
+//                .shippingAddress(mapAddressToAddressResponseDTO(order.getShippingAddress()))
+//                .billingAddress(mapAddressToAddressResponseDTO(order.getBillingAddress()))
+//                .paymentMethod(paymentMethodMapper.
+//                        mapPaymentMethodToPaymentMethodResponseDTO(order.getPaymentMethod()))
+//                .cart(cartMapper.mapCartToCartResponseDTO(order.getCart()))
+//                .customer(mapCustomerToCustomerResponseDTO(order.getCustomer()))
+//                .createdAt(order.getCreatedAt())
+//                .updatedAt(order.getUpdatedAt())
+//                .termsAccepted(order.getTermsAccepted()!=null?order.getTermsAccepted():false)
+//                .build();
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(PATTERN_FORMAT, Locale.ROOT).withZone(ZoneOffset.UTC);
+
+
         return OrderDetailsResponseDTO.builder()
-                .uId(order.getUuid())
-                .orderDate(order.getOrderDate())
-                .status(order.getStatus())
-                .totalPrice(order.getTotalPrice())
-                .deliveryMethod(deliveryMethodMapper
-                        .mapDeliveryMethodToDeliveryMethodResponseDTO(order.getDeliveryMethod()))
-                .shippingAddress(mapAddressToAddressResponseDTO(order.getShippingAddress()))
-                .billingAddress(mapAddressToAddressResponseDTO(order.getBillingAddress()))
-                .paymentMethod(paymentMethodMapper.
-                        mapPaymentMethodToPaymentMethodResponseDTO(order.getPaymentMethod()))
-                .cart(cartMapper.mapCartToCartResponseDTO(order.getCart()))
-                .customer(mapCustomerToCustomerResponseDTO(order.getCustomer()))
-                .createdAt(order.getCreatedAt())
-                .updatedAt(order.getUpdatedAt())
-                .termsAccepted(order.getTermsAccepted())
+                .orderUid(order.getUuid())
+                .deliveryMethod(order.getDeliveryMethod().getName())
+                .customerEmail(order.getCustomer() !=null? order.getCustomer().getEmail():"")
+                .deliveryAddress(mapAddressToAddressResponseDTO(order.getShippingAddress()))
+                .paymentMethod(order.getPaymentMethod().getName())
+                .orderDate(dateTimeFormatter.format(order.getOrderDate()))
+                .customerPhone(order.getCustomer() !=null? order.getCustomer().getPhoneNumber():"")
                 .build();
     }
 

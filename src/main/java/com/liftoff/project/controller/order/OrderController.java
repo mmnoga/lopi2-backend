@@ -66,14 +66,19 @@ public class OrderController {
         return ResponseEntity.ok(orderService.changeOrderDeliveryMethod(orderChangeRequestDTO, uuid));
     }
 
+
+
     @PutMapping("/change-payment-method")
     @Operation(summary = "Change an order delivery payment")
+//    public ResponseEntity<OrderDetailsResponseDTO> changeOrderPaymentMethod(
+//            @Valid @RequestBody OrderPaymentMethodRequestDTO paymentMethodRequestDTO,
+//            @RequestParam UUID uuid) {
     public ResponseEntity<OrderDetailsResponseDTO> changeOrderPaymentMethod(
-            @Valid @RequestBody OrderPaymentMethodRequestDTO paymentMethodRequestDTO,
+            @RequestParam String paymentMethod,
             @RequestParam UUID uuid) {
 
-        orderService.changeOrderPaymentMethod(paymentMethodRequestDTO, uuid);
-        return ResponseEntity.ok(orderService.changeOrderPaymentMethod(paymentMethodRequestDTO, uuid));
+        return ResponseEntity.ok(orderService.changeOrderPaymentMethod(paymentMethod, uuid));
+
     }
 
     @PostMapping("/create")
