@@ -3,6 +3,7 @@ package com.liftoff.project.controller.order.response;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Data
@@ -28,7 +29,7 @@ public class OrderDetailsResponseDTO {
     private String customerEmail;
     private AddressResponseDTO deliveryAddress;
     private String paymentMethod;
-    private String orderDate;
+    private Instant orderDate;
     private String customerPhone;
 
 

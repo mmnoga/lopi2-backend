@@ -89,7 +89,7 @@ public class OrderMapperImpl implements OrderMapper {
                 .customerEmail(order.getCustomer() !=null? order.getCustomer().getEmail():"")
                 .deliveryAddress(mapAddressToAddressResponseDTO(order.getShippingAddress()))
                 .paymentMethod(order.getPaymentMethod().getName())
-                .orderDate(dateTimeFormatter.format(order.getOrderDate()))
+                .orderDate(order.getOrderDate())
                 .customerPhone(order.getCustomer() !=null? order.getCustomer().getPhoneNumber():"")
                 .build();
     }
