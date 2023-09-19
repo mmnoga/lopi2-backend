@@ -39,14 +39,15 @@ public class OrderMapperImpl implements OrderMapper {
     public OrderSummaryResponseDTO mapOrderToOrderSummaryResponseDTO(Order order) {
 
         String customerName = "";
-        if(order.getCustomer() !=null ) customerName = order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName();
+        if (order.getCustomer() != null)
+            customerName = order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName();
 
         List<CartItemResponseDTO> cartItems = Collections.emptyList();
 
-        if(order.getCart() !=null)
-         cartItems = order.getCart().getCartItems().stream()
-                .map(cartItem -> cartItemMapper.mapCartItemToCartItemResponseDTO(cartItem))
-                .collect(Collectors.toList());
+        if (order.getCart() != null)
+            cartItems = order.getCart().getCartItems().stream()
+                    .map(cartItem -> cartItemMapper.mapCartItemToCartItemResponseDTO(cartItem))
+                    .collect(Collectors.toList());
 
         OrderSummaryResponseDTO orderSummaryDTO = OrderSummaryResponseDTO.builder()
                 .customerName(customerName)
@@ -61,23 +62,7 @@ public class OrderMapperImpl implements OrderMapper {
 
     @Override
     public OrderDetailsResponseDTO mapOrderToOrderDetailsResponseDTO(Order order) {
-//        return OrderDetailsResponseDTO.builder()
-//                .uId(order.getUuid())
-//                .orderDate(order.getOrderDate())
-//                .status(order.getStatus())
-//                .totalPrice(order.getTotalPrice())
-//                .deliveryMethod(deliveryMethodMapper
-//                        .mapDeliveryMethodToDeliveryMethodResponseDTO(order.getDeliveryMethod()))
-//                .shippingAddress(mapAddressToAddressResponseDTO(order.getShippingAddress()))
-//                .billingAddress(mapAddressToAddressResponseDTO(order.getBillingAddress()))
-//                .paymentMethod(paymentMethodMapper.
-//                        mapPaymentMethodToPaymentMethodResponseDTO(order.getPaymentMethod()))
-//                .cart(cartMapper.mapCartToCartResponseDTO(order.getCart()))
-//                .customer(mapCustomerToCustomerResponseDTO(order.getCustomer()))
-//                .createdAt(order.getCreatedAt())
-//                .updatedAt(order.getUpdatedAt())
-//                .termsAccepted(order.getTermsAccepted()!=null?order.getTermsAccepted():false)
-//                .build();
+//
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(PATTERN_FORMAT, Locale.ROOT).withZone(ZoneOffset.UTC);
 
@@ -85,11 +70,11 @@ public class OrderMapperImpl implements OrderMapper {
         return OrderDetailsResponseDTO.builder()
                 .orderUid(order.getUuid())
                 .deliveryMethod(order.getDeliveryMethod().getName())
-                .customerEmail(order.getCustomer() !=null? order.getCustomer().getEmail():"")
+                .customerEmail(order.getCustomer() != null ? order.getCustomer().getEmail() : "")
                 .deliveryAddress(mapAddressToAddressResponseDTO(order.getShippingAddress()))
                 .paymentMethod(order.getPaymentMethod().getName())
                 .orderDate(order.getOrderDate())
-                .customerPhone(order.getCustomer() !=null? order.getCustomer().getPhoneNumber():"")
+                .customerPhone(order.getCustomer() != null ? order.getCustomer().getPhoneNumber() : "")
                 .build();
     }
 
