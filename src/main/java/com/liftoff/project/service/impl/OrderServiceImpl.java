@@ -9,10 +9,6 @@ import com.liftoff.project.controller.order.response.OrderDetailsResponseDTO;
 import com.liftoff.project.controller.order.response.OrderSummaryListResponseDTO;
 import com.liftoff.project.controller.order.response.OrderSummaryResponseDTO;
 import com.liftoff.project.exception.BusinessException;
-import com.liftoff.project.exception.cart.CartNotFoundException;
-import com.liftoff.project.exception.cart.EntityNotFoundException;
-import com.liftoff.project.exception.cart.TermsNotAcceptedException;
-import com.liftoff.project.exception.order.OrderExistsException;
 import com.liftoff.project.mapper.AddressMapper;
 import com.liftoff.project.mapper.OrderItemMapper;
 import com.liftoff.project.mapper.OrderMapper;
@@ -75,18 +71,18 @@ public class OrderServiceImpl implements OrderService {
         User userFromCart = cart.getUser();
 
         if (orderRepository.findByCartUuid(cartUuid).isPresent())
-            throw new OrderExistsException("This order already exists! Try editing instead of adding");
+            throw new BusinessException("This order already exists! Try editing instead of adding");
 
         if (userFromCart != null && this.getUserFromAuthenticatedUser() != null)
             userValidationService.validateAuthenticatedUserFromCart(this.getUserFromAuthenticatedUser(), userFromCart);
 
         DeliveryMethod deliveryMethod = deliveryMethodRepository
                 .findByName("COURIER_SERVICE")
-                .orElseThrow(() -> new EntityNotFoundException("Delivery method not found"));
+                .orElseThrow(() -> new BusinessException("Delivery method not found"));
 
         PaymentMethod paymentMethod = paymentMethodRepository
                 .findByName("CREDIT_CARD")
-                .orElseThrow(() -> new EntityNotFoundException("Payment method not found"));
+                .orElseThrow(() -> new BusinessException("Payment method not found"));
 
 
         Order order = Order.builder()
@@ -128,16 +124,16 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = orderRepository.findByUuid(orderUuid)
                 .orElseThrow(() ->
-                        new EntityNotFoundException("Order entity not found"));
+                        new BusinessException("Order entity not found"));
 
         if (orderRequest.getDeliveryMethodName() != null)
             order.setDeliveryMethod(deliveryMethodRepository.findByName(orderRequest.getDeliveryMethodName())
                     .orElseThrow(() ->
-                            new EntityNotFoundException("DeliveryMethod entity not found")));
+                            new BusinessException("DeliveryMethod entity not found")));
         if (orderRequest.getPaymentMethodName() != null)
             order.setPaymentMethod(paymentMethodRepository.findByName(orderRequest.getPaymentMethodName())
                     .orElseThrow(() ->
-                            new EntityNotFoundException("PaymentMethod entity not found")));
+                            new BusinessException("PaymentMethod entity not found")));
         if (orderRequest.getShippingAddress() != null)
             order.setShippingAddress(addressMapper.mapAddressRequestDTOToAddress(orderRequest.getShippingAddress()));
         if (orderRequest.getBillingAddress() != null)
@@ -159,11 +155,11 @@ public class OrderServiceImpl implements OrderService {
     public OrderDetailsResponseDTO changeOrderDeliveryMethod(OrderDeliveryMethodRequestDTO orderChangeRequestDTO, UUID uuid) {
 
         Order order = orderRepository.findByUuid(uuid)
-                .orElseThrow(() -> new EntityNotFoundException("Order entity not found"));
+                .orElseThrow(() -> new BusinessException("Order entity not found"));
 
         DeliveryMethod deliveryMethod = deliveryMethodRepository
                 .findByName(orderChangeRequestDTO.getDeliveryMethodName())
-                .orElseThrow(() -> new EntityNotFoundException("Delivery method not found"));
+                .orElseThrow(() -> new BusinessException("Delivery method not found"));
 
         order.setDeliveryMethod(deliveryMethod);
 
@@ -175,17 +171,18 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = orderRepository.findByUuid(uuid)
                 .orElseThrow(() ->
-                        new EntityNotFoundException("Order entity not found"));
+                        new BusinessException("Order entity not found"));
 
         PaymentMethod paymentMethod = paymentMethodRepository
                 .findByName(paymentMethodRequestDTO.getPaymentMethodName())
                 .orElseThrow(() ->
-                        new EntityNotFoundException("Payment method not found"));
+                        new BusinessException("Payment method not found"));
 
         order.setPaymentMethod(paymentMethod);
 
         return orderMapper.mapOrderToOrderDetailsResponseDTO(orderRepository.save(order));
     }
+
 
     public OrderDetailsResponseDTO changeOrderPaymentMethod(String paymentMethod, UUID uuid) {
 
@@ -207,19 +204,19 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDetailsResponseDTO createOrder(OrderRequestDTO orderRequest, UUID cartUuid) {
         if (!orderRequest.getTermsAccepted()) {
-            throw new TermsNotAcceptedException("Terms and conditions were not accepted");
+            throw new BusinessException("Terms and conditions were not accepted");
         }
 
         DeliveryMethod deliveryMethod = deliveryMethodRepository
                 .findByName(orderRequest.getDeliveryMethodName())
-                .orElseThrow(() -> new EntityNotFoundException("Delivery method not found"));
+                .orElseThrow(() -> new BusinessException("Delivery method not found"));
 
         PaymentMethod paymentMethod = paymentMethodRepository
                 .findByName(orderRequest.getPaymentMethodName())
-                .orElseThrow(() -> new EntityNotFoundException("Payment method not found"));
+                .orElseThrow(() -> new BusinessException("Payment method not found"));
 
         Cart cart = cartRepository.findByUuid(cartUuid)
-                .orElseThrow(() -> new CartNotFoundException("Cart not found"));
+                .orElseThrow(() -> new BusinessException("Cart not found"));
         Customer customer = Customer.builder()
                 .customerType(orderRequest.getCustomerType())
                 .nip(orderRequest.getNip())

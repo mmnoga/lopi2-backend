@@ -1,7 +1,6 @@
 package com.liftoff.project.controller.order;
 
 import com.liftoff.project.controller.order.request.OrderDeliveryMethodRequestDTO;
-import com.liftoff.project.controller.order.request.OrderPaymentMethodRequestDTO;
 import com.liftoff.project.controller.order.request.OrderRequestDTO;
 import com.liftoff.project.controller.order.response.OrderDetailsListResponseDTO;
 import com.liftoff.project.controller.order.response.OrderDetailsResponseDTO;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.UUID;
 
 

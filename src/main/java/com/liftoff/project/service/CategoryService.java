@@ -2,8 +2,7 @@ package com.liftoff.project.service;
 
 import com.liftoff.project.controller.request.CategoryRequestDTO;
 import com.liftoff.project.controller.response.CategoryResponseDTO;
-import com.liftoff.project.exception.category.CategoryNotFoundException;
-import com.liftoff.project.exception.category.ParentCategoryNotFoundException;
+import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.model.Category;
 
 import java.util.List;
@@ -22,7 +21,7 @@ public interface CategoryService {
      *
      * @param categoryUuId The UUID of the category to be retrieved.
      * @return The CategoryResponseDTO object representing the category with the specified UUID.
-     * @throws CategoryNotFoundException If the category with the given UUID is not found.
+     * @throws BusinessException If the category with the given UUID is not found.
      */
     CategoryResponseDTO getCategoryByUuId(UUID categoryUuId);
 
@@ -39,10 +38,10 @@ public interface CategoryService {
      * Updates an existing category with the specified UUID based on the information provided
      * in the CategoryRequestDTO object.
      *
-     * @param categoryUuid The UUID of the category to be updated.
+     * @param categoryUuid       The UUID of the category to be updated.
      * @param categoryRequestDTO The CategoryRequestDTO object containing the updated details of the category.
      * @return The CategoryResponseDTO object representing the updated category.
-     * @throws CategoryNotFoundException If the category with the given UUID is not found.
+     * @throws BusinessException If the category with the given UUID is not found.
      */
     CategoryResponseDTO updateCategory(UUID categoryUuid, CategoryRequestDTO categoryRequestDTO);
 
@@ -50,7 +49,7 @@ public interface CategoryService {
      * Deletes a category with the specified UUID.
      *
      * @param categoryUuid The UUID of the category to be deleted.
-     * @throws CategoryNotFoundException If the category with the given UUID is not found.
+     * @throws BusinessException If the category with the given UUID is not found.
      */
     void deleteCategoryByUuid(UUID categoryUuid);
 
@@ -59,8 +58,8 @@ public interface CategoryService {
      *
      * @param categories The set of CategoryRequestDTO object representing categories to be checked.
      * @return A set of existing Category object corresponding to the provided CategoryRequestDTO objects.
-     * @throws ParentCategoryNotFoundException If a parent category specified
-     * in any of the CategoryRequestDTO objects is not found.
+     * @throws BusinessException If a parent category specified
+     *                           in any of the CategoryRequestDTO objects is not found.
      */
     List<Category> getExistingCategories(List<CategoryRequestDTO> categories);
 
@@ -69,7 +68,7 @@ public interface CategoryService {
      *
      * @param categoryUuId The UUID of the category to check the product quantity for.
      * @return The number of products that belong to the specified category.
-     * @throws IllegalArgumentException If the provided UUID is invalid or if the category does not exist.
+     * @throws BusinessException If the provided UUID is invalid or if the category does not exist.
      */
     int getProductQuantityInCategory(UUID categoryUuId);
 

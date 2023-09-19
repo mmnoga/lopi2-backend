@@ -1,6 +1,6 @@
 package com.liftoff.project.command;
 
-import com.liftoff.project.exception.cart.EntityNotFoundException;
+import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.model.Product;
 import com.liftoff.project.model.User;
 import com.liftoff.project.model.order.Address;
@@ -90,8 +90,8 @@ public class OrderInsertCommand implements CommandLineRunner {
 
         Product product1 = new Product();
         Product product2 = new Product();
-        if(productRepository.findAll().size()>0) product1 = productRepository.findAll().get(0);
-        if(productRepository.findAll().size()>0)  product2 = productRepository.findAll().get(1);
+        if (productRepository.findAll().size() > 0) product1 = productRepository.findAll().get(0);
+        if (productRepository.findAll().size() > 0) product2 = productRepository.findAll().get(1);
 
         OrderItem orderItem1 = OrderItem.builder()
                 .withQuantity(2)
@@ -109,15 +109,15 @@ public class OrderInsertCommand implements CommandLineRunner {
         orderItem2.setProduct(product2);
 
         User user = new User();
-        if(userRepository.findAll().size() > 0) user = userRepository.findAll().get(0);
+        if (userRepository.findAll().size() > 0) user = userRepository.findAll().get(0);
 
         DeliveryMethod deliveryMethod = deliveryMethodRepository
                 .findByName("COURIER_SERVICE")
-                .orElseThrow(() -> new EntityNotFoundException("Delivery method not found"));
+                .orElseThrow(() -> new BusinessException("Delivery method not found"));
 
         PaymentMethod paymentMethod = paymentMethodRepository
                 .findByName("CREDIT_CARD")
-                .orElseThrow(() -> new EntityNotFoundException("Payment method not found"));
+                .orElseThrow(() -> new BusinessException("Payment method not found"));
 
         Order order = Order.builder()
                 .withUuid(UUID.randomUUID())
@@ -132,8 +132,7 @@ public class OrderInsertCommand implements CommandLineRunner {
                 .build();
 
 
-         order.setUser(user);
-
+        order.setUser(user);
         order.setOrderItemList(List.of(orderItem1, orderItem2));
 
         orderRepository.save(order);

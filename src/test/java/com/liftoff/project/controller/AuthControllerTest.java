@@ -5,7 +5,7 @@ import com.liftoff.project.controller.request.LoginRequestDTO;
 import com.liftoff.project.controller.request.SignupRequestDTO;
 import com.liftoff.project.controller.response.JwtResponseDTO;
 import com.liftoff.project.controller.response.UserResponseDTO;
-import com.liftoff.project.exception.auth.UserExistsException;
+import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.model.User;
 import com.liftoff.project.repository.UserRepository;
 import com.liftoff.project.service.CartService;
@@ -125,7 +125,7 @@ class AuthControllerTest {
 
 
     @Test
-    void shouldThrowUserExistsExceptionWhenUserWithUsernameAlreadyExists() {
+    void shouldThrowBusinessExceptionWhenUserWithUsernameAlreadyExists() {
         // given
         SignupRequestDTO signUpRequestDTO = SignupRequestDTO.builder()
                 .withFirstName("John133")
@@ -144,7 +144,7 @@ class AuthControllerTest {
                 .thenReturn(Optional.of(existingUser));
 
         // when/then
-        assertThrows(UserExistsException.class, () -> {
+        assertThrows(BusinessException.class, () -> {
             userValidationService.validateUsername(signUpRequestDTO);
         });
     }

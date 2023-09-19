@@ -1,15 +1,14 @@
-package com.liftoff.project.exception.cart;
+package com.liftoff.project.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class EntityNotFoundException extends RuntimeException {
-
+public class TechnicalException extends RuntimeException {
     private final HttpStatus status;
     private final String message;
 
-    public EntityNotFoundException(String message) {
+    public TechnicalException(String message) {
         super(message);
-        this.status = HttpStatus.NOT_FOUND;
+        this.status = HttpStatus.FOUND;
         this.message = message;
     }
 
@@ -22,3 +21,4 @@ public class EntityNotFoundException extends RuntimeException {
     }
 
 }
+

@@ -9,6 +9,7 @@ public class BusinessException extends RuntimeException {
 
     public BusinessException(String message) {
         super(message);
+
         this.status = HttpStatus.NOT_FOUND;
         this.message = message;
     }
@@ -22,3 +23,4 @@ public class BusinessException extends RuntimeException {
     }
 
 }
+

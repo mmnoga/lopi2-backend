@@ -39,15 +39,14 @@ public class OrderMapperImpl implements OrderMapper {
     public OrderSummaryResponseDTO mapOrderToOrderSummaryResponseDTO(Order order) {
 
         String customerName = "";
-        if (order.getCustomer() != null)
-            customerName = order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName();
+        if(order.getCustomer() !=null ) customerName = order.getCustomer().getFirstName() + " " + order.getCustomer().getLastName();
 
         List<CartItemResponseDTO> cartItems = Collections.emptyList();
 
-        if (order.getCart() != null)
-            cartItems = order.getCart().getCartItems().stream()
-                    .map(cartItem -> cartItemMapper.mapCartItemToCartItemResponseDTO(cartItem))
-                    .collect(Collectors.toList());
+        if(order.getCart() !=null)
+         cartItems = order.getCart().getCartItems().stream()
+                .map(cartItem -> cartItemMapper.mapCartItemToCartItemResponseDTO(cartItem))
+                .collect(Collectors.toList());
 
         OrderSummaryResponseDTO orderSummaryDTO = OrderSummaryResponseDTO.builder()
                 .customerName(customerName)

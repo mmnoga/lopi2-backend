@@ -2,9 +2,7 @@ package com.liftoff.project.service.impl;
 
 import com.liftoff.project.controller.response.CartItemResponseDTO;
 import com.liftoff.project.controller.response.CartResponseDTO;
-import com.liftoff.project.exception.cart.CartNotFoundException;
-import com.liftoff.project.exception.product.ProductNotEnoughQuantityException;
-import com.liftoff.project.exception.product.ProductNotFoundException;
+import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.mapper.CartMapper;
 import com.liftoff.project.model.Cart;
 import com.liftoff.project.model.CartItem;
@@ -82,13 +80,13 @@ public class AuthCartServiceImpl implements AuthCartService {
         try {
             Cart cart = cartRepository
                     .findByUuid(UUID.fromString(cartId))
-                    .orElseThrow(() -> new CartNotFoundException("Cart not found"));
+                    .orElseThrow(() -> new BusinessException("Cart not found"));
 
             Product product = productService.getProductEntityByUuid(productUid);
 
             if (!cartService
                     .hasProductEnoughQuantity(product, quantity, cart)) {
-                throw new ProductNotEnoughQuantityException("Not enough quantity of product with UUID: "
+                throw new BusinessException("Not enough quantity of product with UUID: "
                         + product.getUId());
             }
 
@@ -97,8 +95,8 @@ public class AuthCartServiceImpl implements AuthCartService {
             return cartMapper
                     .mapCartToCartResponseDTO(savedCart);
 
-        } catch (CartNotFoundException ex) {
-            throw new CartNotFoundException("Cart not found");
+        } catch (BusinessException ex) {
+            throw new BusinessException("Cart not found");
         }
 
     }
@@ -114,7 +112,7 @@ public class AuthCartServiceImpl implements AuthCartService {
         Cart cart = cartService.getCart(cartId);
 
         if (cart == null) {
-            throw new CartNotFoundException("Cart not found for user: " + username);
+            throw new BusinessException("Cart not found for user: " + username);
         }
 
         CartResponseDTO cartResponse = new CartResponseDTO();
@@ -135,7 +133,7 @@ public class AuthCartServiceImpl implements AuthCartService {
     public void clearCartForUser(String username) {
         Cart cart = cartRepository.findByUserUsername(username)
                 .orElseThrow(() ->
-                        new CartNotFoundException("Cart not found"));
+                        new BusinessException("Cart not found"));
 
         List<CartItem> cartItems = cart.getCartItems();
 
@@ -154,12 +152,12 @@ public class AuthCartServiceImpl implements AuthCartService {
     @Transactional
     public void deleteCartProductByUuidForUser(UUID productUuid, String username) {
         Cart cart = cartRepository.findByUserUsername(username)
-                .orElseThrow(() -> new CartNotFoundException("Cart not found for user: " + username));
+                .orElseThrow(() -> new BusinessException("Cart not found for user: " + username));
 
         CartItem cartItemToRemove = cart.getCartItems().stream()
                 .filter(cartItem -> cartItem.getProduct().getUId().equals(productUuid))
                 .findFirst()
-                .orElseThrow(() -> new ProductNotFoundException("Product not found in the cart"));
+                .orElseThrow(() -> new BusinessException("Product not found in the cart"));
 
         cartItemToRemove.setCart(null);
         cart.getCartItems().remove(cartItemToRemove);
@@ -173,7 +171,7 @@ public class AuthCartServiceImpl implements AuthCartService {
     @Override
     public CartResponseDTO updateCartForUser(UUID productUuid, int quantity, String username) {
         if (quantity <= 0) {
-            throw new ProductNotEnoughQuantityException("Quantity must be greater than zero");
+            throw new BusinessException("Quantity must be greater than zero");
         }
 
         String cartId = findCartIdByUsername(username);
@@ -185,12 +183,12 @@ public class AuthCartServiceImpl implements AuthCartService {
         try {
             Cart cart = cartRepository
                     .findByUuid(UUID.fromString(cartId))
-                    .orElseThrow(() -> new CartNotFoundException("Cart not found"));
+                    .orElseThrow(() -> new BusinessException("Cart not found"));
 
             CartItem cartItem = cart.getCartItems().stream()
                     .filter(item -> item.getProduct().getUId().equals(productUuid))
                     .findFirst()
-                    .orElseThrow(() -> new ProductNotFoundException("Product not found in the cart"));
+                    .orElseThrow(() -> new BusinessException("Product not found in the cart"));
 
             cartItem.setQuantity(quantity);
 
@@ -202,8 +200,8 @@ public class AuthCartServiceImpl implements AuthCartService {
 
             return cartMapper.mapCartToCartResponseDTO(savedCart);
 
-        } catch (CartNotFoundException ex) {
-            throw new CartNotFoundException("Cart not found");
+        } catch (BusinessException ex) {
+            throw new BusinessException("Cart not found");
         }
     }
 

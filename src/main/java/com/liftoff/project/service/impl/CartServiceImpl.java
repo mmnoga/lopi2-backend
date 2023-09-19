@@ -1,9 +1,7 @@
 package com.liftoff.project.service.impl;
 
 import com.liftoff.project.controller.response.CartResponseDTO;
-import com.liftoff.project.exception.cart.CartNotFoundException;
-import com.liftoff.project.exception.product.ProductNotEnoughQuantityException;
-import com.liftoff.project.exception.product.ProductNotFoundException;
+import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.mapper.CartMapper;
 import com.liftoff.project.model.Cart;
 import com.liftoff.project.model.CartItem;
@@ -50,7 +48,7 @@ public class CartServiceImpl implements CartService {
                 .getCookieValue(cookieName, request);
 
         Cart cart = cartRepository.findByUuid(UUID.fromString(cartId))
-                .orElseThrow(() -> new CartNotFoundException("Cart not found"));
+                .orElseThrow(() -> new BusinessException("Cart with UUID: " + cartId + " not found"));
 
         clearCart(cart);
     }
@@ -58,7 +56,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public Cart getCart(String cartId) {
         return cartRepository.findByUuid(UUID.fromString(cartId))
-                .orElseThrow(() -> new CartNotFoundException("Cart not found with UUID: " + cartId));
+                .orElseThrow(() -> new BusinessException("Cart with UUID: " + cartId + " not found"));
     }
 
     @Override
@@ -70,7 +68,7 @@ public class CartServiceImpl implements CartService {
         Product product = productService.getProductEntityByUuid(productUuid);
 
         if (!hasProductEnoughQuantity(product, quantity, cart)) {
-            throw new ProductNotEnoughQuantityException("Not enough quantity of product with UUID: "
+            throw new BusinessException("Not enough quantity of product with UUID: "
                     + product.getUId());
         }
 
@@ -82,11 +80,11 @@ public class CartServiceImpl implements CartService {
         if (unauthenticatedCartId != null) {
             Cart unauthenticatedCart = cartRepository
                     .findByUuid(UUID.fromString(unauthenticatedCartId))
-                    .orElseThrow(() -> new CartNotFoundException("Unauthenticated cart not found"));
+                    .orElseThrow(() -> new BusinessException("Unauthenticated cart not found"));
 
             Cart authenticatedCart = cartRepository
                     .findByUuid(UUID.fromString(authenticatedCartId))
-                    .orElseThrow(() -> new CartNotFoundException("Authenticated cart not found"));
+                    .orElseThrow(() -> new BusinessException("Authenticated cart not found"));
 
             List<CartItem> unauthenticatedCartItems = unauthenticatedCart.getCartItems();
             List<CartItem> authenticatedCartItems = authenticatedCart.getCartItems();
@@ -134,7 +132,7 @@ public class CartServiceImpl implements CartService {
 
             return cartRepository.save(newCart);
         } else {
-            throw new CartNotFoundException("Cart not found or cannot be created");
+            throw new BusinessException("Cart not found or cannot be created");
         }
     }
 
@@ -191,12 +189,12 @@ public class CartServiceImpl implements CartService {
         String cartId = cookieService.getCookieValue(cookieName, request);
 
         Cart cart = cartRepository.findByUuid(UUID.fromString(cartId))
-                .orElseThrow(() -> new CartNotFoundException("Cart not found"));
+                .orElseThrow(() -> new BusinessException("Cart with UUID: " + cartId + " not found"));
 
         CartItem itemToRemove = cart.getCartItems().stream()
                 .filter(cartItem -> cartItem.getProduct().getUId().equals(productUuid))
                 .findFirst()
-                .orElseThrow(() -> new ProductNotFoundException("Product not found in the cart"));
+                .orElseThrow(() -> new BusinessException("Product with UUID: " + productUuid + " not found in the cart"));
 
         Double productPrice = itemToRemove.getProduct().getRegularPrice();
         Double productDiscountPrice = itemToRemove.getProduct().getDiscountPrice();
@@ -220,22 +218,22 @@ public class CartServiceImpl implements CartService {
     @Override
     public CartResponseDTO updateCart(UUID productUuid, int quantity, HttpServletRequest request) {
         if (quantity <= 0) {
-            throw new ProductNotEnoughQuantityException("Quantity must be greater than zero");
+            throw new BusinessException("Quantity must be greater than zero");
         }
         String cartId = cookieService.getCookieValue(cookieName, request);
 
         Cart cart = cartRepository.findByUuid(UUID.fromString(cartId))
-                .orElseThrow(() -> new CartNotFoundException("Cart not found"));
+                .orElseThrow(() -> new BusinessException("Cart with UUID: " + cartId + " not found"));
 
         Cart updatedCart = createCartCopy(cart);
 
         CartItem cartItem = updatedCart.getCartItems().stream()
                 .filter(item -> item.getProduct().getUId().equals(productUuid))
                 .findFirst()
-                .orElseThrow(() -> new ProductNotFoundException("Product not found in the cart"));
+                .orElseThrow(() -> new BusinessException("Product not found in the cart"));
 
         if (!hasProductEnoughQuantity(cartItem.getProduct(), quantity, cart)) {
-            throw new ProductNotEnoughQuantityException(
+            throw new BusinessException(
                     "Insufficient quantity of product with UUID: " + productUuid + " in stock");
         }
 
