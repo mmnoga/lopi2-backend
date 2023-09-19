@@ -7,8 +7,7 @@ import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import com.liftoff.project.controller.response.FileInfoResponseDTO;
-import com.liftoff.project.exception.storage.FileNotFoundException;
-import com.liftoff.project.exception.storage.FileSizeExceedsLimitException;
+import com.liftoff.project.exception.TechnicalException;
 import com.liftoff.project.mapper.FileMapper;
 import com.liftoff.project.service.StorageService;
 import jakarta.activation.MimetypesFileTypeMap;
@@ -56,7 +55,7 @@ public class StorageServiceImpl implements StorageService {
         long fileSize = file.getSize();
 
         if (fileSize > maxFileSize) {
-            throw new FileSizeExceedsLimitException(
+            throw new TechnicalException(
                     "File size exceeds the maximum allowed limit " + maxFileSize + " bytes.");
         }
 
@@ -82,23 +81,23 @@ public class StorageServiceImpl implements StorageService {
     @Override
     public List<FileInfoResponseDTO> getFileList() {
         return StreamSupport.stream(
-                storage.get(bucketName)
-                        .list()
-                        .iterateAll()
-                        .spliterator(), false)
+                        storage.get(bucketName)
+                                .list()
+                                .iterateAll()
+                                .spliterator(), false)
                 .map(fileMapper::mapBlobToFileInfoResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public boolean deleteFile(String fileName) throws FileNotFoundException {
+    public boolean deleteFile(String fileName) throws TechnicalException {
         String filePath = folderName + "/" + fileName;
 
         BlobId blobId = BlobId.of(bucketName, filePath);
         boolean deleted = storage.delete(blobId);
 
         if (!deleted) {
-            throw new FileNotFoundException("File not found");
+            throw new TechnicalException("File not found");
         }
 
         return true;

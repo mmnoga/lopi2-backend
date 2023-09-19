@@ -1,7 +1,7 @@
 package com.liftoff.project.controller;
 
 import com.liftoff.project.controller.response.FileInfoResponseDTO;
-import com.liftoff.project.exception.storage.FileNotFoundException;
+import com.liftoff.project.exception.TechnicalException;
 import com.liftoff.project.service.StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,11 +43,11 @@ public class StorageController {
     }
 
     @DeleteMapping("/delete/{fileName:.+}")
-    public ResponseEntity<String> deleteFile(@PathVariable String fileName) throws FileNotFoundException {
+    public ResponseEntity<String> deleteFile(@PathVariable String fileName) throws TechnicalException {
         try {
             storageService.deleteFile(fileName);
             return new ResponseEntity<>("File deleted successfully", HttpStatus.OK);
-        } catch (FileNotFoundException e) {
+        } catch (TechnicalException e) {
             return new ResponseEntity<>("File not found", HttpStatus.NOT_FOUND);
         }
     }

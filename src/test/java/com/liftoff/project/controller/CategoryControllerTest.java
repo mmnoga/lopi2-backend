@@ -4,8 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liftoff.project.controller.request.CategoryRequestDTO;
 import com.liftoff.project.controller.response.CategoryResponseDTO;
-import com.liftoff.project.exception.category.CategoryNotFoundException;
-import com.liftoff.project.exception.category.InvalidParentCategoryException;
+import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.model.Category;
 import com.liftoff.project.service.CategoryService;
 import org.hamcrest.Matchers;
@@ -164,14 +163,14 @@ class CategoryControllerTest {
     }
 
     @Test
-    void shouldReturnCategoryNotFoundExceptionWhenUuIdNotExist() throws Exception {
+    void shouldReturnBusinessExceptionWhenUuIdNotExist() throws Exception {
         // given
         UUID categoryUuid = UUID.fromString("f28bd377-3a7d-44fe-bbc9-adeb3bea03fa");
         String expectedErrorMessage = "Category with UUID " + categoryUuid + " not found.";
 
         // when
         Mockito.when(categoryService.getCategoryByUuId(Mockito.eq(categoryUuid)))
-                .thenThrow(new CategoryNotFoundException(expectedErrorMessage));
+                .thenThrow(new BusinessException(expectedErrorMessage));
 
         // then
         mockMvc.perform(MockMvcRequestBuilders.get("/api/categories/" + categoryUuid))
@@ -222,7 +221,7 @@ class CategoryControllerTest {
         String errorMessage = "Category cannot be its own parent.";
 
         Mockito.when(categoryService.updateCategory(Mockito.eq(categoryUuid), Mockito.any(CategoryRequestDTO.class)))
-                .thenThrow(new InvalidParentCategoryException(errorMessage));
+                .thenThrow(new BusinessException(errorMessage));
 
         // when & then
         mockMvc.perform(MockMvcRequestBuilders.put("/api/categories/{categoryUuid}", categoryUuid)

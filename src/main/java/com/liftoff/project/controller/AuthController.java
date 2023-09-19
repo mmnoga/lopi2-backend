@@ -5,8 +5,7 @@ import com.liftoff.project.controller.request.LoginRequestDTO;
 import com.liftoff.project.controller.request.SignupRequestDTO;
 import com.liftoff.project.controller.response.JwtResponseDTO;
 import com.liftoff.project.controller.response.UserResponseDTO;
-import com.liftoff.project.exception.cart.CartNotFoundException;
-import com.liftoff.project.exception.cookie.CookieNotFoundException;
+import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.service.AuthCartService;
 import com.liftoff.project.service.CartService;
 import com.liftoff.project.service.CookieService;
@@ -63,7 +62,7 @@ public class AuthController {
 
         try {
             mergeCarts(request, authenticatedUsername);
-        } catch (CookieNotFoundException ex) {
+        } catch (BusinessException ex) {
             return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
         }
 
@@ -81,7 +80,7 @@ public class AuthController {
 
         try {
             cartService.mergeCartWithAuthenticatedUser(unauthenticatedCartId, userCartId);
-        } catch (CartNotFoundException ex) {
+        } catch (BusinessException ex) {
         }
     }
 

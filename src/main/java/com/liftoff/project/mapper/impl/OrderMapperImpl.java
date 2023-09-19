@@ -73,7 +73,7 @@ public class OrderMapperImpl implements OrderMapper {
                 .customer(mapCustomerToCustomerResponseDTO(order.getCustomer()))
                 .createdAt(order.getCreatedAt())
                 .updatedAt(order.getUpdatedAt())
-                .termsAccepted(order.getTermsAccepted())
+                .termsAccepted(order.getTermsAccepted()!= null?order.getTermsAccepted():false)
                 .build();
     }
 

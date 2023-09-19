@@ -3,9 +3,8 @@ package com.liftoff.project.service;
 import com.liftoff.project.controller.request.ProductRequestDTO;
 import com.liftoff.project.controller.response.PaginatedProductResponseDTO;
 import com.liftoff.project.controller.response.ProductResponseDTO;
-import com.liftoff.project.exception.category.CategoryNotFoundException;
-import com.liftoff.project.exception.product.ProductNotFoundException;
-import com.liftoff.project.exception.storage.ImageNotFoundException;
+import com.liftoff.project.exception.BusinessException;
+import com.liftoff.project.exception.TechnicalException;
 import com.liftoff.project.model.Product;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,7 +27,7 @@ public interface ProductService {
      *
      * @param productUuid The UUID of the product to be retrieved.
      * @return The ProductResponseDTO object representing the product with specified UUID.
-     * @throws ProductNotFoundException If the product with the given UUID is not found.
+     * @throws BusinessException If the product with the given UUID is not found.
      */
     ProductResponseDTO getProductByUuid(UUID productUuid);
 
@@ -37,7 +36,7 @@ public interface ProductService {
      *
      * @param categoryUuid The UUID of the category to retrieve products for.
      * @return A list of product response DTOs representing the products in the category.
-     * @throws CategoryNotFoundException If the category with the given UUID is not found.
+     * @throws BusinessException If the category with the given UUID is not found.
      */
     List<ProductResponseDTO> getProductsByCategoryUuid(UUID categoryUuid);
 
@@ -66,7 +65,7 @@ public interface ProductService {
      * @param productUuid       The UUID of the product to be updated.
      * @param productRequestDTO The ProductRequestDTO object containing the updated details of the product.
      * @return The ProductResponseDTO object representing the updated product.
-     * @throws ProductNotFoundException If the product with the given UUID is not found.
+     * @throws BusinessException If the product with the given UUID is not found.
      */
     ProductResponseDTO updateProductByUuid(UUID productUuid, ProductRequestDTO productRequestDTO);
 
@@ -74,7 +73,7 @@ public interface ProductService {
      * Deletes a product with the specified UUID.
      *
      * @param productUuId The UUID of the product to be deleted.
-     * @throws ProductNotFoundException If the product with given UUID is not found.
+     * @throws BusinessException If the product with given UUID is not found.
      */
     void deleteProductByUuId(UUID productUuId);
 
@@ -83,7 +82,7 @@ public interface ProductService {
      *
      * @param product The product to be updated.
      * @return The ProductResponseDTO object representing the activated product.
-     * @throws ProductNotFoundException If the product with the given UUID is not found.
+     * @throws BusinessException If the product with the given UUID is not found.
      */
     ProductResponseDTO activateProduct(ProductResponseDTO product);
 
@@ -93,8 +92,8 @@ public interface ProductService {
      * @param productUuid The UUID of the product to which the image will be added.
      * @param imageFile   The image file to be added to the product.
      * @return A ResponseEntity containing the updated ProductResponseDTO with the added image.
-     * @throws ProductNotFoundException If the product with the specified UUID is not found.
-     * @throws IOException              If an error occurs while processing the image file.
+     * @throws BusinessException If the product with the specified UUID is not found.
+     * @throws IOException       If an error occurs while processing the image file.
      */
     ProductResponseDTO addImageToProduct(UUID productUuid, MultipartFile imageFile) throws IOException;
 
@@ -104,8 +103,8 @@ public interface ProductService {
      * @param productUuid The UUID of the product to delete the image from.
      * @param imageUrl    The URL of the image to be deleted from the product.
      * @return A {@link ProductResponseDTO} representing the updated product after image deletion.
-     * @throws ImageNotFoundException   If the specified image URL is not found in the product.
-     * @throws ProductNotFoundException If the product with the given UUID is not found.
+     * @throws TechnicalException If the specified image URL is not found in the product.
+     * @throws BusinessException  If the product with the given UUID is not found.
      */
     ProductResponseDTO deleteImageByUrlFromProduct(UUID productUuid, String imageUrl);
 
@@ -114,7 +113,7 @@ public interface ProductService {
      *
      * @param productUuid The unique identifier (UUID) of the product to retrieve.
      * @return The product entity if found.
-     * @throws ProductNotFoundException If no product is found with the given UUID.
+     * @throws BusinessException If no product is found with the given UUID.
      */
     Product getProductEntityByUuid(UUID productUuid);
 

@@ -1,14 +1,14 @@
-package com.liftoff.project.exception.cookie;
+package com.liftoff.project.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class CookieNotFoundException extends RuntimeException {
+public class TechnicalException extends RuntimeException {
     private final HttpStatus status;
     private final String message;
 
-    public CookieNotFoundException(String message) {
+    public TechnicalException(String message) {
         super(message);
-        this.status = HttpStatus.NOT_FOUND;
+        this.status = HttpStatus.FOUND;
         this.message = message;
     }
 
@@ -19,4 +19,6 @@ public class CookieNotFoundException extends RuntimeException {
     public String getMessage() {
         return message;
     }
+
 }
+

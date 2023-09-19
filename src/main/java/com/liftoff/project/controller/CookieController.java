@@ -1,7 +1,7 @@
 package com.liftoff.project.controller;
 
 
-import com.liftoff.project.exception.cookie.CookieNotFoundException;
+import com.liftoff.project.exception.BusinessException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/cookie")
 public class CookieController {
 
-private String serverDomain;
+    private String serverDomain;
 
 
     @GetMapping("/create")
@@ -77,16 +77,15 @@ private String serverDomain;
 
         } catch (RuntimeException ex) {
 
-            throw new CookieNotFoundException("Array of Cookie is empty");
+            throw new BusinessException("Array of Cookie is empty");
         }
 
     }
 
-        private void getServerDomain()
-        {
-            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-            this.serverDomain = request.getServerName();
+    private void getServerDomain() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        this.serverDomain = request.getServerName();
 
-        }
+    }
 }
 

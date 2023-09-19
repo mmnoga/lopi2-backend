@@ -3,9 +3,8 @@ package com.liftoff.project.service.impl;
 import com.liftoff.project.controller.request.ProductRequestDTO;
 import com.liftoff.project.controller.response.PaginatedProductResponseDTO;
 import com.liftoff.project.controller.response.ProductResponseDTO;
-import com.liftoff.project.exception.category.CategoryNotFoundException;
-import com.liftoff.project.exception.product.ProductNotFoundException;
-import com.liftoff.project.exception.storage.ImageNotFoundException;
+import com.liftoff.project.exception.BusinessException;
+import com.liftoff.project.exception.TechnicalException;
 import com.liftoff.project.mapper.ProductMapper;
 import com.liftoff.project.model.Category;
 import com.liftoff.project.model.ImageAsset;
@@ -60,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDTO getProductByUuid(UUID productUuid) {
         Product product = productRepository.findByUId(productUuid)
-                .orElseThrow(() -> new ProductNotFoundException("Product with UUID " + productUuid + " not found."));
+                .orElseThrow(() -> new BusinessException("Product with UUID: " + productUuid + " not found."));
         return productMapper.mapEntityToResponse(product);
     }
 
@@ -96,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDTO addImageToProduct(UUID productUuid, MultipartFile imageFile) throws IOException {
         Product product = productRepository.findByUId(productUuid)
-                .orElseThrow(() -> new ProductNotFoundException("Product with UUID " + productUuid + " not found."));
+                .orElseThrow(() -> new BusinessException("Product with UUID: " + productUuid + " not found."));
 
         String imageUrl = storageService.uploadFile(imageFile);
 
@@ -114,7 +113,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDTO updateProductByUuid(UUID productUuid, ProductRequestDTO productRequestDTO) {
         Product existingProduct = productRepository.findByUId(productUuid)
-                .orElseThrow(() -> new ProductNotFoundException("Product with UUID " + productUuid + " not found"));
+                .orElseThrow(() -> new BusinessException("Product with UUID: " + productUuid + " not found"));
 
         updateProductFromRequest(existingProduct, productRequestDTO);
 
@@ -136,7 +135,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProductByUuId(UUID productUuId) {
         Product product = productRepository.findByUId(productUuId)
-                .orElseThrow(() -> new ProductNotFoundException("Product with UUID " + productUuId + " not found."));
+                .orElseThrow(() -> new BusinessException("Product with UUID: " + productUuId + " not found."));
 
         if (product.getStatus() == ProductStatus.IN_PREPARATION) {
             productRepository.delete(product);
@@ -149,14 +148,14 @@ public class ProductServiceImpl implements ProductService {
 
     public ProductResponseDTO deleteImageByUrlFromProduct(UUID productUuid, String imageUrl) {
         Product product = productRepository.findByUId(productUuid)
-                .orElseThrow(() -> new ProductNotFoundException("Product with UUID " + productUuid + " not found."));
+                .orElseThrow(() -> new BusinessException("Product with UUID: " + productUuid + " not found."));
 
         List<ImageAsset> images = product.getImages();
         boolean imageRemoved = images.removeIf(
                 image ->
                         image.getAssetUrl().equals(imageUrl));
         if (!imageRemoved) {
-            throw new ImageNotFoundException("Image with URL " + imageUrl + " not found in the product.");
+            throw new TechnicalException("Image with URL: " + imageUrl + " not found in the product.");
         }
 
         productRepository.save(product);
@@ -177,7 +176,7 @@ public class ProductServiceImpl implements ProductService {
     public Product getProductEntityByUuid(UUID productUuid) {
         return productRepository.findByUId(productUuid)
                 .orElseThrow(() ->
-                        new ProductNotFoundException("Product not found with UUID: " + productUuid));
+                        new BusinessException("Product not found with UUID: " + productUuid));
     }
 
     @Override
@@ -185,7 +184,7 @@ public class ProductServiceImpl implements ProductService {
 
         Category category = categoryRepository.findByUId(categoryUuid)
                 .orElseThrow(() ->
-                        new CategoryNotFoundException("Category with UUID " + categoryUuid + " not found."));
+                        new BusinessException("Category with UUID: " + categoryUuid + " not found."));
 
         List<Product> products =
                 retrieveProductsFromCategoryAndSubcategories(category);
