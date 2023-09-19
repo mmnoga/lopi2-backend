@@ -4,6 +4,8 @@ import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.model.Product;
 import com.liftoff.project.model.User;
 import com.liftoff.project.model.order.Address;
+import com.liftoff.project.model.order.Customer;
+import com.liftoff.project.model.order.CustomerType;
 import com.liftoff.project.model.order.DeliveryMethod;
 import com.liftoff.project.model.order.Order;
 import com.liftoff.project.model.order.OrderItem;
@@ -79,6 +81,13 @@ public class OrderInsertCommand implements CommandLineRunner {
                 .apartmentNumber("2")
                 .build();
 
+
+        Customer customer = Customer.builder()
+                .customerType(CustomerType.INDIVIDUAL)
+                .phoneNumber("42 456-56-89")
+                .email("malpa@wp.pl")
+                .build();
+
         Product product1 = new Product();
         Product product2 = new Product();
         if (productRepository.findAll().size() > 0) product1 = productRepository.findAll().get(0);
@@ -140,6 +149,7 @@ public class OrderInsertCommand implements CommandLineRunner {
                 .withBillingAddress(address3)
                 .build();
         order1.setUser(user);
+        order1.setCustomer(customer);
         order1.setOrderItemList(List.of(orderItem1));
         orderRepository.save(order1);
 

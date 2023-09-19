@@ -172,6 +172,7 @@ CREATE TABLE CUSTOMERS (
                            FIRST_NAME VARCHAR(255),
                            LAST_NAME VARCHAR(255),
                            EMAIL VARCHAR(255)
+
 );
 ALTER TABLE CARTS
     ADD FOREIGN KEY (SESSION_ID) REFERENCES SESSIONS(ID);

@@ -51,6 +51,7 @@ CREATE TABLE CUSTOMERS (
                            FIRST_NAME VARCHAR(255),
                            LAST_NAME VARCHAR(255),
                            EMAIL VARCHAR(255)
+
 );
 
 CREATE TABLE PAYMENT_METHODS (
