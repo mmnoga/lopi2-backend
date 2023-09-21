@@ -1,7 +1,7 @@
 package com.liftoff.project.mapper;
 
 import com.google.cloud.storage.Blob;
-import com.liftoff.project.controller.response.FileInfoResponseDTO;
+import com.liftoff.project.controller.storage.response.FileInfoResponseDTO;
 
 public interface FileMapper {
 

@@ -1,7 +1,7 @@
 package com.liftoff.project.mapper.impl;
 
-import com.liftoff.project.controller.request.SignupRequestDTO;
-import com.liftoff.project.controller.response.UserResponseDTO;
+import com.liftoff.project.controller.auth.request.SignupRequestDTO;
+import com.liftoff.project.controller.auth.response.UserResponseDTO;
 import com.liftoff.project.mapper.UserMapper;
 import com.liftoff.project.model.Role;
 import com.liftoff.project.model.User;

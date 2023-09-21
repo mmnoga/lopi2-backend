@@ -1,5 +1,5 @@
 package com.liftoff.project.service.impl;
-import com.liftoff.project.controller.request.SignupRequestDTO;
+import com.liftoff.project.controller.auth.request.SignupRequestDTO;
 import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.model.Role;
 import com.liftoff.project.model.User;

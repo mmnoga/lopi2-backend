@@ -68,7 +68,7 @@ class CartControllerTest {
         when(productService.getProductEntityByUuid(productUuid)).thenReturn(product);
 
         // when/then
-        mockMvc.perform(post("/api/cart/add")
+        mockMvc.perform(post("/cart")
                         .param("productUuid", productUuid.toString()))
                 .andExpect(status().isOk());
     }
@@ -98,12 +98,12 @@ class CartControllerTest {
         when(productService.getProductEntityByUuid(productUuid2)).thenReturn(product2);
 
         // when/then
-        mockMvc.perform(post("/api/cart/add").param("productUuid", productUuid1.toString())
+        mockMvc.perform(post("/cart").param("productUuid", productUuid1.toString())
                         .requestAttr("javax.servlet.http.Cookie",
                                 new Cookie[]{new Cookie(CART_ID_COOKIE_NAME, cart.getUuid().toString())}))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(post("/api/cart/add").param("productUuid", productUuid2.toString())
+        mockMvc.perform(post("/cart").param("productUuid", productUuid2.toString())
                         .requestAttr("javax.servlet.http.Cookie",
                                 new Cookie[]{new Cookie(CART_ID_COOKIE_NAME, cart.getUuid().toString())}))
                 .andExpect(status().isOk());
@@ -119,7 +119,7 @@ class CartControllerTest {
         when(cartService.getCartByCookieOrCreateNewCart(any(HttpServletRequest.class), isNull())).thenReturn(cart);
 
         // when/then
-        mockMvc.perform(get("/api/cart"))
+        mockMvc.perform(get("/cart"))
                 .andExpect(status().isOk());
     }
 
@@ -141,7 +141,7 @@ class CartControllerTest {
         when(cartService.getCartByCookieOrCreateNewCart(any(), any())).thenReturn(cart);
 
         // when/then
-        mockMvc.perform(delete("/api/cart/clear"))
+        mockMvc.perform(delete("/cart"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Cart has been cleared"));
 

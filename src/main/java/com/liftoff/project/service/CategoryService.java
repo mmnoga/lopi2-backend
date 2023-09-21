@@ -1,7 +1,7 @@
 package com.liftoff.project.service;
 
-import com.liftoff.project.controller.request.CategoryRequestDTO;
-import com.liftoff.project.controller.response.CategoryResponseDTO;
+import com.liftoff.project.controller.category.request.CategoryRequestDTO;
+import com.liftoff.project.controller.category.response.CategoryResponseDTO;
 import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.model.Category;
 

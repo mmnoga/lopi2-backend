@@ -34,7 +34,7 @@ class CookieControllerTest {
         // no cookie
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/cookie/create"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/cookie/create"))
 
                 // then
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -49,7 +49,7 @@ class CookieControllerTest {
         Cookie existingCookie = new Cookie("some-unauthorized-user-id", "existing-cookie-value");
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/cookie/delete").cookie(existingCookie))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/cookie/delete").cookie(existingCookie))
 
                 // then
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -63,7 +63,7 @@ class CookieControllerTest {
         String cookieValue = "test-cookie-value";
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/cookie/read")
+        mockMvc.perform(MockMvcRequestBuilders.get("/cookie/read")
                         .cookie(new Cookie("some-unauthorized-user-id", cookieValue)))
 
                 // then
@@ -77,7 +77,7 @@ class CookieControllerTest {
         // given
 
         // when
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/cookie/read"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/cookie/read"))
 
                 // then
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -92,7 +92,7 @@ class CookieControllerTest {
         Cookie cookie2 = new Cookie("cookie2", "value2");
 
         // when/then
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/cookie/read/all/cookies")
+        mockMvc.perform(MockMvcRequestBuilders.get("/cookie/read/all/cookies")
                         .cookie(cookie1, cookie2))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content()
@@ -104,7 +104,7 @@ class CookieControllerTest {
         // given
 
         // when/then
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/cookie/read/all/cookies"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/cookie/read/all/cookies"))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.content()
                         .json("{\"message\":\"Array of Cookie is empty\"}"));

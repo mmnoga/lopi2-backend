@@ -1,8 +1,8 @@
 package com.liftoff.project.mapper.impl;
 
-import com.liftoff.project.controller.request.ProductRequestDTO;
-import com.liftoff.project.controller.response.CategoryResponseDTO;
-import com.liftoff.project.controller.response.ProductResponseDTO;
+import com.liftoff.project.controller.product.request.ProductRequestDTO;
+import com.liftoff.project.controller.category.response.CategoryResponseDTO;
+import com.liftoff.project.controller.product.response.ProductResponseDTO;
 import com.liftoff.project.mapper.CategoryMapper;
 import com.liftoff.project.model.Category;
 import com.liftoff.project.model.Product;

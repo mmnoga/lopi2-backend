@@ -1,6 +1,6 @@
 package com.liftoff.project.mapper.impl;
 
-import com.liftoff.project.controller.response.CartItemResponseDTO;
+import com.liftoff.project.controller.cart.response.CartItemResponseDTO;
 import com.liftoff.project.mapper.ProductMapper;
 import com.liftoff.project.model.CartItem;
 import lombok.RequiredArgsConstructor;

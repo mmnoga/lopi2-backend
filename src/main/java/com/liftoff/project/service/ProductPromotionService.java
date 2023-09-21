@@ -1,6 +1,6 @@
 package com.liftoff.project.service;
 
-import com.liftoff.project.controller.response.ProductResponseDTO;
+import com.liftoff.project.controller.product.response.ProductResponseDTO;
 import com.liftoff.project.exception.BusinessException;
 
 import java.time.LocalDateTime;

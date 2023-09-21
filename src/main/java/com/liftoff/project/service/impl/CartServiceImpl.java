@@ -1,6 +1,6 @@
 package com.liftoff.project.service.impl;
 
-import com.liftoff.project.controller.response.CartResponseDTO;
+import com.liftoff.project.controller.cart.response.CartResponseDTO;
 import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.mapper.CartMapper;
 import com.liftoff.project.model.Cart;

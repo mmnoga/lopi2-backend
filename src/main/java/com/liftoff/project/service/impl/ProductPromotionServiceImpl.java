@@ -1,6 +1,6 @@
 package com.liftoff.project.service.impl;
 
-import com.liftoff.project.controller.response.ProductResponseDTO;
+import com.liftoff.project.controller.product.response.ProductResponseDTO;
 import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.mapper.ProductMapper;
 import com.liftoff.project.model.Category;

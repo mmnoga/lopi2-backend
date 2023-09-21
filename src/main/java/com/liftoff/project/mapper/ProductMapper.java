@@ -1,7 +1,7 @@
 package com.liftoff.project.mapper;
 
-import com.liftoff.project.controller.request.ProductRequestDTO;
-import com.liftoff.project.controller.response.ProductResponseDTO;
+import com.liftoff.project.controller.product.request.ProductRequestDTO;
+import com.liftoff.project.controller.product.response.ProductResponseDTO;
 import com.liftoff.project.model.Product;
 
 public interface ProductMapper {

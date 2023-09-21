@@ -1,7 +1,7 @@
 package com.liftoff.project.mapper;
 
-import com.liftoff.project.controller.response.CartItemResponseDTO;
-import com.liftoff.project.controller.response.CartResponseDTO;
+import com.liftoff.project.controller.cart.response.CartItemResponseDTO;
+import com.liftoff.project.controller.cart.response.CartResponseDTO;
 import com.liftoff.project.model.Cart;
 import com.liftoff.project.model.CartItem;
 

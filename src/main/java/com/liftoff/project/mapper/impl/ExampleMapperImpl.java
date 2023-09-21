@@ -1,6 +1,6 @@
 package com.liftoff.project.mapper.impl;
 
-import com.liftoff.project.controller.response.ExampleResponse;
+import com.liftoff.project.controller.example.response.ExampleResponse;
 import com.liftoff.project.mapper.ExampleMapper;
 import com.liftoff.project.model.Example;
 import org.springframework.stereotype.Component;

@@ -1,8 +1,8 @@
 package com.liftoff.project.service.impl;
 
-import com.liftoff.project.controller.request.ProductRequestDTO;
-import com.liftoff.project.controller.response.PaginatedProductResponseDTO;
-import com.liftoff.project.controller.response.ProductResponseDTO;
+import com.liftoff.project.controller.product.request.ProductRequestDTO;
+import com.liftoff.project.controller.product.response.PaginatedProductResponseDTO;
+import com.liftoff.project.controller.product.response.ProductResponseDTO;
 import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.exception.TechnicalException;
 import com.liftoff.project.mapper.ProductMapper;

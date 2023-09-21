@@ -1,9 +1,9 @@
 package com.liftoff.project.service;
 
-import com.liftoff.project.controller.request.LoginRequestDTO;
-import com.liftoff.project.controller.request.SignupRequestDTO;
-import com.liftoff.project.controller.response.JwtResponseDTO;
-import com.liftoff.project.controller.response.UserResponseDTO;
+import com.liftoff.project.controller.auth.request.LoginRequestDTO;
+import com.liftoff.project.controller.auth.request.SignupRequestDTO;
+import com.liftoff.project.controller.auth.response.JwtResponseDTO;
+import com.liftoff.project.controller.auth.response.UserResponseDTO;
 
 public interface UserService {
 

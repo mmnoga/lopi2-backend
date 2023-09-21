@@ -5,7 +5,7 @@ import com.liftoff.project.controller.order.response.AddressResponseDTO;
 import com.liftoff.project.controller.order.response.CustomerResponseDTO;
 import com.liftoff.project.controller.order.response.OrderDetailsResponseDTO;
 import com.liftoff.project.controller.order.response.OrderSummaryResponseDTO;
-import com.liftoff.project.controller.response.CartItemResponseDTO;
+import com.liftoff.project.controller.cart.response.CartItemResponseDTO;
 import com.liftoff.project.mapper.CartMapper;
 import com.liftoff.project.mapper.DeliveryMethodMapper;
 import com.liftoff.project.mapper.OrderMapper;

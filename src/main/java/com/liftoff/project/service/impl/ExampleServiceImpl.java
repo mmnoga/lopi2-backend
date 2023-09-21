@@ -1,6 +1,6 @@
 package com.liftoff.project.service.impl;
 
-import com.liftoff.project.controller.response.ExampleResponse;
+import com.liftoff.project.controller.example.response.ExampleResponse;
 import com.liftoff.project.mapper.ExampleMapper;
 import com.liftoff.project.repository.ExampleRepository;
 import com.liftoff.project.service.ExampleService;

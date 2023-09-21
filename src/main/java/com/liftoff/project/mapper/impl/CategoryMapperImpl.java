@@ -1,7 +1,7 @@
 package com.liftoff.project.mapper.impl;
 
-import com.liftoff.project.controller.request.CategoryRequestDTO;
-import com.liftoff.project.controller.response.CategoryResponseDTO;
+import com.liftoff.project.controller.category.request.CategoryRequestDTO;
+import com.liftoff.project.controller.category.response.CategoryResponseDTO;
 import com.liftoff.project.mapper.CategoryMapper;
 import com.liftoff.project.model.Category;
 import org.springframework.stereotype.Component;

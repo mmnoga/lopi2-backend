@@ -1,6 +1,6 @@
 package com.liftoff.project.service;
 
-import com.liftoff.project.controller.request.SignupRequestDTO;
+import com.liftoff.project.controller.auth.request.SignupRequestDTO;
 import com.liftoff.project.model.User;
 
 public interface UserValidationService {

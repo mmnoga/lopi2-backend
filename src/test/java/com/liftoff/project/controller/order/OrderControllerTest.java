@@ -3,8 +3,8 @@ package com.liftoff.project.controller.order;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liftoff.project.controller.order.response.OrderSummaryResponseDTO;
-import com.liftoff.project.controller.response.CartItemResponseDTO;
-import com.liftoff.project.controller.response.ProductResponseDTO;
+import com.liftoff.project.controller.cart.response.CartItemResponseDTO;
+import com.liftoff.project.controller.product.response.ProductResponseDTO;
 import com.liftoff.project.service.OrderService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -73,7 +73,7 @@ class OrderControllerTest {
         when(orderService.addOrder(cartUuid)).thenReturn(orderSummaryResponseDTO);
 
         // then
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/orders/add?cartUuid={cartUuid}", cartUuid)
+        mockMvc.perform(MockMvcRequestBuilders.post("/orders/add?cartUuid={cartUuid}", cartUuid)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(orderSummaryResponseDTO)))
                 .andExpect(status().isCreated())

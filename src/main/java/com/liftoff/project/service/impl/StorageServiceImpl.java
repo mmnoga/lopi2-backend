@@ -6,7 +6,7 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
-import com.liftoff.project.controller.response.FileInfoResponseDTO;
+import com.liftoff.project.controller.storage.response.FileInfoResponseDTO;
 import com.liftoff.project.exception.TechnicalException;
 import com.liftoff.project.mapper.FileMapper;
 import com.liftoff.project.service.StorageService;

@@ -2,9 +2,9 @@ package com.liftoff.project.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.liftoff.project.controller.request.ProductRequestDTO;
-import com.liftoff.project.controller.response.PaginatedProductResponseDTO;
-import com.liftoff.project.controller.response.ProductResponseDTO;
+import com.liftoff.project.controller.product.request.ProductRequestDTO;
+import com.liftoff.project.controller.product.response.PaginatedProductResponseDTO;
+import com.liftoff.project.controller.product.response.ProductResponseDTO;
 import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.model.Product;
 import com.liftoff.project.model.ProductStatus;
@@ -87,7 +87,7 @@ class ProductControllerTest {
         when(productService.getProducts(any(Pageable.class))).thenReturn(paginatedProducts);
 
         // then
-        mockMvc.perform(get("/api/products")
+        mockMvc.perform(get("/products")
                         .param("page", String.valueOf(page))
                         .param("size", String.valueOf(size)))
                 .andExpect(status().isOk())
@@ -112,7 +112,7 @@ class ProductControllerTest {
         when(productService.getProducts(any(Pageable.class))).thenReturn(paginatedProducts);
 
         // then
-        mockMvc.perform(get("/api/products")
+        mockMvc.perform(get("/products")
                         .param("page", String.valueOf(page))
                         .param("size", String.valueOf(size)))
                 .andExpect(status().isNoContent());
@@ -132,7 +132,7 @@ class ProductControllerTest {
         when(productService.getProductByUuid(existingProductUuid)).thenReturn(existingProductResponse);
 
         // then
-        mockMvc.perform(get("/api/products/{productUuid}", existingProductUuid.toString()))
+        mockMvc.perform(get("/products/{productUuid}", existingProductUuid.toString()))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name", Matchers.is("Product 1")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.description", Matchers.is("Product 1 description")))
@@ -148,7 +148,7 @@ class ProductControllerTest {
         when(productService.getProductByUuid(nonExistingProductUuid)).thenReturn(null);
 
         // then
-        mockMvc.perform(get("/api/products/{productUuid}",
+        mockMvc.perform(get("/products/{productUuid}",
                         nonExistingProductUuid.toString()))
                 .andExpect(status().isNotFound());
     }
@@ -172,7 +172,7 @@ class ProductControllerTest {
         when(productService.addProduct(any(ProductRequestDTO.class))).thenReturn(createdProduct);
 
         // then
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/products")
+        mockMvc.perform(MockMvcRequestBuilders.post("/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(productRequestDTO)))
                 .andExpect(status().isCreated())
@@ -190,7 +190,7 @@ class ProductControllerTest {
         Mockito.doNothing().when(productService).deleteProductByUuId(eq(productUuid));
 
         // then
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/products/{productUuid}", productUuid))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/products/{productUuid}", productUuid))
                 .andExpect(status().isNoContent());
     }
 
@@ -204,7 +204,7 @@ class ProductControllerTest {
                 .when(productService).deleteProductByUuId(eq(productUuid));
 
         // then
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/products/{productUuid}", productUuid))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/products/{productUuid}", productUuid))
                 .andExpect(status().isNotFound());
     }
 
@@ -228,7 +228,7 @@ class ProductControllerTest {
                 .thenReturn(updatedProductResponse);
 
         // then
-        mockMvc.perform(put("/api/products/{productUuid}", productUuid)
+        mockMvc.perform(put("/products/{productUuid}", productUuid)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(productRequestDTO)))
                 .andExpect(status().isOk())
@@ -251,7 +251,7 @@ class ProductControllerTest {
                 .thenThrow(new BusinessException("Product with UUID " + productUuid + " not found."));
 
         // then
-        mockMvc.perform(put("/api/products/{productUuid}", productUuid)
+        mockMvc.perform(put("/products/{productUuid}", productUuid)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(productRequestDTO)))
                 .andExpect(status().isNotFound());
@@ -288,7 +288,7 @@ class ProductControllerTest {
         when(productService.getProductsByCategoryUuid(categoryId)).thenReturn(expectedResponse);
 
         // when & then
-        mockMvc.perform(get("/api/products/by-category/{categoryId}", categoryId))
+        mockMvc.perform(get("/products/by-category/{categoryId}", categoryId))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(2)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].uid").value(product1.getUId().toString()))
@@ -307,7 +307,7 @@ class ProductControllerTest {
         when(productService.getProductsByCategoryUuid(categoryId)).thenReturn(Collections.emptyList());
 
         // when & then
-        mockMvc.perform(get("/api/products/by-category/{categoryId}", categoryId))
+        mockMvc.perform(get("/products/by-category/{categoryId}", categoryId))
                 .andExpect(status().isOk());
     }
 
@@ -320,7 +320,7 @@ class ProductControllerTest {
                 .thenThrow(new BusinessException("Category with UUID " + categoryId + " not found."));
 
         // when & then
-        mockMvc.perform(get("/api/products/by-category/{categoryId}", categoryId))
+        mockMvc.perform(get("/products/by-category/{categoryId}", categoryId))
                 .andExpect(status().isNotFound());
     }
 
@@ -332,7 +332,7 @@ class ProductControllerTest {
         when(productService.getNRecentAddedActiveProducts(anyInt())).thenReturn(dummyProducts);
 
         // when & then
-        mockMvc.perform(get("/api/products/recent-added")
+        mockMvc.perform(get("/products/recent-added")
                         .param("n", String.valueOf(n)))
                 .andExpect(status().isOk());
     }
@@ -347,7 +347,7 @@ class ProductControllerTest {
         when(productService.getNRecentAddedActiveProducts(n)).thenReturn(emptyProductsList);
 
         // then
-        mockMvc.perform(get("/api/products/recent-added")
+        mockMvc.perform(get("/products/recent-added")
                         .param("n", String.valueOf(n)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
@@ -376,7 +376,7 @@ class ProductControllerTest {
                 .thenReturn(productResponseDTO);
 
         // when & then
-        mockMvc.perform(put("/api/products/{uuid}", existingActiveProductUuid)
+        mockMvc.perform(put("/products/{uuid}", existingActiveProductUuid)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productRequestDTO)))
                 .andExpect(status().isOk())
@@ -405,7 +405,7 @@ class ProductControllerTest {
                 .thenReturn(productResponseDTO);
 
         // when & then
-        mockMvc.perform(put("/api/products/{uuid}", existingClosedProductUuid)
+        mockMvc.perform(put("/products/{uuid}", existingClosedProductUuid)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productRequestDTO)))
                 .andExpect(status().isOk())
@@ -433,7 +433,7 @@ class ProductControllerTest {
                 .thenReturn(productResponseDTO);
 
         // when & then
-        mockMvc.perform(put("/api/products/{uuid}", existingInPreparationProductUuid)
+        mockMvc.perform(put("/products/{uuid}", existingInPreparationProductUuid)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productRequestDTO)))
                 .andExpect(status().isOk())
@@ -462,7 +462,7 @@ class ProductControllerTest {
                 .thenReturn(updatedProductResponse);
 
         // when & then
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/products/{productUuid}/images", productUuid)
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/products/{productUuid}/images", productUuid)
                         .file(imageFile))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.uid").value(productUuid.toString()))

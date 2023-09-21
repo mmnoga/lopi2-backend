@@ -1,7 +1,7 @@
 package com.liftoff.project.mapper;
 
-import com.liftoff.project.controller.request.CategoryRequestDTO;
-import com.liftoff.project.controller.response.CategoryResponseDTO;
+import com.liftoff.project.controller.category.request.CategoryRequestDTO;
+import com.liftoff.project.controller.category.response.CategoryResponseDTO;
 import com.liftoff.project.model.Category;
 
 public interface CategoryMapper {

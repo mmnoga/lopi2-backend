@@ -1,6 +1,6 @@
 package com.liftoff.project.service;
 
-import com.liftoff.project.controller.response.FileInfoResponseDTO;
+import com.liftoff.project.controller.storage.response.FileInfoResponseDTO;
 import com.liftoff.project.exception.TechnicalException;
 import org.springframework.web.multipart.MultipartFile;
 

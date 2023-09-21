@@ -1,10 +1,10 @@
 package com.liftoff.project.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.liftoff.project.controller.request.LoginRequestDTO;
-import com.liftoff.project.controller.request.SignupRequestDTO;
-import com.liftoff.project.controller.response.JwtResponseDTO;
-import com.liftoff.project.controller.response.UserResponseDTO;
+import com.liftoff.project.controller.auth.request.LoginRequestDTO;
+import com.liftoff.project.controller.auth.request.SignupRequestDTO;
+import com.liftoff.project.controller.auth.response.JwtResponseDTO;
+import com.liftoff.project.controller.auth.response.UserResponseDTO;
 import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.model.User;
 import com.liftoff.project.repository.UserRepository;
@@ -84,7 +84,7 @@ class AuthControllerTest {
 
         // then
         try {
-            mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/signup")
+            mockMvc.perform(MockMvcRequestBuilders.post("/auth/signup")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(asJsonString(signUpRequestDTO)))
                     .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -113,7 +113,7 @@ class AuthControllerTest {
 
         // when/then
         try {
-            mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/signin")
+            mockMvc.perform(MockMvcRequestBuilders.post("/auth/signin")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(asJsonString(loginRequestDTO)))
                     .andExpect(MockMvcResultMatchers.status().isOk())

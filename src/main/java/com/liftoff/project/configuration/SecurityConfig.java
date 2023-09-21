@@ -1,9 +1,12 @@
 package com.liftoff.project.configuration;
 
 import com.liftoff.project.configuration.jwt.AuthTokenFilter;
+import com.liftoff.project.configuration.security.SecurityRoles;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -23,6 +26,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@Profile("!test")
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
@@ -63,7 +67,15 @@ public class SecurityConfig {
                                 .sameOrigin()))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/api/auth-cart/**").authenticated()
+                        .requestMatchers("/api/auth-cart/**").hasRole(SecurityRoles.USER)
+                        .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
+                        .requestMatchers("/api/categories/**").hasRole(SecurityRoles.ADMIN)
+                        .requestMatchers(HttpMethod.GET, "/api/orders-setting/**").permitAll()
+                        .requestMatchers("/api/orders-setting/**").hasRole(SecurityRoles.ADMIN)
+                        .requestMatchers("/api/orders/**").hasRole(SecurityRoles.ADMIN)
+                        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
+                        .requestMatchers("/api/products/**").hasRole(SecurityRoles.ADMIN)
+                        .requestMatchers("/api/storage/**").hasRole(SecurityRoles.ADMIN)
                         .anyRequest().permitAll()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))

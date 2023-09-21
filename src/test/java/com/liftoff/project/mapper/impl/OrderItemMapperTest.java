@@ -1,7 +1,7 @@
 package com.liftoff.project.mapper.impl;
 
 import com.liftoff.project.controller.order.request.OrderItemRequestDTO;
-import com.liftoff.project.controller.request.ProductRequestDTO;
+import com.liftoff.project.controller.product.request.ProductRequestDTO;
 import com.liftoff.project.model.order.Order;
 import com.liftoff.project.model.order.OrderItem;
 import org.junit.jupiter.api.BeforeEach;

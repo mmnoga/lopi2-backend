@@ -2,10 +2,10 @@ package com.liftoff.project.service.impl;
 
 import com.liftoff.project.configuration.UserDetailsSecurity;
 import com.liftoff.project.configuration.jwt.JwtUtils;
-import com.liftoff.project.controller.request.LoginRequestDTO;
-import com.liftoff.project.controller.request.SignupRequestDTO;
-import com.liftoff.project.controller.response.JwtResponseDTO;
-import com.liftoff.project.controller.response.UserResponseDTO;
+import com.liftoff.project.controller.auth.request.LoginRequestDTO;
+import com.liftoff.project.controller.auth.request.SignupRequestDTO;
+import com.liftoff.project.controller.auth.response.JwtResponseDTO;
+import com.liftoff.project.controller.auth.response.UserResponseDTO;
 import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.mapper.UserMapper;
 import com.liftoff.project.model.User;

@@ -1,6 +1,6 @@
 package com.liftoff.project.service.impl;
 
-import com.liftoff.project.controller.order.PaymentMethodListResponseDTO;
+import com.liftoff.project.controller.order.response.PaymentMethodListResponseDTO;
 import com.liftoff.project.controller.order.request.PaymentMethodRequestDTO;
 import com.liftoff.project.controller.order.response.PaymentMethodResponseDTO;
 import com.liftoff.project.exception.BusinessException;
