@@ -190,6 +190,11 @@ public class AuthCartServiceImpl implements AuthCartService {
                     .findFirst()
                     .orElseThrow(() -> new BusinessException("Product not found in the cart"));
 
+            if (!cartService.hasProductEnoughQuantityForEdit(cartItem.getProduct(), quantity)) {
+                throw new BusinessException(
+                        "Insufficient quantity of product with UUID: " + productUuid + " in stock");
+            }
+
             cartItem.setQuantity(quantity);
 
             Cart updatedCart = cartService.calculateTotalPriceAndTotalQuantity(cart);

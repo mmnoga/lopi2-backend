@@ -216,14 +216,15 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartResponseDTO updateCart(UUID productUuid, int quantity, HttpServletRequest request) {
+    public CartResponseDTO updateCart(
+            UUID productUuid, int quantity,
+            HttpServletRequest request, HttpServletResponse response) {
+
+        Cart cart = getCartByCookieOrCreateNewCart(request, response);
+
         if (quantity <= 0) {
             throw new BusinessException("Quantity must be greater than zero");
         }
-        String cartId = cookieService.getCookieValue(cookieName, request);
-
-        Cart cart = cartRepository.findByUuid(UUID.fromString(cartId))
-                .orElseThrow(() -> new BusinessException("Cart with UUID: " + cartId + " not found"));
 
         Cart updatedCart = createCartCopy(cart);
 
@@ -232,7 +233,7 @@ public class CartServiceImpl implements CartService {
                 .findFirst()
                 .orElseThrow(() -> new BusinessException("Product not found in the cart"));
 
-        if (!hasProductEnoughQuantity(cartItem.getProduct(), quantity, cart)) {
+        if (!hasProductEnoughQuantityForEdit(cartItem.getProduct(), quantity)) {
             throw new BusinessException(
                     "Insufficient quantity of product with UUID: " + productUuid + " in stock");
         }
@@ -246,6 +247,13 @@ public class CartServiceImpl implements CartService {
         Cart savedCart = cartRepository.save(finalCart);
 
         return cartMapper.mapCartToCartResponseDTO(savedCart);
+    }
+
+    @Override
+    public boolean hasProductEnoughQuantityForEdit(Product product, int quantity) {
+        int availableQuantity = product.getQuantity();
+
+        return quantity >= 0 && quantity <= availableQuantity;
     }
 
     @Override
@@ -310,7 +318,7 @@ public class CartServiceImpl implements CartService {
 
     private boolean isDiscountPriceValid(Product product) {
         LocalDateTime currentDateTime = LocalDateTime.now();
-        
+
         return product.getDiscountPriceEndDate() != null
                 && product.getDiscountPriceEndDate().isAfter(currentDateTime);
     }

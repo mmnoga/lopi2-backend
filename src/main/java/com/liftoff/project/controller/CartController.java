@@ -72,10 +72,11 @@ public class CartController {
     public ResponseEntity<CartResponseDTO> updateCart(
             @RequestParam UUID productUuid,
             @RequestParam(defaultValue = "1") @Min(1) int quantity,
-            HttpServletRequest request) {
+            HttpServletRequest request,
+            HttpServletResponse response) {
 
         CartResponseDTO cartResponseDTO = cartService
-                .updateCart(productUuid, quantity, request);
+                .updateCart(productUuid, quantity, request, response);
 
         return ResponseEntity.ok(cartResponseDTO);
     }

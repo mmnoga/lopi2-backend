@@ -85,18 +85,19 @@ public interface CartService {
     void removeProduct(UUID productUuid, HttpServletRequest request);
 
     /**
-     * Updates the cart content based on the provided product UUID and quantity.
+     * Updates the quantity of a product in the user's shopping cart.
      *
-     * @param productUuid UUID of the product to be updated in the cart.
-     * @param quantity    New quantity of the product in the cart.
-     * @param request     HttpServletRequest object containing the HTTP request.
-     * @return A CartResponseDTO object representing the updated customer's cart.
-     * @throws BusinessException Thrown when the provided quantity is less than or equal to zero.
-     * @throws BusinessException Thrown when the customer's cart cannot be found.
-     * @throws BusinessException Thrown when the product cannot be found in the cart.
-     * @throws BusinessException Thrown when the product quantity is insufficient.
+     * @param productUuid The UUID of the product to update.
+     * @param quantity    The new quantity for the product.
+     * @param request     The HTTP servlet request.
+     * @param response    The HTTP servlet response.
+     * @return A {@link CartResponseDTO} containing the updated shopping cart details.
+     * @throws BusinessException If the quantity is less than or equal to zero,
+     *                           or if the product is not found in the cart,
+     *                           or if there is insufficient quantity of the product in stock.
      */
-    CartResponseDTO updateCart(UUID productUuid, int quantity, HttpServletRequest request);
+    CartResponseDTO updateCart(UUID productUuid, int quantity,
+                               HttpServletRequest request, HttpServletResponse response);
 
     /**
      * Calculates the total price and total quantity of items in the provided shopping cart.
@@ -105,5 +106,14 @@ public interface CartService {
      * @return A Cart object with updated total price and total quantity fields.
      */
     Cart calculateTotalPriceAndTotalQuantity(Cart cart);
+
+    /**
+     * Checks if there is enough quantity of the product to edit it to the specified quantity.
+     *
+     * @param product  The product to check the quantity for.
+     * @param quantity The new quantity to edit the product to.
+     * @return {@code true} if there is enough quantity to edit the product to the specified quantity, {@code false} otherwise.
+     */
+    boolean hasProductEnoughQuantityForEdit(Product product, int quantity);
 
 }
