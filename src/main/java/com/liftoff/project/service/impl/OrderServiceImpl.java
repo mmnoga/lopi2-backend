@@ -1,11 +1,10 @@
 package com.liftoff.project.service.impl;
 
 import com.liftoff.project.controller.order.request.OrderDeliveryMethodRequestDTO;
-import com.liftoff.project.controller.order.request.OrderItemRequestDTO;
 import com.liftoff.project.controller.order.request.OrderPaymentMethodRequestDTO;
 import com.liftoff.project.controller.order.request.OrderRequestDTO;
+import com.liftoff.project.controller.order.response.OrderCreatedResponseDTO;
 import com.liftoff.project.controller.order.response.OrderDetailsListResponseDTO;
-import com.liftoff.project.controller.order.response.OrderDetailsResponseDTO;
 import com.liftoff.project.controller.order.response.OrderSummaryListResponseDTO;
 import com.liftoff.project.controller.order.response.OrderSummaryResponseDTO;
 import com.liftoff.project.exception.BusinessException;
@@ -120,7 +119,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-    public OrderDetailsResponseDTO editOrder(OrderRequestDTO orderRequest, UUID orderUuid) {
+    public OrderCreatedResponseDTO editOrder(OrderRequestDTO orderRequest, UUID orderUuid) {
 
 
         Order order = orderRepository.findByUuid(orderUuid)
@@ -140,20 +139,11 @@ public class OrderServiceImpl implements OrderService {
         if (orderRequest.getBillingAddress() != null)
             order.setBillingAddress(addressMapper.mapAddressRequestDTOToAddress(orderRequest.getBillingAddress()));
 
-
-        if (orderRequest.getOrderItemRequestDTOList().size() > 0) orderRequest.getOrderItemRequestDTOList().clear();
-
-        order.setOrderItemList(orderRequest.getOrderItemRequestDTOList().stream()
-                .map((OrderItemRequestDTO orderItemRequestDTO) -> {
-                    return orderItemMapper.mapOrderItemRequestDTOToOrderItem(orderItemRequestDTO, order);
-                })
-                .collect(Collectors.toList()));
-
         return orderMapper.mapOrderToOrderDetailsResponseDTO(orderRepository.save(order));
     }
 
 
-    public OrderDetailsResponseDTO changeOrderDeliveryMethod(OrderDeliveryMethodRequestDTO orderChangeRequestDTO, UUID uuid) {
+    public OrderCreatedResponseDTO changeOrderDeliveryMethod(OrderDeliveryMethodRequestDTO orderChangeRequestDTO, UUID uuid) {
 
         Order order = orderRepository.findByUuid(uuid)
                 .orElseThrow(() -> new BusinessException("Order entity not found"));
@@ -167,7 +157,7 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.mapOrderToOrderDetailsResponseDTO(orderRepository.save(order));
     }
 
-    public OrderDetailsResponseDTO changeOrderPaymentMethod(OrderPaymentMethodRequestDTO paymentMethodRequestDTO, UUID uuid) {
+    public OrderCreatedResponseDTO changeOrderPaymentMethod(OrderPaymentMethodRequestDTO paymentMethodRequestDTO, UUID uuid) {
 
 
         Order order = orderRepository.findByUuid(uuid)
@@ -185,7 +175,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-    public OrderDetailsResponseDTO changeOrderPaymentMethod(String paymentMethod, UUID uuid) {
+    public OrderCreatedResponseDTO changeOrderPaymentMethod(String paymentMethod, UUID uuid) {
 
 
         Order order = orderRepository.findByUuid(uuid)
@@ -203,7 +193,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDetailsResponseDTO createOrder(OrderRequestDTO orderRequest, UUID cartUuid) {
+    @Transactional
+    public OrderCreatedResponseDTO createOrder(OrderRequestDTO orderRequest, UUID cartUuid) {
         if (!orderRequest.getTermsAccepted()) {
             throw new BusinessException("Terms and conditions were not accepted", HttpStatus.BAD_REQUEST);
         }
@@ -270,8 +261,8 @@ public class OrderServiceImpl implements OrderService {
 
 
         return OrderDetailsListResponseDTO.builder()
-                .orderDetailsResponseDTOList(orders.stream()
-                        .map(orderMapper::mapOrderToOrderDetailsResponseDTO)
+                .orderCreatedResponseDTOList(orders.stream()
+                        .map(orderMapper::mapOrderToOrderResponseDTO)
                         .collect(Collectors.toList()))
                 .build();
 
@@ -279,7 +270,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public OrderDetailsResponseDTO getOrderByUuid(UUID orderUuid) {
+    public OrderCreatedResponseDTO getOrderByUuid(UUID orderUuid) {
         Order order = orderRepository.findByUuid(orderUuid)
                 .orElseThrow(() -> new BusinessException("Order with UUID: " + orderUuid + " not found."));
         return orderMapper.mapOrderToOrderDetailsResponseDTO(order);

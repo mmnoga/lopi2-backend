@@ -9,6 +9,6 @@ import java.util.List;
 @Builder
 public class OrderDetailsListResponseDTO {
 
-    private List<OrderDetailsResponseDTO> orderDetailsResponseDTOList;
+    private List<OrderDetailsResponseDTO> orderCreatedResponseDTOList;
 
 }

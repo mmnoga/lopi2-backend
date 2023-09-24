@@ -1,11 +1,13 @@
 package com.liftoff.project.mapper.impl;
 
+import com.liftoff.project.controller.cart.response.CartItemResponseDTO;
 import com.liftoff.project.controller.order.request.AddressRequestDTO;
 import com.liftoff.project.controller.order.response.AddressResponseDTO;
 import com.liftoff.project.controller.order.response.CustomerResponseDTO;
+import com.liftoff.project.controller.order.response.OrderCreatedResponseDTO;
 import com.liftoff.project.controller.order.response.OrderDetailsResponseDTO;
 import com.liftoff.project.controller.order.response.OrderSummaryResponseDTO;
-import com.liftoff.project.controller.cart.response.CartItemResponseDTO;
+import com.liftoff.project.controller.product.response.ProductNameResponseDTO;
 import com.liftoff.project.mapper.CartMapper;
 import com.liftoff.project.mapper.DeliveryMethodMapper;
 import com.liftoff.project.mapper.OrderMapper;
@@ -16,11 +18,8 @@ import com.liftoff.project.model.order.Order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Component
@@ -61,13 +60,9 @@ public class OrderMapperImpl implements OrderMapper {
 
 
     @Override
-    public OrderDetailsResponseDTO mapOrderToOrderDetailsResponseDTO(Order order) {
-//
+    public OrderCreatedResponseDTO mapOrderToOrderDetailsResponseDTO(Order order) {
 
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(PATTERN_FORMAT, Locale.ROOT).withZone(ZoneOffset.UTC);
-
-
-        return OrderDetailsResponseDTO.builder()
+        return OrderCreatedResponseDTO.builder()
                 .orderUid(order.getUuid())
                 .deliveryMethod(order.getDeliveryMethod().getName())
                 .customerEmail(order.getCustomer() != null ? order.getCustomer().getEmail() : "")
@@ -77,6 +72,28 @@ public class OrderMapperImpl implements OrderMapper {
                 .customerPhone(order.getCustomer() != null ? order.getCustomer().getPhoneNumber() : "")
                 .build();
     }
+
+    @Override
+    public OrderDetailsResponseDTO mapOrderToOrderResponseDTO(Order order) {
+
+        return OrderDetailsResponseDTO.builder()
+                .orderUid(order.getUuid())
+                .deliveryMethod(order.getDeliveryMethod().getName())
+                .customerEmail(order.getCustomer() != null ? order.getCustomer().getEmail() : "")
+                .deliveryAddress(mapAddressToAddressResponseDTO(order.getShippingAddress()))
+                .paymentMethod(order.getPaymentMethod().getName())
+                .orderDate(order.getOrderDate())
+                .customerPhone(order.getCustomer() != null ? order.getCustomer().getPhoneNumber() : "")
+                .productNameResponseDTOS(order.getCart().getCartItems().stream()
+                        .map((item) -> ProductNameResponseDTO.builder()
+                                .productName(item.getProduct().getName())
+                                .build())
+                        .collect(Collectors.toList()))
+                .totalPrice(order.getTotalPrice())
+                .deliveryCost(order.getDeliveryCost())
+                .build();
+    }
+
 
     @Override
     public CustomerResponseDTO mapCustomerToCustomerResponseDTO(Customer customer) {

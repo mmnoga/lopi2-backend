@@ -9,8 +9,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -49,8 +47,6 @@ public class OrderRequestDTO {
 
     @NotNull
     private Boolean termsAccepted;
-
-    private List<OrderItemRequestDTO> orderItemRequestDTOList;
 
     @AssertTrue(message = "NIP and company name are required for COMPANY customer type")
     private boolean isNipAndCompanyNameValid() {
