@@ -277,6 +277,15 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
+
+    @Override
+    public OrderDetailsResponseDTO getOrderByUuid(UUID orderUuid) {
+        Order order = orderRepository.findByUuid(orderUuid)
+                .orElseThrow(() -> new BusinessException("Order with UUID: " + orderUuid + " not found."));
+        return orderMapper.mapOrderToOrderDetailsResponseDTO(order);
+    }
+
+
     private User getUserFromAuthenticatedUser() {
 
         String userName = "";

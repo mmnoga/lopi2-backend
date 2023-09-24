@@ -1,4 +1,5 @@
 package com.liftoff.project.command;
+import com.liftoff.project.configuration.DevProfile;
 import com.liftoff.project.model.Example;
 import com.liftoff.project.repository.ExampleRepository;
 import jakarta.annotation.Priority;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Priority(1)
-@Profile("!prod & !test")
+@DevProfile
 public class ExampleInsertCommand implements CommandLineRunner {
 
     private final ExampleRepository exampleRepository;

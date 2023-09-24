@@ -48,7 +48,7 @@ public interface OrderService {
     /**
      * Edit existed order`s payment method.
      *
-     * @param uuid                    The UUID of the order to be edited.
+     * @param uuid          The UUID of the order to be edited.
      * @param paymentMethod The String of the order`s paymentMethodName to be edited.
      */
     OrderDetailsResponseDTO changeOrderPaymentMethod(String paymentMethod, UUID uuid);
@@ -73,6 +73,13 @@ public interface OrderService {
      * Returns order`s details as OrderDetailsListResponseDTO.
      */
     OrderDetailsListResponseDTO getAllOrdersDetails();
+
+    /**
+     * Returns order`s details by orderUuid as OrderDetailsResponseDTO.
+     *
+     * @param orderUuid UUID of Order.
+     */
+    OrderDetailsResponseDTO getOrderByUuid(UUID orderUuid);
 
 
 }

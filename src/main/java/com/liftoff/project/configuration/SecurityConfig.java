@@ -72,7 +72,7 @@ public class SecurityConfig {
                         .requestMatchers("/categories/**").hasRole(SecurityRoles.ADMIN)
                         .requestMatchers(HttpMethod.GET, "/orders-setting/**").permitAll()
                         .requestMatchers("/orders-setting/**").hasRole(SecurityRoles.ADMIN)
-                        .requestMatchers("/orders/**").hasRole(SecurityRoles.ADMIN)
+                        .requestMatchers("/auth-orders/**").hasAnyRole(SecurityRoles.ADMIN, SecurityRoles.USER)
                         .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
                         .requestMatchers("/products/**").hasRole(SecurityRoles.ADMIN)
                         .requestMatchers("/storage/**").hasRole(SecurityRoles.ADMIN)
