@@ -12,6 +12,7 @@ import com.liftoff.project.model.User;
 import com.liftoff.project.repository.UserRepository;
 import com.liftoff.project.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -70,7 +71,7 @@ public class UserServiceImpl implements UserService {
 
         } catch (AuthenticationException ex) {
 
-            throw new BusinessException(ex.getMessage());
+            throw new BusinessException(ex.getMessage(), HttpStatus.UNAUTHORIZED);
         }
 
 

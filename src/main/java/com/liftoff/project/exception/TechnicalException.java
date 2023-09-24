@@ -12,6 +12,12 @@ public class TechnicalException extends RuntimeException {
         this.message = message;
     }
 
+    public TechnicalException(String message, HttpStatus status) {
+        super(message);
+        this.status = status;
+        this.message = message;
+    }
+
     public HttpStatus getStatus() {
         return status;
     }

@@ -16,6 +16,7 @@ import com.liftoff.project.service.CartService;
 import com.liftoff.project.service.ProductService;
 import com.liftoff.project.service.SessionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,7 +88,7 @@ public class AuthCartServiceImpl implements AuthCartService {
             if (!cartService
                     .hasProductEnoughQuantity(product, quantity, cart)) {
                 throw new BusinessException("Not enough quantity of product with UUID: "
-                        + product.getUId());
+                        + product.getUId(), HttpStatus.BAD_REQUEST);
             }
 
             Cart savedCart = cartService.addProductToCart(cart, product, quantity);
