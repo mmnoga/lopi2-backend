@@ -3,8 +3,8 @@ package com.liftoff.project.service;
 import com.liftoff.project.controller.order.request.OrderDeliveryMethodRequestDTO;
 import com.liftoff.project.controller.order.request.OrderPaymentMethodRequestDTO;
 import com.liftoff.project.controller.order.request.OrderRequestDTO;
+import com.liftoff.project.controller.order.response.OrderCreatedResponseDTO;
 import com.liftoff.project.controller.order.response.OrderDetailsListResponseDTO;
-import com.liftoff.project.controller.order.response.OrderDetailsResponseDTO;
 import com.liftoff.project.controller.order.response.OrderSummaryListResponseDTO;
 import com.liftoff.project.controller.order.response.OrderSummaryResponseDTO;
 
@@ -26,7 +26,7 @@ public interface OrderService {
      * @param orderUuid    The UUID of the order to be edited.
      * @param orderRequest The DTO of the order to be edited.
      */
-    OrderDetailsResponseDTO editOrder(OrderRequestDTO orderRequest, UUID orderUuid);
+    OrderCreatedResponseDTO editOrder(OrderRequestDTO orderRequest, UUID orderUuid);
 
     /**
      * Edit existed order`s delivery method.
@@ -34,7 +34,7 @@ public interface OrderService {
      * @param uuid                  The UUID of the order to be edited.
      * @param orderChangeRequestDTO The DTO of the order`s deliveryMethodName to be edited.
      */
-    OrderDetailsResponseDTO changeOrderDeliveryMethod(OrderDeliveryMethodRequestDTO orderChangeRequestDTO, UUID uuid);
+    OrderCreatedResponseDTO changeOrderDeliveryMethod(OrderDeliveryMethodRequestDTO orderChangeRequestDTO, UUID uuid);
 
     /**
      * Edit existed order`s payment method.
@@ -42,16 +42,16 @@ public interface OrderService {
      * @param uuid                    The UUID of the order to be edited.
      * @param paymentMethodRequestDTO The DTO of the order`s paymentMethodName to be edited.
      */
-    OrderDetailsResponseDTO changeOrderPaymentMethod(OrderPaymentMethodRequestDTO paymentMethodRequestDTO, UUID uuid);
+    OrderCreatedResponseDTO changeOrderPaymentMethod(OrderPaymentMethodRequestDTO paymentMethodRequestDTO, UUID uuid);
 
 
     /**
      * Edit existed order`s payment method.
      *
-     * @param uuid                    The UUID of the order to be edited.
+     * @param uuid          The UUID of the order to be edited.
      * @param paymentMethod The String of the order`s paymentMethodName to be edited.
      */
-    OrderDetailsResponseDTO changeOrderPaymentMethod(String paymentMethod, UUID uuid);
+    OrderCreatedResponseDTO changeOrderPaymentMethod(String paymentMethod, UUID uuid);
 
 
     /**
@@ -60,7 +60,7 @@ public interface OrderService {
      * @param orderRequest The DTO of the order to be added.
      * @param cartUuid     The UUID of the cart that its items be added as orderItems .
      */
-    OrderDetailsResponseDTO createOrder(OrderRequestDTO orderRequest, UUID cartUuid);
+    OrderCreatedResponseDTO createOrder(OrderRequestDTO orderRequest, UUID cartUuid);
 
 
     /**
@@ -73,6 +73,13 @@ public interface OrderService {
      * Returns order`s details as OrderDetailsListResponseDTO.
      */
     OrderDetailsListResponseDTO getAllOrdersDetails();
+
+    /**
+     * Returns order`s details by orderUuid as OrderDetailsResponseDTO.
+     *
+     * @param orderUuid UUID of Order.
+     */
+    OrderCreatedResponseDTO getOrderByUuid(UUID orderUuid);
 
 
 }

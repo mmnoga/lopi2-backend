@@ -3,6 +3,7 @@ package com.liftoff.project.mapper;
 import com.liftoff.project.controller.order.request.AddressRequestDTO;
 import com.liftoff.project.controller.order.response.AddressResponseDTO;
 import com.liftoff.project.controller.order.response.CustomerResponseDTO;
+import com.liftoff.project.controller.order.response.OrderCreatedResponseDTO;
 import com.liftoff.project.controller.order.response.OrderDetailsResponseDTO;
 import com.liftoff.project.controller.order.response.OrderSummaryResponseDTO;
 import com.liftoff.project.model.order.Address;
@@ -26,7 +27,16 @@ public interface OrderMapper {
      * @param order The Order entity to be mapped to the OrderDetailsResponseDTO object.
      * @return The mapped OrderDetailsResponseDTO object.
      */
-    OrderDetailsResponseDTO mapOrderToOrderDetailsResponseDTO(Order order);
+    OrderCreatedResponseDTO mapOrderToOrderDetailsResponseDTO(Order order);
+
+
+    /**
+     * Maps the Order entity to the OrderDetailsResponseDTO object.
+     *
+     * @param order The Order entity to be mapped to the OrderDetailsResponseDTO object.
+     * @return The mapped OrderDetailsResponseDTO object.
+     */
+    OrderDetailsResponseDTO mapOrderToOrderResponseDTO(Order order);
 
     /**
      * Maps the Address entity to the AddressResponseDTO object.

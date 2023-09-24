@@ -1,5 +1,6 @@
 package com.liftoff.project.command;
 
+import com.liftoff.project.configuration.DevProfile;
 import com.liftoff.project.repository.ExampleRepository;
 import jakarta.annotation.Priority;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Priority(2)
-@Profile("!prod & !test")
+@DevProfile
 public class ExampleReadCommand implements CommandLineRunner {
 
     private final ExampleRepository exampleRepository;

@@ -1,18 +1,19 @@
 package com.liftoff.project.controller.order;
 
-import com.liftoff.project.configuration.security.annotations.HasAnyRole;
 import com.liftoff.project.controller.order.request.OrderDeliveryMethodRequestDTO;
+import com.liftoff.project.controller.order.request.OrderPaymentMethodRequestDTO;
 import com.liftoff.project.controller.order.request.OrderRequestDTO;
 import com.liftoff.project.controller.order.response.OrderCreatedResponseDTO;
 import com.liftoff.project.controller.order.response.OrderDetailsListResponseDTO;
 import com.liftoff.project.controller.order.response.OrderSummaryListResponseDTO;
 import com.liftoff.project.service.OrderService;
+import com.liftoff.project.service.PaymentMethodService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,36 +25,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
+
 @RestController
-@RequestMapping("/auth-orders")
+@RequestMapping("/orders")
+@CrossOrigin("*")
 @AllArgsConstructor
-@Tag(name = "Orders <Admin OR User>")
-public class OrderAuthController {
+@Tag(name = "Orders")
+public class OrderController {
+
 
     private final OrderService orderService;
 
-    @GetMapping("/summary")
-    @Operation(summary = "Get a list of summary orders",
-            security = @SecurityRequirement(name = "bearerAuth"))
-    @HasAnyRole
-    public ResponseEntity<OrderSummaryListResponseDTO> getOrdersSummary() {
-        return ResponseEntity.ok(orderService.getAllOrdersSummary());
-    }
-
-    @GetMapping("/details")
-    @Operation(summary = "Get a list of details orders",
-            security = @SecurityRequirement(name = "bearerAuth"))
-    @HasAnyRole
-    public ResponseEntity<OrderDetailsListResponseDTO> getOrdersDetails() {
-        return ResponseEntity.ok(orderService.getAllOrdersDetails());
-    }
+    private final PaymentMethodService paymentMethodService;
 
 
 
-    @PutMapping
-    @Operation(summary = "Update an order",
-            security = @SecurityRequirement(name = "bearerAuth"))
-    @HasAnyRole
+    @PutMapping("/edit")
+    @Operation(summary = "Edit order")
     public ResponseEntity<OrderCreatedResponseDTO> editOrder(
             @Valid @RequestBody OrderRequestDTO orderRequest,
             @RequestParam UUID orderUuid) {
@@ -61,10 +49,9 @@ public class OrderAuthController {
         return ResponseEntity.ok(orderService.editOrder(orderRequest, orderUuid));
     }
 
+
     @PutMapping("/change-delivery-method")
-    @Operation(summary = "Change an order delivery method",
-            security = @SecurityRequirement(name = "bearerAuth"))
-    @HasAnyRole
+    @Operation(summary = "Change an order delivery method")
     public ResponseEntity<OrderCreatedResponseDTO> changeOrderDeliveryMethod(
             @Valid @RequestBody OrderDeliveryMethodRequestDTO orderChangeRequestDTO,
             @RequestParam UUID uuid) {
@@ -73,20 +60,16 @@ public class OrderAuthController {
     }
 
     @PutMapping("/change-payment-method")
-    @Operation(summary = "Change an order delivery payment",
-            security = @SecurityRequirement(name = "bearerAuth"))
-    @HasAnyRole
+    @Operation(summary = "Change an order delivery payment")
     public ResponseEntity<OrderCreatedResponseDTO> changeOrderPaymentMethod(
-            @RequestParam String paymentMethod,
+            @Valid @RequestBody OrderPaymentMethodRequestDTO paymentMethodRequestDTO,
             @RequestParam UUID uuid) {
 
-        return ResponseEntity.ok(orderService.changeOrderPaymentMethod(paymentMethod, uuid));
+        orderService.changeOrderPaymentMethod(paymentMethodRequestDTO, uuid);
+        return ResponseEntity.ok(orderService.changeOrderPaymentMethod(paymentMethodRequestDTO, uuid));
     }
 
     @PostMapping("/create")
-    @Operation(summary = "Create a new order",
-            security = @SecurityRequirement(name = "bearerAuth"))
-    @HasAnyRole
     public ResponseEntity<OrderCreatedResponseDTO> createOrder(
             @Valid @RequestBody OrderRequestDTO orderRequest,
             @RequestParam UUID cartUuid) {
@@ -96,11 +79,19 @@ public class OrderAuthController {
         return ResponseEntity.ok(createdOrder);
     }
 
+    @GetMapping("/summary")
+    public ResponseEntity<OrderSummaryListResponseDTO> getOrdersSummary() {
+        return ResponseEntity.ok(orderService.getAllOrdersSummary());
+    }
+
+    @GetMapping("/details")
+    public ResponseEntity<OrderDetailsListResponseDTO> getOrdersDetails() {
+        return ResponseEntity.ok(orderService.getAllOrdersDetails());
+    }
 
     @GetMapping("/{orderUuid}")
-    @Operation(summary = "Get Order by UUID",  security = @SecurityRequirement(name = "bearerAuth"),
+    @Operation(summary = "Get Order by UUID",
             description = "Retrieves order information by its UUID.")
-    @HasAnyRole
     public ResponseEntity<OrderCreatedResponseDTO> getOrderByUuid(@PathVariable UUID orderUuid) {
         OrderCreatedResponseDTO orderRequestDTO = orderService.getOrderByUuid(orderUuid);
         if (orderRequestDTO != null) {
