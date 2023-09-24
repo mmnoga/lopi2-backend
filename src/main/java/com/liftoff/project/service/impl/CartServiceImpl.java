@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,7 +70,7 @@ public class CartServiceImpl implements CartService {
 
         if (!hasProductEnoughQuantity(product, quantity, cart)) {
             throw new BusinessException("Not enough quantity of product with UUID: "
-                    + product.getUId());
+                    + product.getUId(), HttpStatus.BAD_REQUEST);
         }
 
         return addProductToCart(cart, product, quantity);
@@ -223,7 +224,7 @@ public class CartServiceImpl implements CartService {
         Cart cart = getCartByCookieOrCreateNewCart(request, response);
 
         if (quantity <= 0) {
-            throw new BusinessException("Quantity must be greater than zero");
+            throw new BusinessException("Quantity must be greater than zero", HttpStatus.BAD_REQUEST);
         }
 
         Cart updatedCart = createCartCopy(cart);
@@ -235,7 +236,7 @@ public class CartServiceImpl implements CartService {
 
         if (!hasProductEnoughQuantityForEdit(cartItem.getProduct(), quantity)) {
             throw new BusinessException(
-                    "Insufficient quantity of product with UUID: " + productUuid + " in stock");
+                    "Insufficient quantity of product with UUID: " + productUuid + " in stock", HttpStatus.BAD_REQUEST);
         }
 
         cartItem.setQuantity(quantity);

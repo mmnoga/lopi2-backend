@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
@@ -221,7 +222,7 @@ class CategoryControllerTest {
         String errorMessage = "Category cannot be its own parent.";
 
         Mockito.when(categoryService.updateCategory(Mockito.eq(categoryUuid), Mockito.any(CategoryRequestDTO.class)))
-                .thenThrow(new BusinessException(errorMessage));
+                .thenThrow(new BusinessException(errorMessage, HttpStatus.BAD_REQUEST));
 
         // when & then
 

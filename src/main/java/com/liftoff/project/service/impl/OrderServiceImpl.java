@@ -32,6 +32,7 @@ import com.liftoff.project.service.CartService;
 import com.liftoff.project.service.OrderService;
 import com.liftoff.project.service.UserValidationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -204,7 +205,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDetailsResponseDTO createOrder(OrderRequestDTO orderRequest, UUID cartUuid) {
         if (!orderRequest.getTermsAccepted()) {
-            throw new BusinessException("Terms and conditions were not accepted");
+            throw new BusinessException("Terms and conditions were not accepted", HttpStatus.BAD_REQUEST);
         }
 
         DeliveryMethod deliveryMethod = deliveryMethodRepository
@@ -260,10 +261,7 @@ public class OrderServiceImpl implements OrderService {
                         .map(orderMapper::mapOrderToOrderSummaryResponseDTO)
                         .collect(Collectors.toList()))
                 .build();
-//
-//        return orders.stream()
-//                .map(orderMapper::mapOrderToOrderSummaryResponseDTO)
-//                .collect(Collectors.toList());
+
     }
 
     @Override
@@ -276,9 +274,7 @@ public class OrderServiceImpl implements OrderService {
                         .map(orderMapper::mapOrderToOrderDetailsResponseDTO)
                         .collect(Collectors.toList()))
                 .build();
-//        return orders.stream()
-//                .map(orderMapper::mapOrderToOrderDetailsResponseDTO)
-//                .collect(Collectors.toList());
+
     }
 
     private User getUserFromAuthenticatedUser() {

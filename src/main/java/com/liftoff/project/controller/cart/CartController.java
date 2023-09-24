@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +42,7 @@ public class CartController {
             HttpServletResponse response) {
 
         if (quantity <= 0) {
-            throw new BusinessException("Quantity must be greater than 0");
+            throw new BusinessException("Quantity must be greater than 0", HttpStatus.BAD_REQUEST);
         }
 
         Cart savedCart = cartService

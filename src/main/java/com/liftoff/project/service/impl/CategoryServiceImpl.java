@@ -8,6 +8,7 @@ import com.liftoff.project.model.Category;
 import com.liftoff.project.repository.CategoryRepository;
 import com.liftoff.project.service.CategoryService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -69,7 +70,7 @@ public class CategoryServiceImpl implements CategoryService {
             Category category = categoryOptional.get();
 
             if (category.containsProducts() || category.containsSubcategories() || category.isSubcategory()) {
-                throw new BusinessException("Category cannot be deleted due to existing products, subcategories, or being a subcategory.");
+                throw new BusinessException("Category cannot be deleted due to existing products, subcategories, or being a subcategory.", HttpStatus.BAD_REQUEST);
             }
 
             categoryRepository.delete(category);
@@ -91,7 +92,7 @@ public class CategoryServiceImpl implements CategoryService {
         UUID parentCategoryId = categoryRequestDTO.getParentCategoryId();
         if (parentCategoryId != null) {
             if (parentCategoryId.equals(categoryUuid)) {
-                throw new BusinessException("Category cannot be its own parent.");
+                throw new BusinessException("Category cannot be its own parent.", HttpStatus.BAD_REQUEST);
             }
 
             Category parentCategory = categoryRepository.findByUId(parentCategoryId)
