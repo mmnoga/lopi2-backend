@@ -19,8 +19,8 @@ public interface ProductService {
     /**
      * Retrieves a paginated list of products.
      *
-     * @param pageable The pagination information including page number, page size, and sorting.
-     * @return A PaginatedProductResponseDTO containing the paginated list of products.
+     * @param pageable The pagination information specifying the page number, page size, and sorting order.
+     * @return A {@link PaginatedProductResponseDTO} containing the paginated list of products.
      */
     PaginatedProductResponseDTO getProducts(Pageable pageable);
 

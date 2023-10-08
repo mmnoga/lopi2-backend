@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
+    private static final String DEFAULT_SORT_FIELD = "id";
     private static final String SORT_TYPE_NAME = "name";
     private static final String SORT_TYPE_REGULAR_PRICE = "regularPrice";
 
@@ -51,7 +52,17 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public PaginatedProductResponseDTO getProducts(Pageable pageable) {
-        Page<Product> productPage = productRepository.findAll(pageable);
+
+        Sort sort = pageable.getSort();
+
+        Sort newSort = sort.and(Sort.by(DEFAULT_SORT_FIELD));
+
+        Pageable customPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                newSort);
+
+        Page<Product> productPage = productRepository.findAll(customPageable);
 
         List<Product> products = productPage.getContent();
         List<ProductResponseDTO> productResponseList = products.stream()

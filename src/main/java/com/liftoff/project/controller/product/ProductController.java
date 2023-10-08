@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,16 +37,10 @@ public class ProductController {
     @Operation(summary = "Get a list of products",
             description = "Retrieves a paginated list of all products.")
     public ResponseEntity<PaginatedProductResponseDTO> getAllProducts(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "name")
-            @Parameter(description = "Sort by name or regularPrice") String sortType,
-            @RequestParam(defaultValue = "asc")
-            @Parameter(description = "Sort order: asc or desc") String sortOrder
-    ) {
-        Sort.Direction direction = sortOrder
-                .equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortType));
+            @Parameter(description = "Pageable object",
+                    example = "{\"page\": 0, \"size\": 10, \"sort\": \"regularPrice,desc\"}")
+            @PageableDefault(sort = "regularPrice")
+            Pageable pageable) {
 
         PaginatedProductResponseDTO paginatedProducts = productService.getProducts(pageable);
 
