@@ -1,14 +1,17 @@
 package com.liftoff.project.controller.product;
 
+import com.liftoff.project.controller.product.request.PaginationParameterRequestDTO;
 import com.liftoff.project.controller.product.response.PaginatedProductResponseDTO;
 import com.liftoff.project.controller.product.response.ProductResponseDTO;
 import com.liftoff.project.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -84,6 +87,28 @@ public class ProductController {
         return ResponseEntity.ok(
                 productService
                         .getProductsByCategoryUuid(categoryUuid));
+    }
+
+    @GetMapping("/by-category/{categoryUuid}/sorted")
+    @Operation(summary = "Get a sorted list of products at category",
+            description = "Retrieves a paginated list of sorted products at category.")
+    public ResponseEntity<Page<ProductResponseDTO>> getSortedProductsByCategory(
+            @PathVariable UUID categoryUuid,
+            @Parameter(description = "pageIndex: Page index, pageSize: Page size, " +
+                    "orderColumn: Column to sort by, ascending: Flag indicating whether sorting is ascending")
+            @Valid @RequestBody PaginationParameterRequestDTO paginationParameters) {
+
+        Page<ProductResponseDTO> paginatedProducts =
+                productService
+                        .getProductsByCategoryAndSort(
+                                categoryUuid,
+                                paginationParameters);
+
+        if (paginatedProducts.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(paginatedProducts);
+        }
     }
 
 }

@@ -1,11 +1,13 @@
 package com.liftoff.project.service;
 
+import com.liftoff.project.controller.product.request.PaginationParameterRequestDTO;
 import com.liftoff.project.controller.product.request.ProductRequestDTO;
 import com.liftoff.project.controller.product.response.PaginatedProductResponseDTO;
 import com.liftoff.project.controller.product.response.ProductResponseDTO;
 import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.exception.TechnicalException;
 import com.liftoff.project.model.Product;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -116,5 +118,17 @@ public interface ProductService {
      * @throws BusinessException If no product is found with the given UUID.
      */
     Product getProductEntityByUuid(UUID productUuid);
+
+    /**
+     * Retrieves a paginated and sorted list of products by category.
+     *
+     * @param categoryUuid        The UUID of the category for which products are to be retrieved.
+     * @param paginationParameter The parameters for pagination and sorting.
+     * @return A Page containing the sorted and paginated list of ProductResponseDTO objects.
+     * @throws BusinessException If the category with the specified UUID is not found.
+     */
+    Page<ProductResponseDTO> getProductsByCategoryAndSort(
+            UUID categoryUuid,
+            PaginationParameterRequestDTO paginationParameter);
 
 }

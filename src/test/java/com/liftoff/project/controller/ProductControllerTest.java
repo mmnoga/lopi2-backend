@@ -2,6 +2,7 @@ package com.liftoff.project.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.liftoff.project.controller.product.request.PaginationParameterRequestDTO;
 import com.liftoff.project.controller.product.request.ProductRequestDTO;
 import com.liftoff.project.controller.product.response.PaginatedProductResponseDTO;
 import com.liftoff.project.controller.product.response.ProductResponseDTO;
@@ -19,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -81,7 +84,8 @@ class ProductControllerTest {
                 .build();
 
         List<ProductResponseDTO> products = Arrays.asList(product1, product2);
-        PaginatedProductResponseDTO paginatedProducts = new PaginatedProductResponseDTO(products, 1, 2);
+        PaginatedProductResponseDTO paginatedProducts =
+                new PaginatedProductResponseDTO(products, 1, 2, false, false);
 
         // when
         when(productService.getProducts(any(Pageable.class))).thenReturn(paginatedProducts);
@@ -106,7 +110,8 @@ class ProductControllerTest {
         int page = 0;
         int size = 10;
         List<ProductResponseDTO> emptyProductsList = Collections.emptyList();
-        PaginatedProductResponseDTO paginatedProducts = new PaginatedProductResponseDTO(emptyProductsList, 0, 0);
+        PaginatedProductResponseDTO paginatedProducts =
+                new PaginatedProductResponseDTO(emptyProductsList, 0, 0, false, false);
 
         // when
         when(productService.getProducts(any(Pageable.class))).thenReturn(paginatedProducts);
@@ -469,6 +474,82 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.name").value("Product 1"))
                 .andExpect(jsonPath("$.description").value("Product 1 description"))
                 .andExpect(jsonPath("$.regularPrice").value(10.99));
+    }
+
+    @Test
+    public void shouldReturnSortedProducts() throws Exception {
+        // given
+        UUID categoryUuid = UUID.fromString("e3bb11fc-d45d-4d78-b72c-21d41f494a96");
+        int page = 0;
+        int size = 2;
+
+        ProductResponseDTO product1 = ProductResponseDTO.builder()
+                .name("Product 1")
+                .description("Product 1 description")
+                .regularPrice(10.99)
+                .build();
+        ProductResponseDTO product2 = ProductResponseDTO.builder()
+                .name("Product 2")
+                .description("Product 2 description")
+                .regularPrice(20.49)
+                .build();
+
+        List<ProductResponseDTO> products = List.of(product1, product2);
+
+        Page<ProductResponseDTO> paginatedProducts = new PageImpl<>(products);
+
+        // when
+        when(productService.getProductsByCategoryAndSort(
+                eq(categoryUuid),
+                any(PaginationParameterRequestDTO.class)))
+                .thenReturn(paginatedProducts);
+
+        // then
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/products/by-category/{categoryUuid}/sorted", categoryUuid)
+                        .param("pageIndex", String.valueOf(page))
+                        .param("pageSize", String.valueOf(size))
+                        .param("orderColumn", "name")
+                        .param("ascending", "true"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.content[0].name").value("Product 1"))
+                .andExpect(jsonPath("$.content[1].name").value("Product 2"))
+                .andExpect(jsonPath("$.content[0].description").value("Product 1 description"))
+                .andExpect(jsonPath("$.content[1].description").value("Product 2 description"))
+                .andExpect(jsonPath("$.content[0].regularPrice").value(10.99))
+                .andExpect(jsonPath("$.content[1].regularPrice").value(20.49));
+    }
+
+    @Test
+    public void shouldReturnNoContentIfNoSortedProducts() throws Exception {
+        // given
+        UUID categoryUuid = UUID.fromString("e3bb11fc-d45d-4d78-b72c-21d41f494a96");
+
+        PaginationParameterRequestDTO paginationParams = PaginationParameterRequestDTO.builder()
+                .pageIndex(0)
+                .pageSize(10)
+                .orderColumn("name")
+                .ascending(true)
+                .build();
+
+        Page<ProductResponseDTO> paginatedProducts = Page.empty();
+
+        // when
+        when(productService.getProductsByCategoryAndSort(
+                eq(categoryUuid),
+                any(PaginationParameterRequestDTO.class)))
+                .thenReturn(paginatedProducts);
+
+        // then
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/products/by-category/{categoryUuid}/sorted", categoryUuid)
+                        .param("pageIndex", String.valueOf(paginationParams.getPageIndex()))
+                        .param("pageSize", String.valueOf(paginationParams.getPageSize()))
+                        .param("orderColumn", paginationParams.getOrderColumn())
+                        .param("ascending", String.valueOf(paginationParams.isAscending())))
+                .andExpect(status().isNoContent());
     }
 
     private String asJsonString(final Object obj) throws JsonProcessingException {

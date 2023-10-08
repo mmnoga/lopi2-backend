@@ -1,5 +1,6 @@
 package com.liftoff.project.service.impl;
 
+import com.liftoff.project.controller.product.request.PaginationParameterRequestDTO;
 import com.liftoff.project.controller.product.request.ProductRequestDTO;
 import com.liftoff.project.controller.product.response.PaginatedProductResponseDTO;
 import com.liftoff.project.controller.product.response.ProductResponseDTO;
@@ -18,13 +19,17 @@ import com.liftoff.project.service.ProductService;
 import com.liftoff.project.service.StorageService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -32,6 +37,9 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
+
+    private static final String SORT_TYPE_NAME = "name";
+    private static final String SORT_TYPE_REGULAR_PRICE = "regularPrice";
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
@@ -52,8 +60,15 @@ public class ProductServiceImpl implements ProductService {
 
         int totalPages = productPage.getTotalPages();
         long totalProducts = productPage.getTotalElements();
+        boolean hasPrevious = productPage.hasPrevious();
+        boolean hasNext = productPage.hasNext();
 
-        return new PaginatedProductResponseDTO(productResponseList, totalPages, totalProducts);
+        return new PaginatedProductResponseDTO(
+                productResponseList,
+                totalPages,
+                totalProducts,
+                hasPrevious,
+                hasNext);
     }
 
     @Override
@@ -180,6 +195,47 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Page<ProductResponseDTO> getProductsByCategoryAndSort(
+            UUID categoryUuid,
+            PaginationParameterRequestDTO paginationParameter) {
+
+        Category category = categoryRepository.findByUId(categoryUuid)
+                .orElseThrow(() ->
+                        new BusinessException("Category with UUID: " + categoryUuid + " not found."));
+
+        List<Product> products = retrieveProductsFromCategoryAndSubcategories(category);
+
+        Sort.Order sortOrder = paginationParameter.isAscending()
+                ? Sort.Order.asc(paginationParameter.getOrderColumn())
+                : Sort.Order.desc(paginationParameter.getOrderColumn());
+
+        Pageable pageable = PageRequest.of(
+                paginationParameter.getPageIndex(),
+                paginationParameter.getPageSize(),
+                Sort.by(sortOrder)
+        );
+
+        products.sort(productComparator(pageable.getSort()));
+
+        int totalProducts = products.size();
+
+        int startIndex = pageable.getPageNumber() * pageable.getPageSize();
+        int endIndex = Math.min(startIndex + pageable.getPageSize(), totalProducts);
+
+        List<Product> paginatedProducts = new ArrayList<>();
+
+        if (startIndex < endIndex) {
+            paginatedProducts = products.subList(startIndex, endIndex);
+        }
+
+        List<ProductResponseDTO> productResponseList = paginatedProducts.stream()
+                .map(productMapper::mapEntityToResponse)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(productResponseList, pageable, totalProducts);
+    }
+
+    @Override
     public List<ProductResponseDTO> getProductsByCategoryUuid(UUID categoryUuid) {
 
         Category category = categoryRepository.findByUId(categoryUuid)
@@ -222,6 +278,29 @@ public class ProductServiceImpl implements ProductService {
         }
 
         return products;
+    }
+
+    private Comparator<Product> productComparator(Sort sort) {
+
+        return (product1, product2) -> {
+            int compareResult = 0;
+
+            for (Sort.Order order : sort) {
+                String property = order.getProperty();
+
+                if (SORT_TYPE_REGULAR_PRICE.equalsIgnoreCase(property)) {
+                    compareResult = Double.compare(product1.getRegularPrice(), product2.getRegularPrice());
+                } else if (SORT_TYPE_NAME.equalsIgnoreCase(property)) {
+                    compareResult = product1.getName().compareTo(product2.getName());
+                }
+
+                if (compareResult != 0) {
+                    return order.isAscending() ? compareResult : -compareResult;
+                }
+            }
+
+            return compareResult;
+        };
     }
 
 }
