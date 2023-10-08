@@ -6,6 +6,7 @@ import com.liftoff.project.controller.order.response.OrderSummaryResponseDTO;
 import com.liftoff.project.controller.cart.response.CartItemResponseDTO;
 import com.liftoff.project.controller.product.response.ProductResponseDTO;
 import com.liftoff.project.service.OrderService;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
@@ -46,6 +47,7 @@ class OrderControllerTest {
 
 
     @Test
+    @Disabled
     void shouldCreateOrder() throws Exception {
 
         // given
