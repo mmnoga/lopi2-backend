@@ -1,6 +1,7 @@
 package com.liftoff.project.mapper.impl;
 
 import com.liftoff.project.controller.category.request.CategoryRequestDTO;
+import com.liftoff.project.controller.category.request.CategoryUidRequestDTO;
 import com.liftoff.project.controller.category.response.CategoryResponseDTO;
 import com.liftoff.project.mapper.CategoryMapper;
 import com.liftoff.project.model.Category;
@@ -36,7 +37,6 @@ public class CategoryMapperImpl implements CategoryMapper {
         return builder.build();
     }
 
-
     @Override
     public Category mapRequestToEntity(CategoryRequestDTO categoryRequestDTO) {
         if (categoryRequestDTO == null) {
@@ -48,6 +48,17 @@ public class CategoryMapperImpl implements CategoryMapper {
                 .description(categoryRequestDTO.getDescription())
                 .icon(categoryRequestDTO.getIcon())
                 .imagePath(categoryRequestDTO.getImagePath())
+                .build();
+    }
+
+    @Override
+    public Category mapUidRequestToEntity(CategoryUidRequestDTO categoryUidRequestDTO) {
+        if (categoryUidRequestDTO == null) {
+            return null;
+        }
+
+        return Category.builder()
+                .uId(categoryUidRequestDTO.getCategoryUid())
                 .build();
     }
 

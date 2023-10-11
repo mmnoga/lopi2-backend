@@ -1,6 +1,7 @@
 package com.liftoff.project.mapper;
 
 import com.liftoff.project.controller.category.request.CategoryRequestDTO;
+import com.liftoff.project.controller.category.request.CategoryUidRequestDTO;
 import com.liftoff.project.controller.category.response.CategoryResponseDTO;
 import com.liftoff.project.model.Category;
 
@@ -20,5 +21,14 @@ public interface CategoryMapper {
      * @return The mapped Category entity.
      */
     Category mapRequestToEntity(CategoryRequestDTO categoryRequestDTO);
+
+    /**
+     * Maps a CategoryUidRequestDTO to a Category entity.
+     *
+     * @param categoryUidRequestDTO The CategoryUidRequestDTO to be mapped.
+     * @return A Category entity with the UID populated from the CategoryUidRequestDTO,
+     * or null if the input is null.
+     */
+    Category mapUidRequestToEntity(CategoryUidRequestDTO categoryUidRequestDTO);
 
 }

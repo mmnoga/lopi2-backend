@@ -1,6 +1,6 @@
 package com.liftoff.project.controller.product.request;
 
-import com.liftoff.project.controller.category.request.CategoryRequestDTO;
+import com.liftoff.project.controller.category.request.CategoryUidRequestDTO;
 import com.liftoff.project.model.ProductStatus;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +25,7 @@ public class ProductRequestDTO {
     private ProductStatus status;
     private String productscol;
     private Integer quantity;
-    private List<CategoryRequestDTO> categories;
+    private List<CategoryUidRequestDTO> categories;
     @Builder.Default
     private List<ProductImageRequestDTO> images = new ArrayList<>();
 

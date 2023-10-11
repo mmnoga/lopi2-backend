@@ -1,6 +1,7 @@
 package com.liftoff.project.service;
 
 import com.liftoff.project.controller.category.request.CategoryRequestDTO;
+import com.liftoff.project.controller.category.request.CategoryUidRequestDTO;
 import com.liftoff.project.controller.category.response.CategoryResponseDTO;
 import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.model.Category;
@@ -54,14 +55,18 @@ public interface CategoryService {
     void deleteCategoryByUuid(UUID categoryUuid);
 
     /**
-     * Retrieves a list of existing categories based on the provided list of CategoryRequestDTO objects.
+     * Retrieves existing Category entities based on a list of CategoryUidRequestDTO.
      *
-     * @param categories The set of CategoryRequestDTO object representing categories to be checked.
-     * @return A set of existing Category object corresponding to the provided CategoryRequestDTO objects.
-     * @throws BusinessException If a parent category specified
-     *                           in any of the CategoryRequestDTO objects is not found.
+     * This method iterates through the provided list of CategoryUidRequestDTO objects,
+     * retrieves the corresponding Category entity for each Category UID, and collects
+     * them into a list. If any Category UID is not found in the repository, it throws
+     * a BusinessException with an appropriate error message.
+     *
+     * @param categories A list of CategoryUidRequestDTO objects containing Category UIDs.
+     * @return A list of existing Category entities.
+     * @throws BusinessException if any of the specified Category UIDs are not found.
      */
-    List<Category> getExistingCategories(List<CategoryRequestDTO> categories);
+    List<Category> getExistingCategories(List<CategoryUidRequestDTO> categories);
 
     /**
      * Returns the quantity of products that belong to the specified category.

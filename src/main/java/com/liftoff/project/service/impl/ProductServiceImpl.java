@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -41,6 +40,7 @@ public class ProductServiceImpl implements ProductService {
     private static final String DEFAULT_SORT_FIELD = "id";
     private static final String SORT_TYPE_NAME = "name";
     private static final String SORT_TYPE_REGULAR_PRICE = "regularPrice";
+    private static final String PRODUCT_NOT_FOUND_ERROR = "Product with UUID not found: ";
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
@@ -67,7 +67,7 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productPage.getContent();
         List<ProductResponseDTO> productResponseList = products.stream()
                 .map(productMapper::mapEntityToResponse)
-                .collect(Collectors.toList());
+                .toList();
 
         int totalPages = productPage.getTotalPages();
         long totalProducts = productPage.getTotalElements();
@@ -85,7 +85,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDTO getProductByUuid(UUID productUuid) {
         Product product = productRepository.findByUId(productUuid)
-                .orElseThrow(() -> new BusinessException("Product with UUID: " + productUuid + " not found."));
+                .orElseThrow(() -> new BusinessException(PRODUCT_NOT_FOUND_ERROR + productUuid));
         return productMapper.mapEntityToResponse(product);
     }
 
@@ -95,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
 
         return products.stream()
                 .map(productMapper::mapEntityToResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -121,7 +121,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDTO addImageToProduct(UUID productUuid, MultipartFile imageFile) throws IOException {
         Product product = productRepository.findByUId(productUuid)
-                .orElseThrow(() -> new BusinessException("Product with UUID: " + productUuid + " not found."));
+                .orElseThrow(() -> new BusinessException(PRODUCT_NOT_FOUND_ERROR + productUuid));
 
         String imageUrl = storageService.uploadFile(imageFile);
 
@@ -139,29 +139,17 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDTO updateProductByUuid(UUID productUuid, ProductRequestDTO productRequestDTO) {
         Product existingProduct = productRepository.findByUId(productUuid)
-                .orElseThrow(() -> new BusinessException("Product with UUID: " + productUuid + " not found"));
-
-        updateProductFromRequest(existingProduct, productRequestDTO);
-
-        List<Category> existingCategories = new ArrayList<>();
-
-        if (productRequestDTO.getCategories() != null) {
-            existingCategories = categoryService
-                    .getExistingCategories(
-                            productRequestDTO.getCategories());
-            existingProduct.setCategories(existingCategories);
-        }
+                .orElseThrow(() -> new BusinessException(PRODUCT_NOT_FOUND_ERROR + productUuid));
 
         return productArchiverService.archiveProduct(
                 existingProduct,
-                productRequestDTO,
-                existingCategories);
+                productRequestDTO);
     }
 
     @Override
     public void deleteProductByUuId(UUID productUuId) {
         Product product = productRepository.findByUId(productUuId)
-                .orElseThrow(() -> new BusinessException("Product with UUID: " + productUuId + " not found."));
+                .orElseThrow(() -> new BusinessException(PRODUCT_NOT_FOUND_ERROR + productUuId));
 
         if (product.getStatus() == ProductStatus.IN_PREPARATION) {
             productRepository.delete(product);
@@ -174,7 +162,7 @@ public class ProductServiceImpl implements ProductService {
 
     public ProductResponseDTO deleteImageByUrlFromProduct(UUID productUuid, String imageUrl) {
         Product product = productRepository.findByUId(productUuid)
-                .orElseThrow(() -> new BusinessException("Product with UUID: " + productUuid + " not found."));
+                .orElseThrow(() -> new BusinessException(PRODUCT_NOT_FOUND_ERROR + productUuid));
 
         List<ImageAsset> images = product.getImages();
         boolean imageRemoved = images.removeIf(
@@ -202,7 +190,7 @@ public class ProductServiceImpl implements ProductService {
     public Product getProductEntityByUuid(UUID productUuid) {
         return productRepository.findByUId(productUuid)
                 .orElseThrow(() ->
-                        new BusinessException("Product not found with UUID: " + productUuid));
+                        new BusinessException(PRODUCT_NOT_FOUND_ERROR + productUuid));
     }
 
     @Override
@@ -241,7 +229,7 @@ public class ProductServiceImpl implements ProductService {
 
         List<ProductResponseDTO> productResponseList = paginatedProducts.stream()
                 .map(productMapper::mapEntityToResponse)
-                .collect(Collectors.toList());
+                .toList();
 
         return new PageImpl<>(productResponseList, pageable, totalProducts);
     }
@@ -258,21 +246,7 @@ public class ProductServiceImpl implements ProductService {
 
         return products.stream()
                 .map(productMapper::mapEntityToResponse)
-                .collect(Collectors.toList());
-    }
-
-    private void updateProductFromRequest(Product product, ProductRequestDTO req) {
-        if (req.getName() != null) product.setName(req.getName());
-        if (req.getSku() != null) product.setSku(req.getSku());
-        if (req.getDescription() != null) product.setDescription(req.getDescription());
-        if (req.getRegularPrice() != null) product.setRegularPrice(req.getRegularPrice());
-        if (req.getDiscountPrice() != null) product.setDiscountPrice(req.getDiscountPrice());
-        if (req.getDiscountPriceEndDate() != null) product.setDiscountPriceEndDate(req.getDiscountPriceEndDate());
-        if (req.getLowestPrice() != null) product.setLowestPrice(req.getLowestPrice());
-        if (req.getShortDescription() != null) product.setShortDescription(req.getShortDescription());
-        if (req.getNote() != null) product.setNote(req.getNote());
-        if (req.getProductscol() != null) product.setProductscol(req.getProductscol());
-        if (req.getQuantity() != null) product.setQuantity(req.getQuantity());
+                .toList();
     }
 
     private List<Product> retrieveProductsFromCategoryAndSubcategories(

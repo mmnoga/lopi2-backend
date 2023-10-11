@@ -1,5 +1,6 @@
 package com.liftoff.project.mapper.impl;
 
+import com.liftoff.project.controller.category.request.CategoryUidRequestDTO;
 import com.liftoff.project.controller.category.response.CategoryResponseDTO;
 import com.liftoff.project.model.Category;
 import com.liftoff.project.service.CategoryService;
@@ -35,7 +36,7 @@ class CategoryMapperImplTest {
     }
 
     @Test
-    public void shouldReturnNullObjectForNullCategory() {
+    void shouldReturnNullObjectForNullCategory() {
         // Given
         Category category = null;
 
@@ -47,7 +48,7 @@ class CategoryMapperImplTest {
     }
 
     @Test
-    public void shouldReturnCategoryDTOForCategoryWithoutSubcategories() {
+    void shouldReturnCategoryDTOForCategoryWithoutSubcategories() {
         // Given
         when(category.getId()).thenReturn(1L);
         when(category.getName()).thenReturn("Category 1");
@@ -63,7 +64,7 @@ class CategoryMapperImplTest {
     }
 
     @Test
-    public void shouldReturnCategoryWithSubcategoriesDTOForCategoryWithSubcategories() {
+    void shouldReturnCategoryWithSubcategoriesDTOForCategoryWithSubcategories() {
         // given
         UUID categoryId = UUID.randomUUID();
         Category subcategory1 = new Category();
@@ -112,6 +113,31 @@ class CategoryMapperImplTest {
         assertEquals(category.getName(), responseDTO.getName());
         assertEquals(category.getDescription(), responseDTO.getDescription());
         assertEquals(2, responseDTO.getSubcategories().size());
+    }
+
+    @Test
+    void shouldMapCategoryUidRequestToEntity() {
+        // given
+        UUID categoryUid = UUID.randomUUID();
+        CategoryUidRequestDTO requestDTO = new CategoryUidRequestDTO(categoryUid);
+
+        // when
+        Category category = categoryMapper.mapUidRequestToEntity(requestDTO);
+
+        // then
+        assertEquals(categoryUid, category.getUId());
+    }
+
+    @Test
+    void shouldReturnNullEntityForNullCategoryUidRequest() {
+        // given
+        CategoryUidRequestDTO requestDTO = null;
+
+        // when
+        Category category = categoryMapper.mapUidRequestToEntity(requestDTO);
+
+        // then
+        assertNull(category);
     }
 
 }
