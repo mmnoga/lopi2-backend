@@ -38,7 +38,7 @@ class UserDetailsSecurityMapperImplTest {
     }
 
     @Test
-    public void should_Return_Null_Object_For_Null_User() {
+    void should_Return_Null_Object_For_Null_User() {
         // Given
 
         User user = null;
@@ -51,16 +51,17 @@ class UserDetailsSecurityMapperImplTest {
     }
 
     @Test
-    public void should_Return_UserDetailsSecurity_For_Not_Null_User() {
+    void should_Return_UserDetailsSecurity_For_Not_Null_User() {
         // Given
         User user = User.builder()
-                .withFirstName("Maciej")
-                .withLastName("Marciniak")
-                .withUsername("genger@wp.pl")
-                .withPassword(passwordEncoder.encode("ala ma kota"))
-                .withIsEnabled(true)
-                .withUuid(UUID.randomUUID())
-                .withRole(Role.ROLE_USER)
+                .firstName("Maciej")
+                .lastName("Marciniak")
+                .username("genger@wp.pl")
+                .phoneNumber("123 456 789")
+                .password(passwordEncoder.encode("ala ma kota"))
+                .isEnabled(true)
+                .uuid(UUID.randomUUID())
+                .role(Role.ROLE_USER)
                 .build();
 
 
@@ -70,6 +71,7 @@ class UserDetailsSecurityMapperImplTest {
         // Then
         assertEquals(user.getFirstName(), mapUserToUserSecurityDetails.getFirstName());
         assertEquals(user.getLastName(), mapUserToUserSecurityDetails.getLastName());
+        assertEquals(user.getPhoneNumber(), mapUserToUserSecurityDetails.getPhoneNumber());
         assertEquals(user.getPassword(), mapUserToUserSecurityDetails.getPassword());
         assertEquals(user.getUuid(), mapUserToUserSecurityDetails.getUuid());
         assertEquals(user.getRole(), mapUserToUserSecurityDetails.getRole());

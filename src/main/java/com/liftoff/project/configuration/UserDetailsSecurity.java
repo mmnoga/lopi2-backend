@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Data
-@Builder(setterPrefix = "with")
+@Builder
 public class UserDetailsSecurity implements org.springframework.security.core.userdetails.UserDetails {
 
 
@@ -24,6 +24,7 @@ public class UserDetailsSecurity implements org.springframework.security.core.us
     private Role role;
     private String firstName;
     private String lastName;
+    private String phoneNumber;
     private UUID uuid;
 
 

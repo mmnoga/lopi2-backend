@@ -22,7 +22,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +37,12 @@ public class UserServiceImpl implements UserService {
 
     public UserResponseDTO addUser(SignupRequestDTO signupRequestDTO) {
 
-        User save = userRepository.save(userMapper.mapSignupRequestToUser(signupRequestDTO));
+        User mappedUser = userMapper
+                .mapSignupRequestToUser(signupRequestDTO);
+        mappedUser.setIsEnabled(true);
+
+        User save = userRepository.save(mappedUser);
+
         return userMapper.mapUserToUserResponse(save);
 
     }
@@ -57,7 +61,7 @@ public class UserServiceImpl implements UserService {
 
             List<String> roles = userDetails.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.toList());
+                    .toList();
 
 
             return JwtResponseDTO.builder()

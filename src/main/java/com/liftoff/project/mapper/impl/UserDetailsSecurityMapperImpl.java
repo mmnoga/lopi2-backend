@@ -15,15 +15,16 @@ public class UserDetailsSecurityMapperImpl implements UserDetailsSecurityMapper 
         }
 
         return UserDetailsSecurity.builder()
-                .withId(user.getId())
-                .withPassword(user.getPassword())
-                .withFirstName(user.getFirstName())
-                .withLastName(user.getLastName())
-                .withIsEnabled(user.getIsEnabled())
+                .id(user.getId())
+                .password(user.getPassword())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .phoneNumber(user.getPhoneNumber())
+                .isEnabled(user.getIsEnabled())
                 //.withIsEnabled(user.isEnabled)
-                .withRole(user.getRole())
-                .withUsername(user.getUsername())
-                .withUuid(user.getUuid())
+                .role(user.getRole())
+                .username(user.getUsername())
+                .uuid(user.getUuid())
                 .build();
     }
 

@@ -3,7 +3,6 @@ package com.liftoff.project.mapper.impl;
 import com.liftoff.project.controller.auth.request.SignupRequestDTO;
 import com.liftoff.project.controller.auth.response.UserResponseDTO;
 import com.liftoff.project.mapper.UserMapper;
-import com.liftoff.project.model.Role;
 import com.liftoff.project.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,13 +26,13 @@ public class UserMapperImpl implements UserMapper {
         }
 
         return User.builder()
-                .withFirstName(signupRequestDTO.getFirstName())
-                .withLastName(signupRequestDTO.getLastName())
-                .withUsername(signupRequestDTO.getUsername())
-                .withPassword(passwordEncoder.encode(signupRequestDTO.getPassword()))
-                .withIsEnabled(true)
-                .withUuid(UUID.randomUUID())
-                .withRole(Role.ROLE_USER)
+                .firstName(signupRequestDTO.getFirstName())
+                .lastName(signupRequestDTO.getLastName())
+                .username(signupRequestDTO.getUsername())
+                .phoneNumber(signupRequestDTO.getPhoneNumber())
+                .password(passwordEncoder.encode(signupRequestDTO.getPassword()))
+                .uuid(UUID.randomUUID())
+                .role(signupRequestDTO.getRole())
                 .build();
     }
 
@@ -45,12 +44,13 @@ public class UserMapperImpl implements UserMapper {
         }
 
         return UserResponseDTO.builder()
-                .withFirstName(user.getFirstName())
-                .withLastName(user.getLastName())
-                .withUsername(user.getUsername())
-                .withIsEnabled(user.getIsEnabled())
-                .withUuid(user.getUuid())
-                .withRole(user.getRole())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .username(user.getUsername())
+                .phoneNumber(user.getPhoneNumber())
+                .isEnabled(user.getIsEnabled())
+                .uuid(user.getUuid())
+                .role(user.getRole())
                 .build();
     }
 

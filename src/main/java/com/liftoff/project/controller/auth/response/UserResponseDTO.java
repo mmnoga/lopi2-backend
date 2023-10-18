@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Data
-@Builder(setterPrefix = "with")
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserResponseDTO {
@@ -20,6 +20,8 @@ public class UserResponseDTO {
     private String lastName;
 
     private String username;
+
+    private String phoneNumber;
 
     private boolean isEnabled;
 

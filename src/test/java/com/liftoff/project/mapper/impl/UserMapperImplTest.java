@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
     }
 
     @Test
-    public void should_Return_Null_Object_For_Null_User() {
+    void should_Return_Null_Object_For_Null_User() {
         // Given
 
         User user = null;
@@ -57,16 +57,17 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 
     @Test
-    public void should_Return_UserResponse_For_Not_Null_User() {
+    void should_Return_UserResponse_For_Not_Null_User() {
         // Given
         User user = User.builder()
-                .withFirstName("Maciej")
-                .withLastName("Marciniak")
-                .withUsername("genger@wp.pl")
-                .withPassword(passwordEncoder.encode("ala ma kota"))
-                .withIsEnabled(true)
-                .withUuid(UUID.randomUUID())
-                .withRole(Role.ROLE_USER)
+                .firstName("Maciej")
+                .lastName("Marciniak")
+                .phoneNumber("123 456 789")
+                .username("genger@wp.pl")
+                .password(passwordEncoder.encode("ala ma kota"))
+                .isEnabled(true)
+                .uuid(UUID.randomUUID())
+                .role(Role.ROLE_USER)
                 .build();
 
 
@@ -78,12 +79,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
         assertEquals(user.getLastName(), responseDTO.getLastName());
         assertEquals(user.getUuid(), responseDTO.getUuid());
         assertEquals(user.getRole(), responseDTO.getRole());
-
+        assertEquals(user.getPhoneNumber(), responseDTO.getPhoneNumber());
 
     }
 
     @Test
-    public void should_Return_Null_Object_For_Null_ResponseUser() {
+    void should_Return_Null_Object_For_Null_ResponseUser() {
         // Given
 
         SignupRequestDTO signupRequestDTO = null;
@@ -97,13 +98,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 
     @Test
-    public void should_Return_User_For_Not_Null_UserResponse() {
+    void should_Return_User_For_Not_Null_UserResponse() {
         // Given
 
         SignupRequestDTO signupRequestDTO = SignupRequestDTO.builder()
-                .withFirstName("Maciej")
-                .withLastName("Marciniak")
-                .withUsername("genger@wp.pl")
+                .firstName("Maciej")
+                .lastName("Marciniak")
+                .username("genger@wp.pl")
                 .build();
 
         // When

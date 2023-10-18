@@ -17,7 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Builder(setterPrefix = "with")
+@Builder
 public class User {
 
     @Id
@@ -33,6 +33,9 @@ public class User {
 
     @Column(name = "USER_NAME")
     private String username;
+
+    @Column(name = "PHONE_NUMBER")
+    private String phoneNumber;
 
     @Column(name = "PASSWORD")
     private String password;
