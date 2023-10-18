@@ -1,10 +1,18 @@
 package com.liftoff.project.controller.order;
 
+import com.fasterxml.classmate.Annotations;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.liftoff.project.controller.order.request.AddressRequestDTO;
+import com.liftoff.project.controller.order.request.OrderRequestDTO;
+import com.liftoff.project.controller.order.response.AddressResponseDTO;
+import com.liftoff.project.controller.order.response.OrderCreatedResponseDTO;
 import com.liftoff.project.controller.order.response.OrderSummaryResponseDTO;
 import com.liftoff.project.controller.cart.response.CartItemResponseDTO;
 import com.liftoff.project.controller.product.response.ProductResponseDTO;
+import com.liftoff.project.model.order.CustomerType;
+import com.liftoff.project.model.order.DeliveryMethod;
+import com.liftoff.project.model.order.Salutation;
 import com.liftoff.project.service.OrderService;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -20,11 +28,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -50,39 +60,42 @@ class OrderControllerTest {
     @Disabled
     void shouldCreateOrder() throws Exception {
 
-        // given
-        UUID cartUuid = UUID.fromString("7b2b9688-de45-445e-bdf3-a0a7d4ffe733");
 
-        List<CartItemResponseDTO> cartItems = List.of(CartItemResponseDTO.builder()
-                .quantity(1)
-                .product(ProductResponseDTO.builder()
-                        .name("KOT")
-                        .regularPrice(30.30)
+
+        OrderRequestDTO orderRequest = OrderRequestDTO.builder()
+                .customerType(CustomerType.INDIVIDUAL)
+                .salutation(Salutation.MR)
+                .firstName("John")
+                .lastName("Doe")
+                .deliveryMethodName("INPOST")
+                .shippingAddress(AddressRequestDTO.builder()
+                        .houseNumber("DUPA")
                         .build())
-                .build());
+                .billingAddress(AddressRequestDTO.builder().build())
+                .paymentMethodName("BLIK")
+                .termsAccepted(true)
+                .build();
+        UUID cartUuid = UUID.randomUUID();
 
-
-        Instant instant = Instant.now();
-
-        OrderSummaryResponseDTO orderSummaryResponseDTO = OrderSummaryResponseDTO.builder()
-                .customerName("ALA")
-                .orderDate(instant)
-                .totalPrice(30.30)
-                .cartItems(cartItems)
+        OrderCreatedResponseDTO expectedResponse = OrderCreatedResponseDTO.builder()
+                .paymentMethod("BLIK")
+                .deliveryMethod("INPOST")
                 .build();
 
-        // when
-        when(orderService.addOrder(cartUuid)).thenReturn(orderSummaryResponseDTO);
+        when(orderService.createOrder(eq(orderRequest), eq(cartUuid)))
+                .thenReturn(expectedResponse);
 
-        // then
-        mockMvc.perform(MockMvcRequestBuilders.post("/orders/add?cartUuid={cartUuid}", cartUuid)
+        Instant instant = Instant.now();
+        mockMvc.perform(MockMvcRequestBuilders.post("/orders/create")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(orderSummaryResponseDTO)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.customerName").value("ALA"))
-                .andExpect(jsonPath("$.orderDate").value(instant.toString()))
-                .andExpect(jsonPath("$.totalPrice").value(30.30));
+                        .content(asJsonString(orderRequest))
+                        .param("cartUuid", cartUuid.toString()))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.paymentMethod").value("BLIK"))
+                .andExpect(jsonPath("$.deliveryMethod").value("INPOST"));
     }
+
 
 
     private String asJsonString(final Object obj) throws JsonProcessingException {
