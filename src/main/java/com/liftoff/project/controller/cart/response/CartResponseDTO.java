@@ -1,6 +1,5 @@
 package com.liftoff.project.controller.cart.response;
 
-import com.liftoff.project.controller.cart.response.CartItemResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

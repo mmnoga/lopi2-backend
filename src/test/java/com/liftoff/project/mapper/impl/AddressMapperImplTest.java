@@ -26,7 +26,7 @@ class AddressMapperImplTest {
     }
 
     @Test
-    public void shouldReturnNullObjectForNullAddressRequestDTO() {
+     void shouldReturnNullObjectForNullAddressRequestDTO() {
 
         // Given
         AddressRequestDTO addressRequestDTO = null;

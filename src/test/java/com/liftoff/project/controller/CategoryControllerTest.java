@@ -48,7 +48,7 @@ class CategoryControllerTest {
     private CategoryService categoryService;
 
     @Test
-    public void shouldReturnAllCategories() throws Exception {
+     void shouldReturnAllCategories() throws Exception {
         // given
         CategoryResponseDTO category1 = CategoryResponseDTO.builder()
                 .name("Category 1")
@@ -170,7 +170,7 @@ class CategoryControllerTest {
         String expectedErrorMessage = "Category with UUID " + categoryUuid + " not found.";
 
         // when
-        Mockito.when(categoryService.getCategoryByUuId(Mockito.eq(categoryUuid)))
+        Mockito.when(categoryService.getCategoryByUuId(categoryUuid))
                 .thenThrow(new BusinessException(expectedErrorMessage));
 
         // then
@@ -209,7 +209,7 @@ class CategoryControllerTest {
     }
 
     @Test
-    public void shouldHandleInvalidParentCategoryException() throws Exception {
+     void shouldHandleInvalidParentCategoryException() throws Exception {
         // given
         UUID categoryUuid = UUID.randomUUID();
 
@@ -222,15 +222,15 @@ class CategoryControllerTest {
         String errorMessage = "Category cannot be its own parent.";
 
         Mockito.when(categoryService.updateCategory(Mockito.eq(categoryUuid), Mockito.any(CategoryRequestDTO.class)))
-                .thenThrow(new BusinessException(errorMessage, HttpStatus.BAD_REQUEST));
+                .thenThrow(new BusinessException(errorMessage, HttpStatus.NOT_FOUND));
 
         // when & then
 
         //TODO: correct this test after error handling task is completed
-//        mockMvc.perform(MockMvcRequestBuilders.put("/api/categories/{categoryUuid}", categoryUuid)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(asJsonString(categoryRequestDTO)))
-//                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/categories/{categoryUuid}", categoryUuid)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(categoryRequestDTO)))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
@@ -239,7 +239,7 @@ class CategoryControllerTest {
         UUID categoryUuid = UUID.randomUUID();
         int expectedProductQuantity = 10;
 
-        Mockito.when(categoryService.getProductQuantityInCategory(Mockito.eq(categoryUuid)))
+        Mockito.when(categoryService.getProductQuantityInCategory(categoryUuid))
                 .thenReturn(expectedProductQuantity);
 
         // when & then

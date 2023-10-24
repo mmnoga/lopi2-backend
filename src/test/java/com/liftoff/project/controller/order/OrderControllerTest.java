@@ -1,17 +1,13 @@
 package com.liftoff.project.controller.order;
 
-import com.fasterxml.classmate.Annotations;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liftoff.project.controller.order.request.AddressRequestDTO;
 import com.liftoff.project.controller.order.request.OrderRequestDTO;
-import com.liftoff.project.controller.order.response.AddressResponseDTO;
 import com.liftoff.project.controller.order.response.OrderCreatedResponseDTO;
-import com.liftoff.project.controller.order.response.OrderSummaryResponseDTO;
-import com.liftoff.project.controller.cart.response.CartItemResponseDTO;
-import com.liftoff.project.controller.product.response.ProductResponseDTO;
+import com.liftoff.project.controller.order.response.OrderDetailsListResponseDTO;
+import com.liftoff.project.controller.order.response.OrderSummaryListResponseDTO;
 import com.liftoff.project.model.order.CustomerType;
-import com.liftoff.project.model.order.DeliveryMethod;
 import com.liftoff.project.model.order.Salutation;
 import com.liftoff.project.service.OrderService;
 import org.junit.jupiter.api.Disabled;
@@ -31,11 +27,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -57,9 +52,7 @@ class OrderControllerTest {
 
 
     @Test
-    @Disabled
     void shouldCreateOrder() throws Exception {
-
 
 
         OrderRequestDTO orderRequest = OrderRequestDTO.builder()
@@ -82,7 +75,7 @@ class OrderControllerTest {
                 .deliveryMethod("INPOST")
                 .build();
 
-        when(orderService.createOrder(eq(orderRequest), eq(cartUuid)))
+        when(orderService.createOrder(orderRequest, cartUuid))
                 .thenReturn(expectedResponse);
 
         Instant instant = Instant.now();
@@ -96,10 +89,37 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.deliveryMethod").value("INPOST"));
     }
 
+    @Test
+    void shouldGetOrderSummary() throws Exception {
+
+
+        OrderSummaryListResponseDTO orderSummaryListResponseDTO = OrderSummaryListResponseDTO.builder()
+                .build();
+
+        when(orderService.getAllOrdersSummary()).thenReturn(orderSummaryListResponseDTO);
+
+        // when/then
+        mockMvc.perform(get("/orders/summary")).andExpect(status().isOk());
+    }
+
+
+    @Test
+    void shouldGetOrderDetails() throws Exception {
+
+
+        OrderDetailsListResponseDTO orderDetailsListResponseDTO = OrderDetailsListResponseDTO.builder()
+                .build();
+
+        when(orderService.getAllOrdersDetails()).thenReturn(orderDetailsListResponseDTO);
+
+        // when/then
+        mockMvc.perform(get("/orders/details")).andExpect(status().isOk());
+    }
 
 
     private String asJsonString(final Object obj) throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(obj);
     }
+
 
 }

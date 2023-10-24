@@ -9,8 +9,6 @@ import com.liftoff.project.model.CartItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.stream.Collectors;
-
 @Component
 @RequiredArgsConstructor
 public class CartMapperImpl implements CartMapper {
@@ -32,7 +30,7 @@ public class CartMapperImpl implements CartMapper {
                     cartItemResponseDTO.setQuantity(cartItem.getQuantity());
                     return cartItemResponseDTO;
                 })
-                .collect(Collectors.toList()));
+                .toList());
         cartResponseDTO.setTotalPrice(cart.getTotalPrice());
         cartResponseDTO.setTotalQuantity(cart.getTotalQuantity());
 

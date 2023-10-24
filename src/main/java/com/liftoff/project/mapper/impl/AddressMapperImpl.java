@@ -17,7 +17,7 @@ public class AddressMapperImpl implements AddressMapper {
         if (addressRequestDTO == null) {
             return null;
         }
-        Address address = Address.builder()
+        return Address.builder()
                 .street(addressRequestDTO.getStreet())
                 .houseNumber(addressRequestDTO.getHouseNumber())
                 .apartmentNumber(addressRequestDTO.getApartmentNumber())
@@ -27,7 +27,7 @@ public class AddressMapperImpl implements AddressMapper {
                 .phoneNumber(addressRequestDTO.getPhoneNumber())
                 .build();
 
-        return address;
+
     }
 
 
