@@ -4,6 +4,7 @@ import com.liftoff.project.configuration.security.annotations.HasAdminRole;
 import com.liftoff.project.controller.product.request.ProductRequestDTO;
 import com.liftoff.project.controller.product.response.ProductResponseDTO;
 import com.liftoff.project.exception.BusinessException;
+import com.liftoff.project.exception.TechnicalException;
 import com.liftoff.project.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -73,7 +74,7 @@ public class ProductAuthController {
         } catch (BusinessException ex) {
             throw new ResponseStatusException(ex.getStatus(), ex.getMessage(), ex);
         } catch (IOException ex) {
-            throw new RuntimeException(ex);
+            throw new TechnicalException(ex.getMessage());
         }
     }
 

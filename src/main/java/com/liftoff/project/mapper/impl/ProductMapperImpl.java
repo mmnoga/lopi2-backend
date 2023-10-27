@@ -44,7 +44,7 @@ public class ProductMapperImpl implements ProductMapper {
                 .map(imageAsset -> ImageAssetResponseDTO.builder()
                         .imageUrl(imageAsset.getAssetUrl())
                         .build())
-                .collect(Collectors.toList());
+                .toList();
 
         response.setImageUrls(imageAssetResponses);
 
@@ -107,7 +107,7 @@ public class ProductMapperImpl implements ProductMapper {
         List<Category> subcategories = categoryResponseDTO.getSubcategories()
                 .stream()
                 .map(this::mapCategoryResponse)
-                .collect(Collectors.toList());
+                .toList();
         category.setSubcategories(subcategories);
 
         return category;

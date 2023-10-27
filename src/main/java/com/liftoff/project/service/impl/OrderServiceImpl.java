@@ -61,6 +61,7 @@ public class OrderServiceImpl implements OrderService {
     private final AddressMapper addressMapper;
     private static final String DELIVERY_METHOD_NOT_FOUND = "Delivery method not found";
     private static final String ORDER_ENTITY_NOT_FOUND = "Order entity not found";
+    private static final String PAYMENT_METHOD_NOT_FOUND = "Payment method not found";
 
 
     @Override
@@ -169,7 +170,7 @@ public class OrderServiceImpl implements OrderService {
         PaymentMethod paymentMethod = paymentMethodRepository
                 .findByName(paymentMethodRequestDTO.getPaymentMethodName())
                 .orElseThrow(() ->
-                        new BusinessException("Payment method not found"));
+                        new BusinessException(PAYMENT_METHOD_NOT_FOUND));
 
         order.setPaymentMethod(paymentMethod);
 
@@ -187,7 +188,7 @@ public class OrderServiceImpl implements OrderService {
         PaymentMethod foundPaymentMethod = paymentMethodRepository
                 .findByName(paymentMethod)
                 .orElseThrow(() ->
-                        new BusinessException("Payment method not found"));
+                        new BusinessException(PAYMENT_METHOD_NOT_FOUND));
 
         order.setPaymentMethod(foundPaymentMethod);
 
@@ -208,7 +209,7 @@ public class OrderServiceImpl implements OrderService {
 
         PaymentMethod paymentMethod = paymentMethodRepository
                 .findByName(orderRequest.getPaymentMethodName())
-                .orElseThrow(() -> new BusinessException("Payment method not found"));
+                .orElseThrow(() -> new BusinessException(PAYMENT_METHOD_NOT_FOUND));
 
         Cart cart = cartRepository.findByUuid(cartUuid)
                 .orElseThrow(() -> new BusinessException("Cart not found"));
@@ -266,7 +267,7 @@ public class OrderServiceImpl implements OrderService {
         return OrderDetailsListResponseDTO.builder()
                 .orderCreatedResponseDTOList(orders.stream()
                         .map(orderMapper::mapOrderToOrderResponseDTO)
-                        .collect(Collectors.toList()))
+                        .toList())
                 .build();
 
     }

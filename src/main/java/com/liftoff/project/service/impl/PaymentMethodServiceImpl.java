@@ -29,7 +29,7 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
         return PaymentMethodListResponseDTO.builder()
                 .methodResponseDTOList(methodList.stream()
                         .map(paymentMethodMapper::mapPaymentMethodToPaymentMethodResponseDTO)
-                        .collect(Collectors.toList()))
+                        .toList())
                 .build();
 
 
@@ -42,10 +42,10 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
 
         PaymentMethod savedPaymentMethod = paymentMethodRepository.save(paymentMethod);
 
-        PaymentMethodResponseDTO paymentMethodResponseDTO = paymentMethodMapper
+        return paymentMethodMapper
                 .mapPaymentMethodToPaymentMethodResponseDTO(savedPaymentMethod);
 
-        return paymentMethodResponseDTO;
+
     }
 
     @Override

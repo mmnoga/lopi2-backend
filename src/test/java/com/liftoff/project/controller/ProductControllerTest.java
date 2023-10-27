@@ -67,7 +67,7 @@ class ProductControllerTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    public void shouldReturnPaginatedProducts() throws Exception {
+    void shouldReturnPaginatedProducts() throws Exception {
         // given
         int page = 0;
         int size = 2;
@@ -105,7 +105,7 @@ class ProductControllerTest {
     }
 
     @Test
-    public void shouldReturnNoContentIfNoProductsAdded() throws Exception {
+    void shouldReturnNoContentIfNoProductsAdded() throws Exception {
         // given
         int page = 0;
         int size = 10;
@@ -192,7 +192,7 @@ class ProductControllerTest {
         UUID productUuid = UUID.randomUUID();
 
         // when
-        Mockito.doNothing().when(productService).deleteProductByUuId(eq(productUuid));
+        Mockito.doNothing().when(productService).deleteProductByUuId(productUuid);
 
         // then
         mockMvc.perform(MockMvcRequestBuilders.delete("/products/{productUuid}", productUuid))
@@ -206,7 +206,7 @@ class ProductControllerTest {
 
         // when
         Mockito.doThrow(new BusinessException("Product with UUID " + productUuid + " not found."))
-                .when(productService).deleteProductByUuId(eq(productUuid));
+                .when(productService).deleteProductByUuId(productUuid);
 
         // then
         mockMvc.perform(MockMvcRequestBuilders.delete("/products/{productUuid}", productUuid))
@@ -343,7 +343,7 @@ class ProductControllerTest {
     }
 
     @Test
-    public void shouldReturnEmptyListOfProductsWhenNoProductAdded() throws Exception {
+    void shouldReturnEmptyListOfProductsWhenNoProductAdded() throws Exception {
         // given
         int n = 5;
         List<ProductResponseDTO> emptyProductsList = Collections.emptyList();
@@ -477,7 +477,7 @@ class ProductControllerTest {
     }
 
     @Test
-    public void shouldReturnSortedProducts() throws Exception {
+    void shouldReturnSortedProducts() throws Exception {
         // given
         UUID categoryUuid = UUID.fromString("e3bb11fc-d45d-4d78-b72c-21d41f494a96");
         int page = 0;
@@ -523,7 +523,7 @@ class ProductControllerTest {
     }
 
     @Test
-    public void shouldReturnNoContentIfNoSortedProducts() throws Exception {
+    void shouldReturnNoContentIfNoSortedProducts() throws Exception {
         // given
         UUID categoryUuid = UUID.fromString("e3bb11fc-d45d-4d78-b72c-21d41f494a96");
 
