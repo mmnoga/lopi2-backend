@@ -179,12 +179,21 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponseDTO activateProduct(ProductResponseDTO product) {
+
+        Product existingProduct = getProductEntityByUuid(product.getUId());
+
         if (product.getStatus().equals(ProductStatus.ACTIVE)) return product;
 
-        product.setStatus(ProductStatus.ACTIVE);
-        product.setUpdatedAt(Instant.now());
+        existingProduct.setStatus(ProductStatus.ACTIVE);
+        existingProduct.setUpdatedAt(Instant.now());
 
-        return product;
+        Product savedProduct = productRepository
+                .save(existingProduct);
+
+        ProductResponseDTO updatedProductDTO = productMapper
+                .mapEntityToResponse(savedProduct);
+
+        return updatedProductDTO;
     }
 
     public Product getProductEntityByUuid(UUID productUuid) {
