@@ -28,7 +28,7 @@ public class CookieController {
 
 
     @GetMapping("/create")
-    public ResponseEntity setCookie() {
+    public ResponseEntity<String> setCookie() {
 
 
         this.getServerDomain();
@@ -36,7 +36,7 @@ public class CookieController {
                 .httpOnly(true)
                 .secure(true)
                 .path("/api/cookie")
-                .maxAge(1 * 24 * 60 * 60)
+                .maxAge( 1* 24 * 60 * 60L)
                 .sameSite("None")
                 .domain(this.serverDomain).build();
 
@@ -45,14 +45,15 @@ public class CookieController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity deleteCookie() {
+    public ResponseEntity<String> deleteCookie() {
 
         this.getServerDomain();
 
-        ResponseCookie resCookie = ResponseCookie.from("some-unauthorized-user-id", null).httpOnly(true)
+
+        ResponseCookie resCookie = ResponseCookie.from("some-unauthorized-user-id", "").httpOnly(true)
                 .secure(true)
                 .path("/api/cookie")
-                .maxAge(1 * 24 * 60 * 60)
+                .maxAge(1 * 24 * 60 * 60L)
                 .sameSite("None")
                 .domain(this.serverDomain).build();
 
@@ -73,9 +74,9 @@ public class CookieController {
 
         try {
 
-            return Arrays.stream(request.getCookies()).map((cookie) -> {
-                return cookie.getName() + " -> " + cookie.getValue();
-            }).collect(Collectors.joining(","));
+            return Arrays.stream(request.getCookies()).map(cookie ->
+                 cookie.getName() + " -> " + cookie.getValue()
+            ).collect(Collectors.joining(","));
 
         } catch (RuntimeException ex) {
 

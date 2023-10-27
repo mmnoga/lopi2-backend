@@ -40,7 +40,7 @@ public class CookieServiceImpl implements CookieService {
                     .build();
 
             response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-//            response.setHeader("Access-Control-Allow-Credentials", "true");
+
         }
     }
 

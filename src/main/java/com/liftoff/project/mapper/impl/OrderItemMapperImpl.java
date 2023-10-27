@@ -22,7 +22,7 @@ public class OrderItemMapperImpl implements OrderItemMapper {
             return null;
         }
 
-        OrderItem orderItem = OrderItem.builder()
+        return OrderItem.builder()
                 .withOrder(order)
                 .withProduct(productMapper.mapRequestToEntity(orderItemRequestDTO.getProductRequestDTO()))
                 .withQuantity(orderItemRequestDTO.getQuantity())
@@ -30,7 +30,7 @@ public class OrderItemMapperImpl implements OrderItemMapper {
                 .withUnitPrice(orderItemRequestDTO.getUnitPrice())
                 .build();
 
-        return orderItem;
+
     }
 
 

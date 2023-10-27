@@ -21,7 +21,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -47,16 +46,16 @@ public class OrderMapperImpl implements OrderMapper {
         if (order.getCart() != null)
             cartItems = order.getCart().getCartItems().stream()
                     .map(cartItem -> cartItemMapper.mapCartItemToCartItemResponseDTO(cartItem))
-                    .collect(Collectors.toList());
+                    .toList();
 
-        OrderSummaryResponseDTO orderSummaryDTO = OrderSummaryResponseDTO.builder()
+        return OrderSummaryResponseDTO.builder()
                 .customerName(customerName)
                 .orderDate(order.getOrderDate())
                 .cartItems(cartItems)
                 .totalPrice(order.getTotalPrice())
                 .build();
 
-        return orderSummaryDTO;
+
     }
 
 
@@ -86,10 +85,10 @@ public class OrderMapperImpl implements OrderMapper {
                 .orderDate(order.getOrderDate())
                 .customerPhone(order.getCustomer() != null ? order.getCustomer().getPhoneNumber() : "")
                 .productNameResponseDTOS(order.getCart().getCartItems().stream()
-                        .map((item) -> ProductNameResponseDTO.builder()
+                        .map(item -> ProductNameResponseDTO.builder()
                                 .productName(item.getProduct().getName())
                                 .build())
-                        .collect(Collectors.toList()))
+                        .toList())
                 .totalPrice(order.getTotalPrice())
                 .deliveryCost(order.getDeliveryCost())
                 .build();

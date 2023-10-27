@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ExampleServiceImpl implements ExampleService {
@@ -27,7 +26,7 @@ public class ExampleServiceImpl implements ExampleService {
     public List<ExampleResponse> readExampleData() {
         return exampleRepository.findAll().stream()
                 .map(exampleMapper::mapEntityToResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }

@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +24,7 @@ public class DeliveryMethodServiceImpl implements DeliveryMethodService {
         return
                 deliveryMethodRepository.findAll().stream()
                         .map(deliveryMethodMapper::mapDeliveryMethodToDeliveryMethodResponseDTO)
-                        .collect(Collectors.toList());
+                        .toList();
     }
 
     @Override
@@ -35,10 +34,9 @@ public class DeliveryMethodServiceImpl implements DeliveryMethodService {
 
         DeliveryMethod savedDeliveryMethod = deliveryMethodRepository.save(deliveryMethod);
 
-        DeliveryMethodResponseDTO deliveryMethodResponseDTO = deliveryMethodMapper
-                .mapDeliveryMethodToDeliveryMethodResponseDTO(savedDeliveryMethod);
+        return deliveryMethodMapper.mapDeliveryMethodToDeliveryMethodResponseDTO(savedDeliveryMethod);
 
-        return deliveryMethodResponseDTO;
+
     }
 
     @Override

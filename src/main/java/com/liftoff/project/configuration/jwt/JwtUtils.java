@@ -1,7 +1,12 @@
 package com.liftoff.project.configuration.jwt;
 
 import com.liftoff.project.configuration.UserDetailsSecurity;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +17,6 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 
 @Component
@@ -35,7 +39,7 @@ public class JwtUtils {
                 "role",
                 userPrincipal.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
-                        .map(String::toString).collect(Collectors.toList()));
+                        .map(String::toString).toList());
                 claims.put("email", userPrincipal.getUsername());
                 claims.put("sub", userPrincipal.getUsername());
 

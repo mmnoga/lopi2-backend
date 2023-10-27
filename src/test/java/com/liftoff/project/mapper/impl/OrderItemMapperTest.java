@@ -32,7 +32,7 @@ class OrderItemMapperTest {
 
 
     @Test
-    public void shouldReturnNullObjectForNullOrderOrOrderItemRequestDTO() {
+    void shouldReturnNullObjectForNullOrderOrOrderItemRequestDTO() {
         // Given
         Order order = null;
         OrderItemRequestDTO orderItemRequestDTO = null;
