@@ -3,9 +3,12 @@ package com.liftoff.project.controller.auth;
 import com.liftoff.project.configuration.jwt.JwtUtils;
 import com.liftoff.project.controller.auth.request.ActivationUserDataDTO;
 import com.liftoff.project.controller.auth.request.LoginRequestDTO;
+import com.liftoff.project.controller.auth.request.PasswordResetRequestDTO;
+import com.liftoff.project.controller.auth.request.ResetLinkRequestDTO;
 import com.liftoff.project.controller.auth.request.SignupRequestDTO;
 import com.liftoff.project.controller.auth.response.ActivateUserAccountResponseDTO;
 import com.liftoff.project.controller.auth.response.JwtResponseDTO;
+import com.liftoff.project.controller.auth.response.PasswordResetResponseDTO;
 import com.liftoff.project.controller.auth.response.UserResponseDTO;
 import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.service.AuthCartService;
@@ -83,6 +86,26 @@ public class AuthController {
         return ResponseEntity.ok(
                 userService
                         .activateUserAccount(activationUserDataDTO));
+    }
+
+    @PostMapping("/password-reset-link")
+    @Operation(summary = "Send an email to the user with password reset link")
+    public ResponseEntity<PasswordResetResponseDTO> sendPasswordResetLink(
+            @Valid @RequestBody ResetLinkRequestDTO resetLinkRequestDTO) {
+
+        return ResponseEntity.ok(
+                userService
+                        .sendPasswordResetLink(resetLinkRequestDTO));
+    }
+
+    @PostMapping("/reset-password")
+    @Operation(summary = "Reset password for the user")
+    public ResponseEntity<PasswordResetResponseDTO> changePassword(
+            @Valid @RequestBody PasswordResetRequestDTO passwordResetRequestDTO) {
+
+        return ResponseEntity.ok(
+                userService
+                        .changePassword(passwordResetRequestDTO));
     }
 
     private void mergeCarts(HttpServletRequest request, String username) {

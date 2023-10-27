@@ -15,7 +15,7 @@ import org.springframework.test.context.TestPropertySource;
 class UserServiceImplTest {
 
     @InjectMocks
-    private UserActivationProducerServiceImpl userActivationProducerService;
+    private UserAccountProducerServiceImpl userActivationProducerService;
 
     @Mock
     private RabbitTemplate rabbitTemplate;

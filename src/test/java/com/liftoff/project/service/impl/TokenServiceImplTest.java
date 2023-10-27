@@ -88,7 +88,7 @@ class TokenServiceImplTest {
         });
 
         // when
-        Token generatedToken = tokenService.generateTokenForUser(user);
+        Token generatedToken = tokenService.generateTokenForUser(user, 20);
 
         // then
         assertNotNull(generatedToken);

@@ -2,9 +2,12 @@ package com.liftoff.project.service;
 
 import com.liftoff.project.controller.auth.request.ActivationUserDataDTO;
 import com.liftoff.project.controller.auth.request.LoginRequestDTO;
+import com.liftoff.project.controller.auth.request.PasswordResetRequestDTO;
+import com.liftoff.project.controller.auth.request.ResetLinkRequestDTO;
 import com.liftoff.project.controller.auth.request.SignupRequestDTO;
 import com.liftoff.project.controller.auth.response.ActivateUserAccountResponseDTO;
 import com.liftoff.project.controller.auth.response.JwtResponseDTO;
+import com.liftoff.project.controller.auth.response.PasswordResetResponseDTO;
 import com.liftoff.project.controller.auth.response.UserResponseDTO;
 import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.model.User;
@@ -49,5 +52,24 @@ public interface UserService {
      * @throws BusinessException If the user or token is not found, or if the token is invalid.
      */
     ActivateUserAccountResponseDTO activateUserAccount(ActivationUserDataDTO activateUserRequestDTO);
+
+    /**
+     * Changes the password for the specified user using a password reset token.
+     *
+     * @param passwordResetRequestDTO The request containing the user's username, reset token, and new password.
+     * @return A {@link PasswordResetResponseDTO} indicating the success of the password change operation.
+     * @throws BusinessException if the user is not found, the provided reset token is invalid or has expired.
+     */
+    PasswordResetResponseDTO changePassword(PasswordResetRequestDTO passwordResetRequestDTO);
+
+    /**
+     * Sends a password reset link to the specified user's email address.
+     *
+     * @param resetLinkRequestDTO The request containing the user's username.
+     * @return A {@link PasswordResetResponseDTO} indicating the success of the operation
+     * and the email address to which the reset link was sent.
+     * @throws BusinessException if the user is not found or if there is an issue sending the email.
+     */
+    PasswordResetResponseDTO sendPasswordResetLink(ResetLinkRequestDTO resetLinkRequestDTO);
 
 }

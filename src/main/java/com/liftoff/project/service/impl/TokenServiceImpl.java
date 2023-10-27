@@ -37,7 +37,7 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public Token generateTokenForUser(User user) {
+    public Token generateTokenForUser(User user, int expirationTimeInMinutes) {
 
         Token newToken = new Token();
         newToken.setUserUuid(user.getUuid().toString());
@@ -46,7 +46,7 @@ public class TokenServiceImpl implements TokenService {
         newToken.setTokenValue(uniqueTokenValue);
 
         Instant expirationDate = Instant.now()
-                .plus(tokenExpirationMinutes, ChronoUnit.MINUTES);
+                .plus(expirationTimeInMinutes, ChronoUnit.MINUTES);
         newToken.setExpirationDate(expirationDate);
 
         return tokenRepository.save(newToken);

@@ -16,12 +16,13 @@ public interface TokenService {
     Token getTokenByValue(String tokenValue);
 
     /**
-     * Generates a new token for the specified user.
+     * Generates a new authentication token for the specified user and sets its expiration date.
      *
-     * @param user The user for whom the token is generated.
-     * @return The generated token.
+     * @param user              The user for whom the token is generated.
+     * @param expirationTimeInMinutes The duration, in minutes, for which the token will be valid.
+     * @return A newly generated Token object associated with the user.
      */
-    Token generateTokenForUser(User user);
+    Token generateTokenForUser(User user, int expirationTimeInMinutes);
 
     /**
      * Deletes the provided token.
