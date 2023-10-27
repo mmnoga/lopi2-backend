@@ -1,8 +1,10 @@
 package com.liftoff.project.controller.auth;
 
 import com.liftoff.project.configuration.jwt.JwtUtils;
+import com.liftoff.project.controller.auth.request.ActivationUserDataDTO;
 import com.liftoff.project.controller.auth.request.LoginRequestDTO;
 import com.liftoff.project.controller.auth.request.SignupRequestDTO;
+import com.liftoff.project.controller.auth.response.ActivateUserAccountResponseDTO;
 import com.liftoff.project.controller.auth.response.JwtResponseDTO;
 import com.liftoff.project.controller.auth.response.UserResponseDTO;
 import com.liftoff.project.exception.BusinessException;
@@ -44,6 +46,7 @@ public class AuthController {
     @Operation(summary = "Register a new user")
     public ResponseEntity<UserResponseDTO> registerUser(
             @Valid @RequestBody SignupRequestDTO signUpRequestDTO) {
+
         userValidationService.validateUsername(signUpRequestDTO);
 
         return new ResponseEntity<>(
@@ -70,6 +73,16 @@ public class AuthController {
         }
 
         return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
+    }
+
+    @PostMapping("/activate")
+    @Operation(summary = "Activate user account")
+    public ResponseEntity<ActivateUserAccountResponseDTO> activateUserAccount(
+            @Valid @RequestBody ActivationUserDataDTO activationUserDataDTO) {
+
+        return ResponseEntity.ok(
+                userService
+                        .activateUserAccount(activationUserDataDTO));
     }
 
     private void mergeCarts(HttpServletRequest request, String username) {
