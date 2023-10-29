@@ -1,7 +1,6 @@
 package com.liftoff.project.controller.product.response;
 
 import com.liftoff.project.controller.category.response.CategoryResponseDTO;
-import com.liftoff.project.controller.product.response.ImageAssetResponseDTO;
 import com.liftoff.project.model.ProductStatus;
 import lombok.Builder;
 import lombok.Data;

@@ -63,8 +63,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers
-                        .frameOptions(frameOptions -> frameOptions
-                                .sameOrigin()))
+                        .frameOptions(frameOptions -> frameOptions.sameOrigin()))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/auth-cart/**").hasRole(SecurityRoles.USER)
@@ -85,12 +84,6 @@ public class SecurityConfig {
 
     }
 
-//    @Bean
-//    WebSecurityCustomizer webSecurityCustomizer() {
-//        return web -> web.ignoring().requestMatchers(
-//                new AntPathRequestMatcher("/h2-console/**")
-//        );
-//    }
 
 
 }

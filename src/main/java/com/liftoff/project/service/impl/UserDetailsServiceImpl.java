@@ -29,7 +29,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         Optional<User> myOptionalUser = userRepository.findByUsername(username);
 
-        final UserDetailsSecurity userDetailsSecurity = myOptionalUser.map((user) -> {
+        return myOptionalUser.map(user -> {
 
             return this.userDetailsMapper.mapUserToUserSecurityDetails(user);
 
@@ -37,7 +37,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             return new UsernameNotFoundException("Authenticated User not found");
         });
 
-        return userDetailsSecurity;
+
     }
 
 

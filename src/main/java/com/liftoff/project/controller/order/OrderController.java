@@ -28,7 +28,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/orders")
-@CrossOrigin("*")
 @AllArgsConstructor
 @Tag(name = "Orders")
 public class OrderController {

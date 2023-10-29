@@ -36,7 +36,7 @@ public class ProductPromotionServiceImpl implements ProductPromotionService {
 
         return productsOnSale.stream()
                 .map(productMapper::mapEntityToResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ProductPromotionServiceImpl implements ProductPromotionService {
 
         return productsOnSale.stream()
                 .map(productMapper::mapEntityToResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -81,7 +81,7 @@ public class ProductPromotionServiceImpl implements ProductPromotionService {
 
         return limitedProductsOnSale.stream()
                 .map(productMapper::mapEntityToResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -111,7 +111,7 @@ public class ProductPromotionServiceImpl implements ProductPromotionService {
 
         return limitedProductsOnSale.stream()
                 .map(productMapper::mapEntityToResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -184,7 +184,7 @@ public class ProductPromotionServiceImpl implements ProductPromotionService {
 
         return savedProducts.stream()
                 .map(productMapper::mapEntityToResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -202,7 +202,7 @@ public class ProductPromotionServiceImpl implements ProductPromotionService {
 
         return savedProducts.stream()
                 .map(productMapper::mapEntityToResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -224,7 +224,7 @@ public class ProductPromotionServiceImpl implements ProductPromotionService {
 
         return savedProducts.stream()
                 .map(productMapper::mapEntityToResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private void addProductsOnSaleFromCategory(
