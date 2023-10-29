@@ -78,12 +78,13 @@ public class UserServiceImpl implements UserService {
         User savedUser = userRepository.save(mappedUser);
 
         Token token = tokenService.generateTokenForUser(savedUser, registerTokenExpirationMinutes);
+        Token savedToken = tokenService.save(token);
         String encodedUsername = encoderService
                 .encodeToBase64(savedUser.getUsername());
 
         ActivationUserDataDTO activationUserDataDTO = ActivationUserDataDTO.builder()
                 .encodedUsername(encodedUsername)
-                .tokenValue(token.getTokenValue())
+                .tokenValue(savedToken.getTokenValue())
                 .build();
 
         userAccountProducerService
@@ -147,7 +148,7 @@ public class UserServiceImpl implements UserService {
         String tokenValue = activationUserDataDTO.getTokenValue();
         Token token = tokenService.getTokenByValue(tokenValue);
 
-        validateTokenAndUser(username, token);
+        validate(token);
 
         user.setIsEnabled(true);
         tokenService.delete(token);
@@ -226,12 +227,7 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    private void validateTokenAndUser(String username, Token token) {
-        if (!token.getUserUuid().equals(username)) {
-            throw new BusinessException("User token does not match the provided username",
-                    HttpStatus.BAD_REQUEST);
-        }
-
+    private void validate(Token token) {
         if (!token.isValid()) {
             tokenService.delete(token);
             throw new BusinessException("Token has expired", HttpStatus.UNAUTHORIZED);

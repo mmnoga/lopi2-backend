@@ -45,4 +45,12 @@ public interface TokenService {
      */
     boolean isValid(Token token);
 
+    /**
+     * Saves a Token object to the repository.
+     *
+     * @param token The Token object to be saved.
+     * @return The saved Token object, which may include any generated identifiers or modifications.
+     */
+    Token save(Token token);
+
 }
