@@ -1,7 +1,6 @@
 package com.liftoff.project.command;
 
 import com.liftoff.project.configuration.DevProfile;
-import com.liftoff.project.configuration.jwt.AuthTokenFilter;
 import com.liftoff.project.repository.ExampleRepository;
 import jakarta.annotation.Priority;
 import org.slf4j.Logger;
@@ -18,7 +17,7 @@ public class ExampleReadCommand implements CommandLineRunner {
 
     private final ExampleRepository exampleRepository;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthTokenFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExampleReadCommand.class);
 
     @Autowired
     public ExampleReadCommand(final ExampleRepository exampleRepository) {

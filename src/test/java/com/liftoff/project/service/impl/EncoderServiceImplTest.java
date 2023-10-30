@@ -16,7 +16,7 @@ class EncoderServiceImplTest {
     private EncoderServiceImpl encoderService;
 
     @Test
-    public void shouldEncodeTextToBase64() {
+    void shouldEncodeTextToBase64() {
         // given
         String text = "Hello, World!";
         byte[] encodedBytes = Base64.getEncoder().encode(text.getBytes());
@@ -30,7 +30,7 @@ class EncoderServiceImplTest {
     }
 
     @Test
-    public void shouldDecodeEncodedBase64Text() {
+    void shouldDecodeEncodedBase64Text() {
         // given
         String encodedText = "SGVsbG8sIFdvcmxkIQ==";
         byte[] decodedBytes = Base64.getDecoder().decode(encodedText);

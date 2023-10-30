@@ -1,7 +1,6 @@
 package com.liftoff.project.service.impl;
 
 
-import com.liftoff.project.configuration.UserDetailsSecurity;
 import com.liftoff.project.mapper.UserDetailsSecurityMapper;
 import com.liftoff.project.model.User;
 import com.liftoff.project.repository.UserRepository;
@@ -22,25 +21,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserDetailsSecurityMapper userDetailsMapper;
 
 
-
     @Override
     public UserDetails loadUserByUsername(String username) {
 
 
         Optional<User> myOptionalUser = userRepository.findByUsername(username);
 
-        return myOptionalUser.map(user -> {
-
-            return this.userDetailsMapper.mapUserToUserSecurityDetails(user);
-
-        }).orElseThrow(() -> {
-            return new UsernameNotFoundException("Authenticated User not found");
-        });
+        return myOptionalUser.map(this.userDetailsMapper::mapUserToUserSecurityDetails).orElseThrow(() ->
+             new UsernameNotFoundException("Authenticated User not found")
+        );
 
 
     }
-
-
 
 
 }

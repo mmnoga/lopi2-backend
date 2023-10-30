@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Service
 public class CookieServiceImpl implements CookieService {
@@ -27,7 +25,7 @@ public class CookieServiceImpl implements CookieService {
     @Override
     public void setCookie(String name, String value, HttpServletResponse response) {
         if (response != null) {
-            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+
 
             ResponseCookie cookie = ResponseCookie.from(name, value)
                     .httpOnly(true)

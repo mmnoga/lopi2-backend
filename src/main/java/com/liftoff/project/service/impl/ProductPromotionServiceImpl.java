@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +44,7 @@ public class ProductPromotionServiceImpl implements ProductPromotionService {
 
         Category category = categoryRepository.findByUId(categoryUuid)
                 .orElseThrow(() ->
-                        new BusinessException("Category with UUID: " + categoryUuid + " not found."));
+                        new BusinessException(categoryNotFoundHelper(categoryUuid)));
 
         List<Product> productsOnSale = new ArrayList<>();
         LocalDateTime currentDateTime = LocalDateTime.now();
@@ -64,7 +63,7 @@ public class ProductPromotionServiceImpl implements ProductPromotionService {
 
         Category category = categoryRepository.findByUId(categoryUuid)
                 .orElseThrow(() ->
-                        new BusinessException("Category with UUID: " + categoryUuid + " not found."));
+                        new BusinessException(categoryNotFoundHelper(categoryUuid)));
 
         List<Product> productsOnSale = new ArrayList<>();
         LocalDateTime currentDateTime = LocalDateTime.now();
@@ -91,7 +90,7 @@ public class ProductPromotionServiceImpl implements ProductPromotionService {
 
         Category category = categoryRepository.findByUId(categoryUuid)
                 .orElseThrow(() ->
-                        new BusinessException("Category with UUID: " + categoryUuid + " not found."));
+                        new BusinessException(categoryNotFoundHelper(categoryUuid)));
 
         List<Product> productsOnSale = new ArrayList<>();
         LocalDateTime currentDateTime = LocalDateTime.now();
@@ -170,7 +169,7 @@ public class ProductPromotionServiceImpl implements ProductPromotionService {
             LocalDateTime discountPriceEndDate) {
 
         Category category = categoryRepository.findByUId(categoryUuid)
-                .orElseThrow(() -> new BusinessException("Category with UUID: " + categoryUuid + " not found."));
+                .orElseThrow(() -> new BusinessException(categoryNotFoundHelper(categoryUuid)));
 
         List<Product> productsToUpdate = new ArrayList<>();
 
@@ -210,7 +209,7 @@ public class ProductPromotionServiceImpl implements ProductPromotionService {
             UUID categoryUuid) {
 
         Category category = categoryRepository.findByUId(categoryUuid)
-                .orElseThrow(() -> new BusinessException("Category with UUID: " + categoryUuid + " not found."));
+                .orElseThrow(() -> new BusinessException(categoryNotFoundHelper(categoryUuid)));
 
         List<Product> productsToClear = new ArrayList<>();
         collectProductsToClearInCategory(category, productsToClear);
@@ -341,6 +340,10 @@ public class ProductPromotionServiceImpl implements ProductPromotionService {
         for (Category subcategory : subcategories) {
             collectProductsToClearInCategory(subcategory, productsToClear);
         }
+    }
+
+    private String categoryNotFoundHelper(UUID categoryUuid) {
+        return "Category with UUID: " + categoryUuid + " not found.";
     }
 
 }

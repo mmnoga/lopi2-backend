@@ -45,7 +45,7 @@ public class OrderMapperImpl implements OrderMapper {
 
         if (order.getCart() != null)
             cartItems = order.getCart().getCartItems().stream()
-                    .map(cartItem -> cartItemMapper.mapCartItemToCartItemResponseDTO(cartItem))
+                    .map(cartItemMapper::mapCartItemToCartItemResponseDTO)
                     .toList();
 
         return OrderSummaryResponseDTO.builder()

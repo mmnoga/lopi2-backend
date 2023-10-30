@@ -14,7 +14,10 @@ public class RabbitMQConsumerServiceImpl implements RabbitMQConsumerService {
 
     @RabbitListener(queues = {"${rabbitmq.queue.name}"})
     public void consume(String message) {
-        LOGGER.info(String.format("Received message -> %s", message));
+        if (LOGGER.isErrorEnabled()) {
+            LOGGER.info(String.format("Received message -> %s", message));
+        }
+
     }
 
 }

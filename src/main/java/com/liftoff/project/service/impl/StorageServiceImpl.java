@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -59,6 +58,7 @@ public class StorageServiceImpl implements StorageService {
                     "File size exceeds the maximum allowed limit " + maxFileSize + " bytes.");
         }
 
+        assert originalFileName != null;
         String uniqueFileName = generateUniqueFileName(originalFileName);
         String filePath = folderName + "/" + uniqueFileName;
 
@@ -75,6 +75,7 @@ public class StorageServiceImpl implements StorageService {
 
         Blob blob = storage.create(blobInfo, fileStream);
 
+
         return blob.getMediaLink();
     }
 
@@ -86,7 +87,7 @@ public class StorageServiceImpl implements StorageService {
                                 .iterateAll()
                                 .spliterator(), false)
                 .map(fileMapper::mapBlobToFileInfoResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
