@@ -1,7 +1,7 @@
 package com.liftoff.project.service.impl;
 
-import com.liftoff.project.controller.order.response.PaymentMethodListResponseDTO;
 import com.liftoff.project.controller.order.request.PaymentMethodRequestDTO;
+import com.liftoff.project.controller.order.response.PaymentMethodListResponseDTO;
 import com.liftoff.project.controller.order.response.PaymentMethodResponseDTO;
 import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.mapper.PaymentMethodMapper;
@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +28,7 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
         return PaymentMethodListResponseDTO.builder()
                 .methodResponseDTOList(methodList.stream()
                         .map(paymentMethodMapper::mapPaymentMethodToPaymentMethodResponseDTO)
-                        .collect(Collectors.toList()))
+                        .toList())
                 .build();
 
 
@@ -42,10 +41,10 @@ public class PaymentMethodServiceImpl implements PaymentMethodService {
 
         PaymentMethod savedPaymentMethod = paymentMethodRepository.save(paymentMethod);
 
-        PaymentMethodResponseDTO paymentMethodResponseDTO = paymentMethodMapper
+        return paymentMethodMapper
                 .mapPaymentMethodToPaymentMethodResponseDTO(savedPaymentMethod);
 
-        return paymentMethodResponseDTO;
+
     }
 
     @Override

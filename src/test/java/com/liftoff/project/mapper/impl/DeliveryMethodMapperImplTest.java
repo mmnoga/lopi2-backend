@@ -24,7 +24,7 @@ class DeliveryMethodMapperImplTest {
     }
 
     @Test
-    public void shouldReturnNullDeliveryMethodResponseDTOForNullDeliveryMethod() {
+     void shouldReturnNullDeliveryMethodResponseDTOForNullDeliveryMethod() {
         // Given
         DeliveryMethod deliveryMethod = null;
         // When
@@ -54,7 +54,7 @@ class DeliveryMethodMapperImplTest {
     }
 
     @Test
-    public void shouldReturnNullObjectForNullDeliveryMethod() {
+     void shouldReturnNullObjectForNullDeliveryMethod() {
         // Given
         DeliveryMethodRequestDTO deliveryMethodRequestDTO = null;
         // When

@@ -39,7 +39,7 @@ class TokenServiceImplTest {
     }
 
     @Test
-    public void shouldReturnTokenByItsValue() {
+    void shouldReturnTokenByItsValue() {
         // given
         String tokenValue = "testTokenValue";
         Token token = new Token();
@@ -57,7 +57,7 @@ class TokenServiceImplTest {
     }
 
     @Test
-    public void shouldThrowExceptionWhenTokenNotExist() {
+    void shouldThrowExceptionWhenTokenNotExist() {
         // given
         String tokenValue = "nonExistentTokenValue";
 
@@ -74,7 +74,7 @@ class TokenServiceImplTest {
     }
 
     @Test
-    public void shouldReturnTokenForUser() {
+    void shouldReturnTokenForUser() {
         // given
         User user = new User();
         user.setUuid(UUID.randomUUID());

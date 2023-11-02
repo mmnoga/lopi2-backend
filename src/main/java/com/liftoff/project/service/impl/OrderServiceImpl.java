@@ -40,7 +40,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -59,6 +58,9 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final OrderItemMapper orderItemMapper;
     private final AddressMapper addressMapper;
+    private static final String DELIVERY_METHOD_NOT_FOUND = "Delivery method not found";
+    private static final String ORDER_ENTITY_NOT_FOUND = "Order entity not found";
+    private static final String PAYMENT_METHOD_NOT_FOUND = "Payment method not found";
 
 
     @Override
@@ -78,11 +80,11 @@ public class OrderServiceImpl implements OrderService {
 
         DeliveryMethod deliveryMethod = deliveryMethodRepository
                 .findByName("COURIER_SERVICE")
-                .orElseThrow(() -> new BusinessException("Delivery method not found"));
+                .orElseThrow(() -> new BusinessException(DELIVERY_METHOD_NOT_FOUND));
 
         PaymentMethod paymentMethod = paymentMethodRepository
                 .findByName("CREDIT_CARD")
-                .orElseThrow(() -> new BusinessException("Payment method not found"));
+                .orElseThrow(() -> new BusinessException(DELIVERY_METHOD_NOT_FOUND));
 
 
         Order order = Order.builder()
@@ -108,7 +110,7 @@ public class OrderServiceImpl implements OrderService {
                         .withUnitPrice(cartItem.getProduct().getRegularPrice())
                         .withSubtotal(cartItem.getQuantity() * cartItem.getProduct().getRegularPrice())
                         .build())
-                .collect(Collectors.toList());
+                .toList();
 
         order.setOrderItemList(orderItemList);
         order.setTotalPrice(this.currentTotalPrice(order));
@@ -124,7 +126,7 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = orderRepository.findByUuid(orderUuid)
                 .orElseThrow(() ->
-                        new BusinessException("Order entity not found"));
+                        new BusinessException(ORDER_ENTITY_NOT_FOUND));
 
         if (orderRequest.getDeliveryMethodName() != null)
             order.setDeliveryMethod(deliveryMethodRepository.findByName(orderRequest.getDeliveryMethodName())
@@ -146,11 +148,11 @@ public class OrderServiceImpl implements OrderService {
     public OrderCreatedResponseDTO changeOrderDeliveryMethod(OrderDeliveryMethodRequestDTO orderChangeRequestDTO, UUID uuid) {
 
         Order order = orderRepository.findByUuid(uuid)
-                .orElseThrow(() -> new BusinessException("Order entity not found"));
+                .orElseThrow(() -> new BusinessException(ORDER_ENTITY_NOT_FOUND));
 
         DeliveryMethod deliveryMethod = deliveryMethodRepository
                 .findByName(orderChangeRequestDTO.getDeliveryMethodName())
-                .orElseThrow(() -> new BusinessException("Delivery method not found"));
+                .orElseThrow(() -> new BusinessException(DELIVERY_METHOD_NOT_FOUND));
 
         order.setDeliveryMethod(deliveryMethod);
 
@@ -162,12 +164,12 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = orderRepository.findByUuid(uuid)
                 .orElseThrow(() ->
-                        new BusinessException("Order entity not found"));
+                        new BusinessException(ORDER_ENTITY_NOT_FOUND));
 
         PaymentMethod paymentMethod = paymentMethodRepository
                 .findByName(paymentMethodRequestDTO.getPaymentMethodName())
                 .orElseThrow(() ->
-                        new BusinessException("Payment method not found"));
+                        new BusinessException(PAYMENT_METHOD_NOT_FOUND));
 
         order.setPaymentMethod(paymentMethod);
 
@@ -180,12 +182,12 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = orderRepository.findByUuid(uuid)
                 .orElseThrow(() ->
-                        new BusinessException("Order entity not found"));
+                        new BusinessException(ORDER_ENTITY_NOT_FOUND));
 
         PaymentMethod foundPaymentMethod = paymentMethodRepository
                 .findByName(paymentMethod)
                 .orElseThrow(() ->
-                        new BusinessException("Payment method not found"));
+                        new BusinessException(PAYMENT_METHOD_NOT_FOUND));
 
         order.setPaymentMethod(foundPaymentMethod);
 
@@ -195,17 +197,18 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderCreatedResponseDTO createOrder(OrderRequestDTO orderRequest, UUID cartUuid) {
-        if (!orderRequest.getTermsAccepted()) {
+
+        if (Boolean.FALSE.equals(orderRequest.getTermsAccepted())) {
             throw new BusinessException("Terms and conditions were not accepted", HttpStatus.BAD_REQUEST);
         }
 
         DeliveryMethod deliveryMethod = deliveryMethodRepository
                 .findByName(orderRequest.getDeliveryMethodName())
-                .orElseThrow(() -> new BusinessException("Delivery method not found"));
+                .orElseThrow(() -> new BusinessException(DELIVERY_METHOD_NOT_FOUND));
 
         PaymentMethod paymentMethod = paymentMethodRepository
                 .findByName(orderRequest.getPaymentMethodName())
-                .orElseThrow(() -> new BusinessException("Payment method not found"));
+                .orElseThrow(() -> new BusinessException(PAYMENT_METHOD_NOT_FOUND));
 
         Cart cart = cartRepository.findByUuid(cartUuid)
                 .orElseThrow(() -> new BusinessException("Cart not found"));
@@ -250,7 +253,7 @@ public class OrderServiceImpl implements OrderService {
         return OrderSummaryListResponseDTO.builder()
                 .orderSummaryResponseDTOList(orders.stream()
                         .map(orderMapper::mapOrderToOrderSummaryResponseDTO)
-                        .collect(Collectors.toList()))
+                        .toList())
                 .build();
 
     }
@@ -263,7 +266,7 @@ public class OrderServiceImpl implements OrderService {
         return OrderDetailsListResponseDTO.builder()
                 .orderCreatedResponseDTOList(orders.stream()
                         .map(orderMapper::mapOrderToOrderResponseDTO)
-                        .collect(Collectors.toList()))
+                        .toList())
                 .build();
 
     }
@@ -289,7 +292,7 @@ public class OrderServiceImpl implements OrderService {
     private double currentTotalPrice(Order order) {
 
         double deliveryCost = order.getDeliveryCost();
-        double sumOfOrderItemSubTotal = order.getOrderItemList().stream().mapToDouble(orderItem -> orderItem.getSubtotal()).sum();
+        double sumOfOrderItemSubTotal = order.getOrderItemList().stream().mapToDouble(OrderItem::getSubtotal).sum();
 
         return deliveryCost + sumOfOrderItemSubTotal;
     }

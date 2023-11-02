@@ -49,7 +49,7 @@ public class CartServiceImpl implements CartService {
                 .getCookieValue(cookieName, request);
 
         Cart cart = cartRepository.findByUuid(UUID.fromString(cartId))
-                .orElseThrow(() -> new BusinessException("Cart with UUID: " + cartId + " not found"));
+                .orElseThrow(() -> new BusinessException(this.findByUuidTextHelper(cartId)));
 
         clearCart(cart);
     }
@@ -57,7 +57,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public Cart getCart(String cartId) {
         return cartRepository.findByUuid(UUID.fromString(cartId))
-                .orElseThrow(() -> new BusinessException("Cart with UUID: " + cartId + " not found"));
+                .orElseThrow(() -> new BusinessException(this.findByUuidTextHelper(cartId)));
     }
 
     @Override
@@ -190,7 +190,7 @@ public class CartServiceImpl implements CartService {
         String cartId = cookieService.getCookieValue(cookieName, request);
 
         Cart cart = cartRepository.findByUuid(UUID.fromString(cartId))
-                .orElseThrow(() -> new BusinessException("Cart with UUID: " + cartId + " not found"));
+                .orElseThrow(() -> new BusinessException(this.findByUuidTextHelper(cartId)));
 
         CartItem itemToRemove = cart.getCartItems().stream()
                 .filter(cartItem -> cartItem.getProduct().getUId().equals(productUuid))
@@ -322,6 +322,11 @@ public class CartServiceImpl implements CartService {
 
         return product.getDiscountPriceEndDate() != null
                 && product.getDiscountPriceEndDate().isAfter(currentDateTime);
+    }
+
+    private  String findByUuidTextHelper(String cartId){
+
+        return "Cart with UUID: " + cartId + " not found";
     }
 
 }

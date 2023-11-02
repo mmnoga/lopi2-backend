@@ -8,6 +8,7 @@ import com.liftoff.project.controller.order.response.OrderCreatedResponseDTO;
 import com.liftoff.project.controller.order.response.OrderDetailsResponseDTO;
 import com.liftoff.project.controller.order.response.OrderSummaryResponseDTO;
 import com.liftoff.project.controller.product.response.ProductNameResponseDTO;
+import com.liftoff.project.mapper.CartItemMapper;
 import com.liftoff.project.mapper.CartMapper;
 import com.liftoff.project.mapper.DeliveryMethodMapper;
 import com.liftoff.project.mapper.OrderMapper;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -45,17 +45,17 @@ public class OrderMapperImpl implements OrderMapper {
 
         if (order.getCart() != null)
             cartItems = order.getCart().getCartItems().stream()
-                    .map(cartItem -> cartItemMapper.mapCartItemToCartItemResponseDTO(cartItem))
-                    .collect(Collectors.toList());
+                    .map(cartItemMapper::mapCartItemToCartItemResponseDTO)
+                    .toList();
 
-        OrderSummaryResponseDTO orderSummaryDTO = OrderSummaryResponseDTO.builder()
+        return OrderSummaryResponseDTO.builder()
                 .customerName(customerName)
                 .orderDate(order.getOrderDate())
                 .cartItems(cartItems)
                 .totalPrice(order.getTotalPrice())
                 .build();
 
-        return orderSummaryDTO;
+
     }
 
 
@@ -85,10 +85,10 @@ public class OrderMapperImpl implements OrderMapper {
                 .orderDate(order.getOrderDate())
                 .customerPhone(order.getCustomer() != null ? order.getCustomer().getPhoneNumber() : "")
                 .productNameResponseDTOS(order.getCart().getCartItems().stream()
-                        .map((item) -> ProductNameResponseDTO.builder()
+                        .map(item -> ProductNameResponseDTO.builder()
                                 .productName(item.getProduct().getName())
                                 .build())
-                        .collect(Collectors.toList()))
+                        .toList())
                 .totalPrice(order.getTotalPrice())
                 .deliveryCost(order.getDeliveryCost())
                 .build();

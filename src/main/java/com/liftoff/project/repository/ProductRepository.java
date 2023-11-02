@@ -1,6 +1,5 @@
 package com.liftoff.project.repository;
 
-import com.liftoff.project.model.Category;
 import com.liftoff.project.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -39,7 +38,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      * Finds products with a discount price greater than the specified value
      * and a discount price end date after the specified date and not null.
      *
-     * @param discountPrice The minimum discount price to search for.
+     * @param discountPrice        The minimum discount price to search for.
      * @param discountPriceEndDate The date to compare with the discount price end date.
      * @return A list of products that meet the specified criteria.
      */

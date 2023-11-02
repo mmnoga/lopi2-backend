@@ -43,7 +43,7 @@ public class AuthController {
     private final JwtUtils jwtUtils;
 
     @Value("${cart.cookie.name}")
-    private String CART_ID_COOKIE_NAME;
+    private String cartIdCookieName;
 
     @PostMapping("/signup")
     @Operation(summary = "Register a new user")
@@ -115,12 +115,11 @@ public class AuthController {
             userCartId = authCartService.createCartForUser(username);
         }
 
-        String unauthenticatedCartId = cookieService.getCookieValue(CART_ID_COOKIE_NAME, request);
+        String unauthenticatedCartId = cookieService.getCookieValue(cartIdCookieName, request);
 
-        try {
+
             cartService.mergeCartWithAuthenticatedUser(unauthenticatedCartId, userCartId);
-        } catch (BusinessException ex) {
-        }
+
     }
 
 }

@@ -1,7 +1,7 @@
 package com.liftoff.project.mapper.impl;
 
-import com.liftoff.project.controller.product.request.ProductRequestDTO;
 import com.liftoff.project.controller.category.response.CategoryResponseDTO;
+import com.liftoff.project.controller.product.request.ProductRequestDTO;
 import com.liftoff.project.controller.product.response.ImageAssetResponseDTO;
 import com.liftoff.project.controller.product.response.ProductResponseDTO;
 import com.liftoff.project.mapper.ProductMapper;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
@@ -44,14 +43,14 @@ public class ProductMapperImpl implements ProductMapper {
                 .map(imageAsset -> ImageAssetResponseDTO.builder()
                         .imageUrl(imageAsset.getAssetUrl())
                         .build())
-                .collect(Collectors.toList());
+                .toList();
 
         response.setImageUrls(imageAssetResponses);
 
         List<CategoryResponseDTO> categoryResponses = product.getCategories()
                 .stream()
                 .map(this::mapCategory)
-                .collect(Collectors.toList());
+                .toList();
         response.setCategories(categoryResponses);
 
         return response;
@@ -107,7 +106,7 @@ public class ProductMapperImpl implements ProductMapper {
         List<Category> subcategories = categoryResponseDTO.getSubcategories()
                 .stream()
                 .map(this::mapCategoryResponse)
-                .collect(Collectors.toList());
+                .toList();
         category.setSubcategories(subcategories);
 
         return category;

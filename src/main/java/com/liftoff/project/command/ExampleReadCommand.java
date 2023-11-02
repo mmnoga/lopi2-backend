@@ -3,9 +3,10 @@ package com.liftoff.project.command;
 import com.liftoff.project.configuration.DevProfile;
 import com.liftoff.project.repository.ExampleRepository;
 import jakarta.annotation.Priority;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 
@@ -16,6 +17,8 @@ public class ExampleReadCommand implements CommandLineRunner {
 
     private final ExampleRepository exampleRepository;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExampleReadCommand.class);
+
     @Autowired
     public ExampleReadCommand(final ExampleRepository exampleRepository) {
         this.exampleRepository = exampleRepository;
@@ -23,7 +26,8 @@ public class ExampleReadCommand implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+
         exampleRepository.findAll()
-                .forEach(example -> System.out.println(example.toString()));
+                .forEach(example -> LOGGER.info(example.toString()));
     }
 }

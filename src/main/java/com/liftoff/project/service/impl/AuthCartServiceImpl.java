@@ -24,7 +24,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +37,7 @@ public class AuthCartServiceImpl implements AuthCartService {
     private final ProductService productService;
     private final SessionService sessionService;
     private final CartMapper cartMapper;
+    private static final String CART_NOT_FOUND = "Cart not found";
 
     @Override
     public String findCartIdByUsername(String username) {
@@ -81,7 +82,7 @@ public class AuthCartServiceImpl implements AuthCartService {
         try {
             Cart cart = cartRepository
                     .findByUuid(UUID.fromString(cartId))
-                    .orElseThrow(() -> new BusinessException("Cart not found"));
+                    .orElseThrow(() -> new BusinessException(CART_NOT_FOUND));
 
             Product product = productService.getProductEntityByUuid(productUid);
 
@@ -97,7 +98,7 @@ public class AuthCartServiceImpl implements AuthCartService {
                     .mapCartToCartResponseDTO(savedCart);
 
         } catch (BusinessException ex) {
-            throw new BusinessException("Cart not found");
+            throw new BusinessException(CART_NOT_FOUND);
         }
 
     }
@@ -121,7 +122,7 @@ public class AuthCartServiceImpl implements AuthCartService {
 
         List<CartItemResponseDTO> cartItemResponseList = cart.getCartItems().stream()
                 .map(cartMapper::mapCartItemToCartItemResponseDTO)
-                .collect(Collectors.toList());
+                .toList();
 
         cartResponse.setCartItems(cartItemResponseList);
         cartResponse.setTotalPrice(cart.getTotalPrice());
@@ -131,10 +132,11 @@ public class AuthCartServiceImpl implements AuthCartService {
     }
 
     @Override
+    @Transactional
     public void clearCartForUser(String username) {
         Cart cart = cartRepository.findByUserUsername(username)
                 .orElseThrow(() ->
-                        new BusinessException("Cart not found"));
+                        new BusinessException(CART_NOT_FOUND));
 
         List<CartItem> cartItems = cart.getCartItems();
 
@@ -170,6 +172,7 @@ public class AuthCartServiceImpl implements AuthCartService {
     }
 
     @Override
+    @Transactional
     public CartResponseDTO updateCartForUser(UUID productUuid, int quantity, String username) {
         if (quantity <= 0) {
             throw new BusinessException("Quantity must be greater than zero");
@@ -184,7 +187,7 @@ public class AuthCartServiceImpl implements AuthCartService {
         try {
             Cart cart = cartRepository
                     .findByUuid(UUID.fromString(cartId))
-                    .orElseThrow(() -> new BusinessException("Cart not found"));
+                    .orElseThrow(() -> new BusinessException(CART_NOT_FOUND));
 
             CartItem cartItem = cart.getCartItems().stream()
                     .filter(item -> item.getProduct().getUId().equals(productUuid))
@@ -207,7 +210,7 @@ public class AuthCartServiceImpl implements AuthCartService {
             return cartMapper.mapCartToCartResponseDTO(savedCart);
 
         } catch (BusinessException ex) {
-            throw new BusinessException("Cart not found");
+            throw new BusinessException(CART_NOT_FOUND);
         }
     }
 

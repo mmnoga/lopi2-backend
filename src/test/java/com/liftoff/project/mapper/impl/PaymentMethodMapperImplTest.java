@@ -24,7 +24,7 @@ class PaymentMethodMapperImplTest {
 
 
     @Test
-    public void shouldReturnNullPaymentMethodResponseDTOForNullPaymentMethod() {
+     void shouldReturnNullPaymentMethodResponseDTOForNullPaymentMethod() {
         // Given
         PaymentMethod paymentMethod = null;
         // When
@@ -52,7 +52,7 @@ class PaymentMethodMapperImplTest {
     }
 
     @Test
-    public void shouldReturnNullObjectForNullPaymentMethod() {
+     void shouldReturnNullObjectForNullPaymentMethod() {
         // Given
         PaymentMethodRequestDTO paymentMethodRequestDTO = null;
         // When

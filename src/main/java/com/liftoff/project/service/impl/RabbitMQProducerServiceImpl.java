@@ -30,8 +30,9 @@ public class RabbitMQProducerServiceImpl implements RabbitMQProducerService {
 
     @Override
     public void sendMessage(String message) {
-        rabbitTemplate.convertAndSend(exchange, routingKey, message);
-        LOGGER.info(String.format("Message sent -> %s", message));
+        if (LOGGER.isErrorEnabled()) {
+            LOGGER.info(String.format("Message sent -> %s", message));
+        }
     }
 
 }
