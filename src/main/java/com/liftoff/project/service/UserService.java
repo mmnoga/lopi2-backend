@@ -72,4 +72,16 @@ public interface UserService {
      */
     PasswordResetResponseDTO sendPasswordResetLink(ResetLinkRequestDTO resetLinkRequestDTO);
 
+    /**
+     * Reactivates a user account using the provided activation data sending new activation link.
+     *
+     * @param activationUserDataDTO The data required for account reactivation,
+     * including an encoded username and a token value.
+     * @return An {@link ActivateUserAccountResponseDTO} containing a message indicating
+     * the result of the reactivation process.
+     * @throws BusinessException If the provided token is valid, a BusinessException is thrown with a message
+     * indicating that the token should be used to activate the user account.
+     */
+    ActivateUserAccountResponseDTO reactivateUserAccount(ActivationUserDataDTO activationUserDataDTO);
+
 }

@@ -108,6 +108,16 @@ public class AuthController {
                         .changePassword(passwordResetRequestDTO));
     }
 
+    @PostMapping("/reactivate")
+    @Operation(summary = "Reactivate user account sending new rest link")
+    public ResponseEntity<ActivateUserAccountResponseDTO> reactivateUserAccount(
+            @Valid @RequestBody ActivationUserDataDTO activationUserDataDTO) {
+
+        return ResponseEntity.ok(
+                userService
+                        .reactivateUserAccount(activationUserDataDTO));
+    }
+
     private void mergeCarts(HttpServletRequest request, String username) {
         String userCartId = authCartService.findCartIdByUsername(username);
 

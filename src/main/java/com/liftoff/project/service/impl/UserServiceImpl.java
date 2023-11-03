@@ -181,7 +181,6 @@ public class UserServiceImpl implements UserService {
         Token resetToken = tokenService.getTokenByValue(tokenValue);
 
         if (resetToken == null || !tokenService.isValid(resetToken)) {
-            tokenService.delete(resetToken);
             throw new BusinessException(
                     "Reset token is invalid or has expired",
                     HttpStatus.BAD_REQUEST);
@@ -231,9 +230,38 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Transactional
+    @Override
+    public ActivateUserAccountResponseDTO reactivateUserAccount(ActivationUserDataDTO activationUserDataDTO) {
+
+        String encodedUsername = activationUserDataDTO.getEncodedUsername();
+        String username = encoderService.decodeBase64(encodedUsername);
+        User user = this.getUserByUsername(username);
+
+        String tokenValue = activationUserDataDTO.getTokenValue();
+        Token token = tokenService.getTokenByValue(tokenValue);
+        if (token.isValid()) {
+            throw new BusinessException(
+                    "Token is valid. Use it to activate user account",
+                    HttpStatus.BAD_REQUEST);
+        }
+        tokenService.delete(token);
+
+        Token newToken = tokenService.generateTokenForUser(user, registerTokenExpirationMinutes);
+        Token savedToken = tokenService.save(newToken);
+
+        activationUserDataDTO.setTokenValue(savedToken.getTokenValue());
+
+        userAccountProducerService
+                .sendActivationUserDataMessage(activationUserDataDTO);
+
+        return ActivateUserAccountResponseDTO.builder()
+                .message("Password reset has been initiated again for the user: " + user.getUsername())
+                .build();
+    }
+
     private void validate(Token token) {
         if (!token.isValid()) {
-            tokenService.delete(token);
             throw new BusinessException("Token has expired", HttpStatus.UNAUTHORIZED);
         }
     }
