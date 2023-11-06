@@ -52,7 +52,7 @@ public class RequestFilterConfig implements Filter {
             httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
             httpResponse.setHeader("Access-Control-Allow-Origin", requestOrigin);
             httpResponse.setHeader("Access-Control-Allow-Methods", String.join(", ", allowedMethods));
-            httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, x-requested-with");
+            httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, x-requested-with, Authorization");
             httpResponse.setHeader("Authorization", "true");
 
         }
