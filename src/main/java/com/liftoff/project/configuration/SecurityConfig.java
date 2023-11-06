@@ -67,20 +67,26 @@ public class SecurityConfig {
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/auth-cart/**").permitAll()
                         .requestMatchers("/auth-cart/**").hasRole(SecurityRoles.USER)
                         .requestMatchers(HttpMethod.GET, "/categories/**").permitAll()
-                        .requestMatchers("/categories/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/categories/**").permitAll()
+                        .requestMatchers("/categories/**").hasRole(SecurityRoles.ADMIN)
                         .requestMatchers(HttpMethod.GET, "/orders-setting/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/orders-setting/**").permitAll()
                         .requestMatchers("/orders-setting/**").hasRole(SecurityRoles.ADMIN)
+                        .requestMatchers(HttpMethod.OPTIONS, "/auth-orders/**").permitAll()
                         .requestMatchers("/auth-orders/**").hasAnyRole(SecurityRoles.ADMIN, SecurityRoles.USER)
                         .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/products/**").permitAll()
                         .requestMatchers("/products/**").hasRole(SecurityRoles.ADMIN)
+                        .requestMatchers(HttpMethod.OPTIONS, "/storage/**").permitAll()
                         .requestMatchers("/storage/**").hasRole(SecurityRoles.ADMIN)
                         .anyRequest().permitAll()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider())
-                .cors(AbstractHttpConfigurer::disable)
+//                .cors(AbstractHttpConfigurer::disable)
                 .addFilterBefore(
                         authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();

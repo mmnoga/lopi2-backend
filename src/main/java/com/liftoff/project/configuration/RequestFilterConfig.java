@@ -1,6 +1,5 @@
 package com.liftoff.project.configuration;
 
-import com.liftoff.project.service.impl.RabbitMQConsumerServiceImpl;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -42,9 +41,6 @@ public class RequestFilterConfig implements Filter {
 
         String requestOrigin = httpRequest.getHeader("Origin");
         String requestMethod = httpRequest.getMethod();
-
-        LOGGER.info("Request filtering requestOrigin {}", requestOrigin);
-        LOGGER.info("Request filtering requestMethod {}", requestMethod);
 
         if (isOriginMatched(requestOrigin, getSupportedOrigins()) &&
                 allowedMethods.contains(requestMethod)) {

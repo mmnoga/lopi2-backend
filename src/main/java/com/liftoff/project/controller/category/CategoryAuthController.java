@@ -33,7 +33,7 @@ public class CategoryAuthController {
     @Operation(summary = "Add a new category",
             description = "Creates a new category with the provided details.",
             security = @SecurityRequirement(name = "bearerAuth"))
-//    @HasAdminRole
+    @HasAdminRole
     public ResponseEntity<CategoryResponseDTO> addCategory(@RequestBody CategoryRequestDTO categoryRequestDTO) {
         CategoryResponseDTO responseDTO = categoryService.addCategory(categoryRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
