@@ -80,7 +80,9 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
-                .authenticationProvider(authenticationProvider()).addFilterBefore(
+                .authenticationProvider(authenticationProvider())
+                .cors(AbstractHttpConfigurer::disable)
+                .addFilterBefore(
                         authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
 

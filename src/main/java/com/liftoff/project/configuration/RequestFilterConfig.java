@@ -21,7 +21,7 @@ import java.util.List;
 public class RequestFilterConfig implements Filter {
 
     private static final Logger LOGGER =
-            LoggerFactory.getLogger(RabbitMQConsumerServiceImpl.class);
+            LoggerFactory.getLogger(RequestFilterConfig.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {

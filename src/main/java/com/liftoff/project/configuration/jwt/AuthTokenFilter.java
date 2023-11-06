@@ -1,5 +1,6 @@
 package com.liftoff.project.configuration.jwt;
 
+import com.liftoff.project.configuration.RequestFilterConfig;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,7 +41,10 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         try {
 
+            LOGGER.info("AuthTokenFilter.doFilterInternal");
             String jwt = parseJwt(request);
+            LOGGER.info("AuthTokenFilter.doFilterInternal jwt {}", jwt);
+
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
 
@@ -51,14 +55,14 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                                 null,
                                 userDetails.getAuthorities());
                                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
+                LOGGER.info("AuthTokenFilter securityContextHolder.getContext().setAuthentication(authentication)");
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception e) {
 
             LOGGER.error(e.getMessage());
         }
-
+        LOGGER.info("AuthTokenFilter filterChain.doFilter(request, response)");
         filterChain.doFilter(request, response);
     }
 
