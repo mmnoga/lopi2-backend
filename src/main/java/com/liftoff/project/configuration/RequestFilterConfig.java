@@ -1,5 +1,6 @@
 package com.liftoff.project.configuration;
 
+import com.liftoff.project.service.impl.RabbitMQConsumerServiceImpl;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -8,6 +9,8 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
@@ -16,6 +19,9 @@ import java.util.List;
 
 @Configuration
 public class RequestFilterConfig implements Filter {
+
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(RabbitMQConsumerServiceImpl.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -28,6 +34,7 @@ public class RequestFilterConfig implements Filter {
             ServletResponse servletResponse,
             FilterChain filterChain) throws IOException, ServletException {
 
+        LOGGER.info("Filtering request");
         List<String> allowedMethods = Arrays.asList("GET", "POST", "DELETE", "PUT", "OPTIONS");
 
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
@@ -36,8 +43,12 @@ public class RequestFilterConfig implements Filter {
         String requestOrigin = httpRequest.getHeader("Origin");
         String requestMethod = httpRequest.getMethod();
 
+        LOGGER.info("Request filtering requestOrigin {}", requestOrigin);
+        LOGGER.info("Request filtering requestMethod {}", requestMethod);
+
         if (isOriginMatched(requestOrigin, getSupportedOrigins()) &&
                 allowedMethods.contains(requestMethod)) {
+            LOGGER.info("Adding response headers");
             httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
             httpResponse.setHeader("Access-Control-Allow-Origin", requestOrigin);
             httpResponse.setHeader("Access-Control-Allow-Methods", String.join(", ", allowedMethods));
