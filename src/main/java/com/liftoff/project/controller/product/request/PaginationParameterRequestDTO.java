@@ -1,5 +1,6 @@
 package com.liftoff.project.controller.product.request;
 
+import com.liftoff.project.model.ProductStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -24,5 +25,10 @@ public class PaginationParameterRequestDTO {
 
     @Schema(defaultValue = "true")
     private boolean ascending;
+
+    private ProductStatus status;
+
+    @Schema(defaultValue = "true")
+    private Boolean available;
 
 }

@@ -88,7 +88,8 @@ public class ProductController {
     public ResponseEntity<Page<ProductResponseDTO>> getSortedProductsByCategory(
             @PathVariable UUID categoryUuid,
             @Parameter(description = "pageIndex: Page index, pageSize: Page size, " +
-                    "orderColumn: Column to sort by, ascending: Flag indicating whether sorting is ascending")
+                    "orderColumn: Column to sort by, ascending: Flag indicating whether sorting is ascending, " +
+                    "status: Status of the products to retrieve, available: Filter for product availability")
             @Valid @RequestBody PaginationParameterRequestDTO paginationParameters) {
 
         Page<ProductResponseDTO> paginatedProducts =

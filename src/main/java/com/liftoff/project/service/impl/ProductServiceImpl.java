@@ -225,6 +225,22 @@ public class ProductServiceImpl implements ProductService {
 
         products.sort(productComparator(pageable.getSort()));
 
+        products = products.stream()
+                .filter(product -> (paginationParameter.getStatus() == null ||
+                        product.getStatus() == paginationParameter.getStatus()))
+                .filter(product -> {
+                    Boolean isAvailable = paginationParameter.getAvailable();
+                    if (isAvailable == null) {
+                        return true;
+                    }
+                    if (isAvailable) {
+                        return product.getQuantity() > 0;
+                    } else {
+                        return product.getQuantity() == 0;
+                    }
+                })
+                .toList();
+
         int totalProducts = products.size();
 
         int startIndex = pageable.getPageNumber() * pageable.getPageSize();
