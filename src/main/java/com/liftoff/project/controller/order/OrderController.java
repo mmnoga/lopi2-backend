@@ -3,11 +3,13 @@ package com.liftoff.project.controller.order;
 import com.liftoff.project.controller.order.request.OrderDeliveryMethodRequestDTO;
 import com.liftoff.project.controller.order.request.OrderPaymentMethodRequestDTO;
 import com.liftoff.project.controller.order.request.OrderRequestDTO;
+import com.liftoff.project.controller.order.request.OrderSummaryToSendRequestDTO;
+import com.liftoff.project.controller.order.response.DetailsResponseDTO;
 import com.liftoff.project.controller.order.response.OrderCreatedResponseDTO;
 import com.liftoff.project.controller.order.response.OrderDetailsListResponseDTO;
 import com.liftoff.project.controller.order.response.OrderSummaryListResponseDTO;
+import com.liftoff.project.controller.order.response.OrderSummaryToSendResponseDTO;
 import com.liftoff.project.service.OrderService;
-import com.liftoff.project.service.PaymentMethodService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -31,11 +33,7 @@ import java.util.UUID;
 @Tag(name = "Orders")
 public class OrderController {
 
-
     private final OrderService orderService;
-
-    private final PaymentMethodService paymentMethodService;
-
 
     @PutMapping("/edit")
     @Operation(summary = "Edit order")
@@ -45,7 +43,6 @@ public class OrderController {
 
         return ResponseEntity.ok(orderService.editOrder(orderRequest, orderUuid));
     }
-
 
     @PutMapping("/change-delivery-method")
     @Operation(summary = "Change an order delivery method")
@@ -98,5 +95,27 @@ public class OrderController {
         }
     }
 
+    @PostMapping("/send-summary")
+    @Operation(summary = "Send an order summary to a given email")
+    public ResponseEntity<OrderSummaryToSendResponseDTO> sendOrderSummary(
+            @Valid @RequestBody OrderSummaryToSendRequestDTO orderSummaryToSendRequestDTO) {
+
+        OrderSummaryToSendResponseDTO orderSummary =
+                orderService
+                        .sendOrderSummary(orderSummaryToSendRequestDTO);
+
+        return ResponseEntity.ok(orderSummary);
+    }
+
+    @GetMapping("/details/{orderUuid}")
+    @Operation(summary = "Get order details by order UUID")
+    public ResponseEntity<DetailsResponseDTO> getOrderDetailsByOrderUuid(
+            @PathVariable UUID orderUuid) {
+
+        DetailsResponseDTO detailsResponseDTO = orderService
+                .getOrderDetailsByOrderUuid(orderUuid);
+
+        return ResponseEntity.ok(detailsResponseDTO);
+    }
 
 }

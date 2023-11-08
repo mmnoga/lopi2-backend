@@ -3,22 +3,23 @@ package com.liftoff.project.service.impl;
 import com.liftoff.project.controller.order.request.OrderDeliveryMethodRequestDTO;
 import com.liftoff.project.controller.order.request.OrderPaymentMethodRequestDTO;
 import com.liftoff.project.controller.order.request.OrderRequestDTO;
+import com.liftoff.project.controller.order.request.OrderSummaryDataDTO;
+import com.liftoff.project.controller.order.request.OrderSummaryForUserRequestDTO;
+import com.liftoff.project.controller.order.request.OrderSummaryToSendRequestDTO;
+import com.liftoff.project.controller.order.response.DetailsResponseDTO;
 import com.liftoff.project.controller.order.response.OrderCreatedResponseDTO;
 import com.liftoff.project.controller.order.response.OrderDetailsListResponseDTO;
 import com.liftoff.project.controller.order.response.OrderSummaryListResponseDTO;
-import com.liftoff.project.controller.order.response.OrderSummaryResponseDTO;
+import com.liftoff.project.controller.order.response.OrderSummaryToSendResponseDTO;
 import com.liftoff.project.exception.BusinessException;
 import com.liftoff.project.mapper.AddressMapper;
-import com.liftoff.project.mapper.OrderItemMapper;
 import com.liftoff.project.mapper.OrderMapper;
 import com.liftoff.project.model.Cart;
-import com.liftoff.project.model.CartItem;
 import com.liftoff.project.model.User;
 import com.liftoff.project.model.order.Cost;
 import com.liftoff.project.model.order.Customer;
 import com.liftoff.project.model.order.DeliveryMethod;
 import com.liftoff.project.model.order.Order;
-import com.liftoff.project.model.order.OrderItem;
 import com.liftoff.project.model.order.OrderStatus;
 import com.liftoff.project.model.order.PaymentMethod;
 import com.liftoff.project.repository.CartRepository;
@@ -27,13 +28,12 @@ import com.liftoff.project.repository.DeliveryMethodRepository;
 import com.liftoff.project.repository.OrderRepository;
 import com.liftoff.project.repository.PaymentMethodRepository;
 import com.liftoff.project.repository.UserRepository;
-import com.liftoff.project.service.CartService;
 import com.liftoff.project.service.OrderService;
-import com.liftoff.project.service.UserValidationService;
+import com.liftoff.project.service.OrderSummaryProducerService;
+import com.liftoff.project.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,80 +46,19 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
-
-    private final CartService cartService;
     private final UserRepository userRepository;
-    private final UserValidationService userValidationService;
     private final OrderRepository orderRepository;
     private final DeliveryMethodRepository deliveryMethodRepository;
     private final PaymentMethodRepository paymentMethodRepository;
     private final CartRepository cartRepository;
     private final CustomerRepository customerRepository;
     private final OrderMapper orderMapper;
-    private final OrderItemMapper orderItemMapper;
     private final AddressMapper addressMapper;
+    private final OrderSummaryProducerService orderSummaryProducerService;
+    private final UserService userService;
     private static final String DELIVERY_METHOD_NOT_FOUND = "Delivery method not found";
     private static final String ORDER_ENTITY_NOT_FOUND = "Order entity not found";
     private static final String PAYMENT_METHOD_NOT_FOUND = "Payment method not found";
-
-
-    @Override
-    @Transactional
-    public OrderSummaryResponseDTO addOrder(UUID cartUuid) {
-
-
-        Cart cart = cartService.getCart(cartUuid.toString());
-
-        User userFromCart = cart.getUser();
-
-        if (orderRepository.findByCartUuid(cartUuid).isPresent())
-            throw new BusinessException("This order already exists! Try editing instead of adding");
-
-        if (userFromCart != null && this.getUserFromAuthenticatedUser() != null)
-            userValidationService.validateAuthenticatedUserFromCart(this.getUserFromAuthenticatedUser(), userFromCart);
-
-        DeliveryMethod deliveryMethod = deliveryMethodRepository
-                .findByName("COURIER_SERVICE")
-                .orElseThrow(() -> new BusinessException(DELIVERY_METHOD_NOT_FOUND));
-
-        PaymentMethod paymentMethod = paymentMethodRepository
-                .findByName("CREDIT_CARD")
-                .orElseThrow(() -> new BusinessException(DELIVERY_METHOD_NOT_FOUND));
-
-
-        Order order = Order.builder()
-                .withUuid(UUID.randomUUID())
-                .withStatus(OrderStatus.ACTIVE)
-                .withTotalPrice(0.00)
-                .withOrderDate(Instant.now())
-                .withDeliveryMethod(deliveryMethod)
-                .withDeliveryCost(deliveryMethod.getCost())
-                .withShippingAddress(null)
-                .withPaymentMethod(paymentMethod)
-                .withBillingAddress(null)
-                .withCartUuid(cart.getUuid())
-                .build();
-
-        if (userFromCart != null) order.setUser(userFromCart);
-
-        List<CartItem> cartItems = cart.getCartItems();
-
-        List<OrderItem> orderItemList = cartItems.stream().map(cartItem -> OrderItem.builder()
-                        .withProduct(cartItem.getProduct())
-                        .withQuantity(cartItem.getQuantity())
-                        .withUnitPrice(cartItem.getProduct().getRegularPrice())
-                        .withSubtotal(cartItem.getQuantity() * cartItem.getProduct().getRegularPrice())
-                        .build())
-                .toList();
-
-        order.setOrderItemList(orderItemList);
-        order.setTotalPrice(this.currentTotalPrice(order));
-
-        Order savedOrder = orderRepository.save(order);
-
-        return orderMapper.mapOrderToOrderSummaryResponseDTO(savedOrder);
-    }
-
 
     public OrderCreatedResponseDTO editOrder(OrderRequestDTO orderRequest, UUID orderUuid) {
 
@@ -226,19 +165,81 @@ public class OrderServiceImpl implements OrderService {
         Cost cost = calculateCosts(cart, deliveryMethod);
 
         Order order = Order.builder()
-                .withUuid(UUID.randomUUID())
-                .withCustomer(newCustomer)
-                .withOrderDate(Instant.now())
-                .withStatus(OrderStatus.ACTIVE)
-                .withTotalPrice(cost.total())
-                .withDeliveryMethod(deliveryMethod)
-                .withShippingAddress(orderMapper.mapAddressRequestToAddress(
+                .uuid(UUID.randomUUID())
+                .customer(newCustomer)
+                .orderDate(Instant.now())
+                .status(OrderStatus.ACTIVE)
+                .totalPrice(cost.total())
+                .deliveryMethod(deliveryMethod)
+                .shippingAddress(orderMapper.mapAddressRequestToAddress(
                         orderRequest.getShippingAddress()))
-                .withBillingAddress(orderMapper.mapAddressRequestToAddress(
+                .billingAddress(orderMapper.mapAddressRequestToAddress(
                         orderRequest.getBillingAddress()))
-                .withPaymentMethod(paymentMethod)
-                .withTermsAccepted(true)
-                .withCart(cart)
+                .paymentMethod(paymentMethod)
+                .termsAccepted(true)
+                .cart(cart)
+                .cartUuid(cartUuid)
+                .deliveryCost(deliveryMethod.getCost())
+                .build();
+
+        Order savedOrder = orderRepository.save(order);
+
+        return orderMapper.mapOrderToOrderDetailsResponseDTO(savedOrder);
+    }
+
+    @Override
+    @Transactional
+    public OrderCreatedResponseDTO createOrderForUser(
+            UserDetails userDetails,
+            OrderRequestDTO orderRequest,
+            UUID cartUuid) {
+
+        User user = userService.getUserByUsername(userDetails.getUsername());
+
+        if (Boolean.FALSE.equals(orderRequest.getTermsAccepted())) {
+            throw new BusinessException("Terms and conditions were not accepted", HttpStatus.BAD_REQUEST);
+        }
+
+        DeliveryMethod deliveryMethod = deliveryMethodRepository
+                .findByName(orderRequest.getDeliveryMethodName())
+                .orElseThrow(() -> new BusinessException(DELIVERY_METHOD_NOT_FOUND));
+
+        PaymentMethod paymentMethod = paymentMethodRepository
+                .findByName(orderRequest.getPaymentMethodName())
+                .orElseThrow(() -> new BusinessException(PAYMENT_METHOD_NOT_FOUND));
+
+        Cart cart = cartRepository.findByUuid(cartUuid)
+                .orElseThrow(() -> new BusinessException("Cart not found"));
+        Customer customer = Customer.builder()
+                .customerType(orderRequest.getCustomerType())
+                .nip(orderRequest.getNip())
+                .companyName(orderRequest.getCompanyName())
+                .salutation(orderRequest.getSalutation())
+                .firstName(orderRequest.getFirstName())
+                .lastName(orderRequest.getLastName())
+                .email(orderRequest.getEmail())
+                .build();
+        Customer newCustomer = customerRepository.save(customer);
+
+        Cost cost = calculateCosts(cart, deliveryMethod);
+
+        Order order = Order.builder()
+                .uuid(UUID.randomUUID())
+                .customer(newCustomer)
+                .orderDate(Instant.now())
+                .status(OrderStatus.ACTIVE)
+                .totalPrice(cost.total())
+                .deliveryMethod(deliveryMethod)
+                .shippingAddress(orderMapper.mapAddressRequestToAddress(
+                        orderRequest.getShippingAddress()))
+                .billingAddress(orderMapper.mapAddressRequestToAddress(
+                        orderRequest.getBillingAddress()))
+                .paymentMethod(paymentMethod)
+                .termsAccepted(true)
+                .cart(cart)
+                .cartUuid(cartUuid)
+                .deliveryCost(deliveryMethod.getCost())
+                .user(user)
                 .build();
 
         Order savedOrder = orderRepository.save(order);
@@ -271,7 +272,6 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
-
     @Override
     public OrderCreatedResponseDTO getOrderByUuid(UUID orderUuid) {
         Order order = orderRepository.findByUuid(orderUuid)
@@ -279,24 +279,89 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.mapOrderToOrderDetailsResponseDTO(order);
     }
 
-
-    private User getUserFromAuthenticatedUser() {
-
-        String userName = "";
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) userName = authentication.getName();
-        return userRepository.findByUsername(userName).orElse(null);
-
+    @Override
+    public Order getOrderEntityByUuid(UUID orderUuid) {
+        return orderRepository
+                .findByUuid(orderUuid)
+                .orElseThrow(() ->
+                        new BusinessException("Order with UUID: " + orderUuid + " not found"));
     }
 
-    private double currentTotalPrice(Order order) {
+    @Override
+    public DetailsResponseDTO getOrderDetailsByOrderUuid(UUID orderUuid) {
 
-        double deliveryCost = order.getDeliveryCost();
-        double sumOfOrderItemSubTotal = order.getOrderItemList().stream().mapToDouble(OrderItem::getSubtotal).sum();
+        Order order = getOrderEntityByUuid(orderUuid);
 
-        return deliveryCost + sumOfOrderItemSubTotal;
+        return orderMapper
+                .mapOrderToDetailsResponseDTO(order);
     }
 
+    @Override
+    public DetailsResponseDTO getOrderDetailsForUserByOrderUuid(
+            UserDetails userDetails,
+            UUID orderUuid) {
+
+        Order order = getOrderEntityByUuid(orderUuid);
+
+        User user = userService
+                .getUserByUsername(userDetails.getUsername());
+
+        if (!order.getUser().getUsername().equals(user.getUsername())) {
+            throw new BusinessException("Order with UUID: " + order.getUuid() +
+                    " does not belong to user with UUID: " + user.getUuid());
+        }
+
+        return orderMapper
+                .mapOrderToDetailsResponseDTO(order);
+    }
+
+    @Override
+    public OrderSummaryToSendResponseDTO sendOrderSummary(
+            OrderSummaryToSendRequestDTO orderSummaryToSendRequestDTO) {
+
+        UUID orderUuid = orderSummaryToSendRequestDTO.getOrderUuid();
+
+        DetailsResponseDTO detailsResponseDTO = getOrderDetailsByOrderUuid(orderUuid);
+
+        OrderSummaryDataDTO orderSummaryDataDTO = orderMapper
+                .mapDetailsResponseDTOToOrderSummaryDataDTO(detailsResponseDTO);
+
+        String email = orderSummaryToSendRequestDTO.getEmail();
+        orderSummaryDataDTO.setEmail(email);
+
+        orderSummaryProducerService
+                .sendOrderSummaryDataMessage(orderSummaryDataDTO);
+
+        return OrderSummaryToSendResponseDTO.builder()
+                .message("Order summary send has been initialized")
+                .build();
+    }
+
+    @Override
+    public OrderSummaryToSendResponseDTO sendOrderSummaryForUser(
+            UserDetails userDetails,
+            OrderSummaryForUserRequestDTO orderSummaryForUserRequestDTO) {
+
+        String username = userDetails.getUsername();
+        User user = userService.getUserByUsername(username);
+
+        UUID orderUuid = orderSummaryForUserRequestDTO.getOrderUuid();
+
+        DetailsResponseDTO detailsResponseDTO = getOrderDetailsByOrderUuid(orderUuid);
+
+        OrderSummaryDataDTO orderSummaryDataDTO = orderMapper
+                .mapDetailsResponseDTOToOrderSummaryDataDTO(detailsResponseDTO);
+
+        String userEmail = user.getUsername();
+        orderSummaryDataDTO.setEmail(userEmail);
+
+        orderSummaryProducerService
+                .sendOrderSummaryDataMessage(orderSummaryDataDTO);
+
+        return OrderSummaryToSendResponseDTO.builder()
+                .message("Order summary send for existing user has been initialized")
+                .build();
+    }
 
     private Cost calculateCosts(Cart cart, DeliveryMethod deliveryMethod) {
         Double productsTotalPrice = cart.getCartItems().stream()
@@ -310,6 +375,5 @@ public class OrderServiceImpl implements OrderService {
 
         return new Cost(productsTotalPrice, deliveryCost, totalCost);
     }
-
 
 }

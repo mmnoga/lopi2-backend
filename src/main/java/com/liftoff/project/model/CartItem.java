@@ -31,4 +31,8 @@ public class CartItem {
     @Column(name = "QUANTITY")
     private Integer quantity;
 
+    public Double getSubtotal() {
+        return quantity * product.getRegularPrice();
+    }
+
 }

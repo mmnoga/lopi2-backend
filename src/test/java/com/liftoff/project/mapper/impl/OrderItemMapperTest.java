@@ -50,7 +50,7 @@ class OrderItemMapperTest {
 
         // Given
         Order order = Order.builder()
-                .withId(1L)
+                .id(1L)
                 .build();
 
 

@@ -60,4 +60,8 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Order> orders = new ArrayList<>();
 
+    public String getFullName() {
+        return this.firstName + " " + this.lastName;
+    }
+
 }

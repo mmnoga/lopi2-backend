@@ -33,7 +33,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Builder(setterPrefix = "with")
+@Builder
 public class Order {
 
     @Id
