@@ -16,6 +16,8 @@ import com.liftoff.project.service.SessionService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,9 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
+
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(CartServiceImpl.class);
 
     @Value("${cart.cookie.name}")
     private String cookieName;
@@ -64,6 +69,9 @@ public class CartServiceImpl implements CartService {
     @Transactional
     public Cart processCart(UUID productUuid, int quantity,
                             HttpServletRequest request, HttpServletResponse response) {
+
+        LOGGER.info("Adding product to cart...");
+
         Cart cart = getCartByCookieOrCreateNewCart(request, response);
 
         Product product = productService.getProductEntityByUuid(productUuid);
