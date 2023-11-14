@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,6 +32,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -41,6 +43,10 @@ public class ProductServiceImpl implements ProductService {
     private static final String SORT_TYPE_NAME = "name";
     private static final String SORT_TYPE_REGULAR_PRICE = "regularPrice";
     private static final String PRODUCT_NOT_FOUND_ERROR = "Product with UUID not found: ";
+    private static final Set<String> PRODUCT_ALLOWED_SORT_FIELDS =
+            Set.of("name", "sku", "regularPrice", "discountPrice", "lowestPrice",
+                    "description", "shortDescription", "note", "status", "productscol",
+                    "quantity");
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
@@ -54,6 +60,8 @@ public class ProductServiceImpl implements ProductService {
     public PaginatedProductResponseDTO getProducts(Pageable pageable) {
 
         Sort sort = pageable.getSort();
+
+        validateSortingFields(sort);
 
         Sort newSort = sort.and(Sort.by(DEFAULT_SORT_FIELD));
 
@@ -311,6 +319,16 @@ public class ProductServiceImpl implements ProductService {
 
             return compareResult;
         };
+    }
+
+    private void validateSortingFields(Sort sort) {
+        for (Sort.Order order : sort) {
+            String property = order.getProperty();
+            if (!PRODUCT_ALLOWED_SORT_FIELDS.contains(property)) {
+                throw new BusinessException("No property '" + property + "' found for type 'Product'",
+                        HttpStatus.BAD_REQUEST);
+            }
+        }
     }
 
 }
