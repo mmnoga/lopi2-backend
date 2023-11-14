@@ -9,6 +9,7 @@ import com.liftoff.project.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,8 +40,12 @@ public class ProductAuthController {
             description = "Adds a new product with the provided details.",
             security = @SecurityRequirement(name = "bearerAuth"))
     @HasAdminRole
-    public ResponseEntity<ProductResponseDTO> addProduct(@RequestBody ProductRequestDTO productRequestDTO) {
-        ProductResponseDTO responseDTO = productService.addProduct(productRequestDTO);
+    public ResponseEntity<ProductResponseDTO> addProduct(
+            @Valid @RequestBody ProductRequestDTO productRequestDTO) {
+
+        ProductResponseDTO responseDTO = productService
+                .addProduct(productRequestDTO);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
@@ -113,10 +118,13 @@ public class ProductAuthController {
             description = "Updates the product with the provided UUID using the given information.",
             security = @SecurityRequirement(name = "bearerAuth"))
     @HasAdminRole
-    public ResponseEntity<ProductResponseDTO> updateProduct(@PathVariable UUID productUuid,
-                                                            @RequestBody ProductRequestDTO productRequestDTO) {
+    public ResponseEntity<ProductResponseDTO> updateProduct(
+            @PathVariable UUID productUuid,
+            @Valid @RequestBody ProductRequestDTO productRequestDTO) {
+
         try {
-            ProductResponseDTO updatedProduct = productService.updateProductByUuid(productUuid, productRequestDTO);
+            ProductResponseDTO updatedProduct = productService
+                    .updateProductByUuid(productUuid, productRequestDTO);
             return ResponseEntity.ok(updatedProduct);
         } catch (BusinessException ex) {
             return ResponseEntity.notFound().build();

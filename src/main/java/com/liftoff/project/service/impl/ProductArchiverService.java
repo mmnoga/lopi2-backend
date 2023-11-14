@@ -99,9 +99,6 @@ public class ProductArchiverService {
         if (productRequestDTO.getDiscountPriceEndDate() != null) {
             product.setDiscountPriceEndDate(productRequestDTO.getDiscountPriceEndDate());
         }
-        if (productRequestDTO.getLowestPrice() != null) {
-            product.setLowestPrice(productRequestDTO.getLowestPrice());
-        }
         if (productRequestDTO.getDescription() != null) {
             product.setDescription(productRequestDTO.getDescription());
         }
@@ -186,11 +183,6 @@ public class ProductArchiverService {
             newProduct.setDiscountPriceEndDate(productRequestDTO.getDiscountPriceEndDate());
         } else {
             newProduct.setDiscountPriceEndDate(existingProduct.getDiscountPriceEndDate());
-        }
-        if (productRequestDTO.getLowestPrice() != null) {
-            newProduct.setLowestPrice(productRequestDTO.getLowestPrice());
-        } else {
-            newProduct.setLowestPrice(existingProduct.getLowestPrice());
         }
         if (productRequestDTO.getShortDescription() != null) {
             newProduct.setShortDescription(productRequestDTO.getShortDescription());

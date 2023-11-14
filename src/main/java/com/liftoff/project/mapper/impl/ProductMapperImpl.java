@@ -69,7 +69,6 @@ public class ProductMapperImpl implements ProductMapper {
         product.setRegularPrice(productRequestDTO.getRegularPrice());
         product.setDiscountPrice(productRequestDTO.getDiscountPrice());
         product.setDiscountPriceEndDate(productRequestDTO.getDiscountPriceEndDate());
-        product.setLowestPrice(productRequestDTO.getLowestPrice());
         product.setDescription(productRequestDTO.getDescription());
         product.setShortDescription(productRequestDTO.getShortDescription());
         product.setNote(productRequestDTO.getNote());
