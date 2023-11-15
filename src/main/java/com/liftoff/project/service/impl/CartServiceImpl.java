@@ -131,7 +131,7 @@ public class CartServiceImpl implements CartService {
         } else if (response != null) {
             Cart newCart = createCart();
             String newCartId = newCart.getUuid().toString();
-            cookieService.setCookie(cookieName, newCartId, response);
+            cookieService.setCookie(cookieName, newCartId, response, request);
 
             Instant expirationTime = Instant.now()
                     .plusSeconds(cookieMaxTime);
