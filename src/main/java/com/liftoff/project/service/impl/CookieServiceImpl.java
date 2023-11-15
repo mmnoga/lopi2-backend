@@ -28,35 +28,23 @@ public class CookieServiceImpl implements CookieService {
     }
 
     @Override
-    public void setCookie(
-            String name,
-            String value,
-            HttpServletResponse response,
-            HttpServletRequest request) {
+    public void setCookie(String name, String value, HttpServletResponse response) {
 
         LOGGER.info("Setting cookie...");
 
-        if (response != null && request != null) {
-            String origin = request.getHeader("Origin");
+        if (response != null) {
+            ResponseCookie cookie = ResponseCookie.from(name, value)
+                    .httpOnly(true)
+                    .secure(true)
+                    .path("/")
+                    .maxAge(maxAgeSeconds)
+                    .sameSite("None")
+//                    .domain("*")
+//                    .domain("lopi-2-shop.vercel.app")
+                    .build();
 
-            if (origin != null) {
-                String cleanedOrigin = origin.replaceFirst("^https?://", "");
-                String domainWithoutPort = cleanedOrigin.split(":")[0];
-
-                ResponseCookie cookie = ResponseCookie.from(name, value)
-                        .httpOnly(true)
-                        .secure(true)
-                        .path("/")
-                        .maxAge(maxAgeSeconds)
-                        .sameSite("None")
-                        .domain(domainWithoutPort)
-                        .build();
-
-                response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-
-                LOGGER.info("New cookie: {}", cookie);
-            }
-
+            response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+            LOGGER.info("New cookie: {}", cookie);
         }
     }
 
