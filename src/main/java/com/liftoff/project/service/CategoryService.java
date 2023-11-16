@@ -42,7 +42,9 @@ public interface CategoryService {
      * @param categoryUuid       The UUID of the category to be updated.
      * @param categoryRequestDTO The CategoryRequestDTO object containing the updated details of the category.
      * @return The CategoryResponseDTO object representing the updated category.
-     * @throws BusinessException If the category with the given UUID is not found.
+     * @throws BusinessException If the category with the given UUID is not found or
+     *                           there is a validation error.
+     *                           The exception message provides details about the specific issue.
      */
     CategoryResponseDTO updateCategory(UUID categoryUuid, CategoryRequestDTO categoryRequestDTO);
 
@@ -56,7 +58,7 @@ public interface CategoryService {
 
     /**
      * Retrieves existing Category entities based on a list of CategoryUidRequestDTO.
-     *
+     * <p>
      * This method iterates through the provided list of CategoryUidRequestDTO objects,
      * retrieves the corresponding Category entity for each Category UID, and collects
      * them into a list. If any Category UID is not found in the repository, it throws

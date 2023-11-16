@@ -86,13 +86,36 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponseDTO updateCategory(UUID categoryUuid, CategoryRequestDTO categoryRequestDTO) {
+
         Category existingCategory = categoryRepository.findByUId(categoryUuid)
                 .orElseThrow(() -> new BusinessException(CATEGORY_NOT_FOUND_ERROR + categoryUuid));
 
-        existingCategory.setName(categoryRequestDTO.getName());
-        existingCategory.setDescription(categoryRequestDTO.getDescription());
-        existingCategory.setIcon(categoryRequestDTO.getIcon());
-        existingCategory.setImagePath(categoryRequestDTO.getImagePath());
+        if (isCategoryRequestWithoutUpdates(categoryRequestDTO)) {
+            throw new BusinessException("Update request must include at least one field to update",
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        if (categoryRequestDTO.getName() != null && categoryRequestDTO.getName().isEmpty()) {
+            throw new BusinessException("'name' cannot be blank",
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        existingCategory.setName(categoryRequestDTO
+                .getName() != null ?
+                categoryRequestDTO.getName() :
+                existingCategory.getName());
+        existingCategory.setDescription(categoryRequestDTO
+                .getDescription() != null ?
+                categoryRequestDTO.getDescription() :
+                existingCategory.getDescription());
+        existingCategory.setIcon(categoryRequestDTO
+                .getIcon() != null ?
+                categoryRequestDTO.getIcon() :
+                existingCategory.getIcon());
+        existingCategory.setImagePath(categoryRequestDTO
+                .getImagePath() != null ?
+                categoryRequestDTO.getImagePath() :
+                existingCategory.getImagePath());
 
         UUID parentCategoryId = categoryRequestDTO.getParentCategoryId();
         if (parentCategoryId != null) {
@@ -142,6 +165,15 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         return productQuantity;
+    }
+
+    private boolean isCategoryRequestWithoutUpdates(CategoryRequestDTO categoryRequestDTO) {
+        return categoryRequestDTO == null || (
+                categoryRequestDTO.getName() == null &&
+                        categoryRequestDTO.getDescription() == null &&
+                        categoryRequestDTO.getIcon() == null &&
+                        categoryRequestDTO.getImagePath() == null &&
+                        categoryRequestDTO.getParentCategoryId() == null);
     }
 
 }
