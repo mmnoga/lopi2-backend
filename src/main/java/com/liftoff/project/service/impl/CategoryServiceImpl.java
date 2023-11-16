@@ -9,6 +9,7 @@ import com.liftoff.project.model.Category;
 import com.liftoff.project.repository.CategoryRepository;
 import com.liftoff.project.service.CategoryService;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +52,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponseDTO addCategory(CategoryRequestDTO categoryRequestDTO) {
+
+        if (categoryRequestDTO == null || isCategoryRequestNameSet(categoryRequestDTO)) {
+            throw new BusinessException("Category request cannot be empty. 'name' is required.",
+                    HttpStatus.BAD_REQUEST);
+        }
+
         Category newCategory = categoryMapper.mapRequestToEntity(categoryRequestDTO);
 
         UUID newCategoryUuid = UUID.randomUUID();
@@ -167,6 +174,10 @@ public class CategoryServiceImpl implements CategoryService {
         return productQuantity;
     }
 
+    private boolean isCategoryRequestNameSet(CategoryRequestDTO categoryRequestDTO) {
+        return StringUtils.isBlank(categoryRequestDTO.getName());
+    }
+  
     private boolean isCategoryRequestWithoutUpdates(CategoryRequestDTO categoryRequestDTO) {
         return categoryRequestDTO == null || (
                 categoryRequestDTO.getName() == null &&
