@@ -108,7 +108,6 @@ class ProductMapperImplTest {
                 .sku("SKU")
                 .regularPrice(100.0)
                 .discountPrice(90.0)
-                .lowestPrice(80.0)
                 .description("Description 1")
                 .shortDescription("Short description 1")
                 .note("Note 1")
@@ -125,7 +124,6 @@ class ProductMapperImplTest {
         assertEquals(productRequestDTO.getSku(), product.getSku());
         assertEquals(productRequestDTO.getRegularPrice(), product.getRegularPrice());
         assertEquals(productRequestDTO.getDiscountPrice(), product.getDiscountPrice());
-        assertEquals(productRequestDTO.getLowestPrice(), product.getLowestPrice());
         assertEquals(productRequestDTO.getDescription(), product.getDescription());
         assertEquals(productRequestDTO.getShortDescription(), product.getShortDescription());
         assertEquals(productRequestDTO.getNote(), product.getNote());
