@@ -207,7 +207,8 @@ public class ProductServiceImpl implements ProductService {
     public Product getProductEntityByUuid(UUID productUuid) {
         return productRepository.findByUId(productUuid)
                 .orElseThrow(() ->
-                        new BusinessException(PRODUCT_NOT_FOUND_ERROR + productUuid));
+                        new BusinessException(PRODUCT_NOT_FOUND_ERROR + productUuid,
+                                HttpStatus.BAD_REQUEST));
     }
 
     @Override
