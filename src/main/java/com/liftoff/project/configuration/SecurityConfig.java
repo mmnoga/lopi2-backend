@@ -82,6 +82,8 @@ public class SecurityConfig {
                         .requestMatchers("/products/**").hasRole(SecurityRoles.ADMIN)
                         .requestMatchers(HttpMethod.OPTIONS, "/storage/**").permitAll()
                         .requestMatchers("/storage/**").hasRole(SecurityRoles.ADMIN)
+                        .requestMatchers(HttpMethod.GET, "/payu/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/payu/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/reviews/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/reviews/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/auth-reviews/**").permitAll()
