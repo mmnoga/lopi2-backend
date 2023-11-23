@@ -99,21 +99,35 @@ public class PayUApiClientImpl implements PayUApiClient {
                 .build()
                 .toUriString();
 
-        String requestBody = String.format("grant_type=client_credentials&client_id=%s&client_secret=%s",
-                payUConfig.getClientId(), payUConfig.getClientSecret());
+//      String requestBody = String.format("grant_type=client_credentials&client_id=%s&client_secret=%s",
+//                payUConfig.getClientId(), payUConfig.getClientSecret());
 
-        HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
+//      HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
 
+        HttpEntity<OrderCreateRequestDTO> request =
+                new HttpEntity<>(orderCreateRequestDTO, headers);
+
+//      Sprawdzić dokładnie czy wszystkie DTO są poprawne!!! i czy zawierają settery, gettery i konstruktory!!! inaczej to nie zadziała!!!
         ResponseEntity<OrderResponseDTO> responseEntity = restTemplate.exchange(
                 authUrl,
                 HttpMethod.POST,
                 request,
                 OrderResponseDTO.class);
 
+ //     Nie za długa ta linijka???
+ //     OrderPayU savedOrderPayU = orderPayURepository.save(orderPayUMapper.mapOrderResponseDTOTOrderPayU(responseEntity.getBody()));
 
-        OrderPayU savedOrderPayU = orderPayURepository.save(orderPayUMapper.mapOrderResponseDTOTOrderPayU(responseEntity.getBody()));
+        OrderResponseDTO responseEntityBody = responseEntity
+                .getBody();
 
-       return orderPayUMapper.mapOrderPayUToOrderPayUCreatedResponseDTO(savedOrderPayU);
+        OrderPayU orderPayU = orderPayUMapper
+                .mapOrderResponseDTOTOrderPayU(responseEntityBody);
+
+        OrderPayU savedOrderPayU = orderPayURepository
+                .save(orderPayU);
+
+        return orderPayUMapper
+                .mapOrderPayUToOrderPayUCreatedResponseDTO(savedOrderPayU);
 
        // return responseEntity.getBody();
     }
