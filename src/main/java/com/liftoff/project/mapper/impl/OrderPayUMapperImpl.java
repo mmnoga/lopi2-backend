@@ -1,10 +1,13 @@
 package com.liftoff.project.mapper.impl;
 
 import com.liftoff.project.controller.payu.response.OrderPayUCreatedResponseDTO;
+import com.liftoff.project.controller.payu.response.OrderResponseDTO;
 import com.liftoff.project.mapper.OrderPayUMapper;
 import com.liftoff.project.model.OrderPayU;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -24,6 +27,23 @@ public class OrderPayUMapperImpl implements OrderPayUMapper {
                 .redirectUri(orderPayU.getRedirectUri())
                 .orderId(orderPayU.getOrderId())
                 .extOrderId(orderPayU.getExtOrderId())
+                .build();
+    }
+
+
+    @Override
+    public OrderPayU mapOrderResponseDTOTOrderPayU(OrderResponseDTO orderResponseDTO) {
+
+        if (orderResponseDTO == null) {
+            return null;
+        }
+
+        return OrderPayU.builder()
+                .uuid(UUID.randomUUID())
+                .statusCode(orderResponseDTO.getStatus().getStatusCode())
+                .redirectUri(orderResponseDTO.getRedirectUri())
+                .orderId(orderResponseDTO.getOrderId())
+                .extOrderId(orderResponseDTO.getExtOrderId())
                 .build();
     }
 
