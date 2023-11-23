@@ -90,6 +90,7 @@ public class PayUApiClientImpl implements PayUApiClient {
             OrderCreateRequestDTO orderCreateRequestDTO) {
 
         HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", authorizationHeader);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         String authUrl = UriComponentsBuilder
