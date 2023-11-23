@@ -1,9 +1,13 @@
 package com.liftoff.project.mapper.impl;
 
+import com.liftoff.project.controller.order.request.OrderItemRequestDTO;
 import com.liftoff.project.controller.payu.response.OrderPayUCreatedResponseDTO;
 import com.liftoff.project.controller.payu.response.OrderResponseDTO;
 import com.liftoff.project.controller.payu.response.OrderResponseStatusDTO;
+import com.liftoff.project.controller.product.request.ProductRequestDTO;
 import com.liftoff.project.model.OrderPayU;
+import com.liftoff.project.model.order.Order;
+import com.liftoff.project.model.order.OrderItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,8 +17,8 @@ import org.mockito.MockitoAnnotations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-class OrderPayUMapperTest {
 
+public class OrderPayUMapperTest {
 
     @Mock
     private OrderPayU orderPayU;
@@ -53,6 +57,7 @@ class OrderPayUMapperTest {
                 .orderId("12345678")
                 .build();
 
+
         // When
         OrderPayUCreatedResponseDTO dto = orderPayUMapper.mapOrderPayUToOrderPayUCreatedResponseDTO(orderPayU);
 
@@ -60,7 +65,7 @@ class OrderPayUMapperTest {
         assertEquals(orderPayU.getExtOrderId(), dto.getExtOrderId());
         assertEquals(orderPayU.getRedirectUri(), dto.getRedirectUri());
         assertEquals(orderPayU.getOrderId(), dto.getOrderId());
-        assertEquals(orderPayU.getStatusCode(), dto.getStatusCode());
+        assertEquals(orderPayU.getStatusCode(), dto.getStatus().getStatusCode());
 
     }
 
@@ -100,6 +105,4 @@ class OrderPayUMapperTest {
         assertEquals(orderPayU.getStatusCode(), orderResponseDTO.getStatus().getStatusCode());
 
     }
-
-
 }

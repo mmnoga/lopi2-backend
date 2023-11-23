@@ -2,6 +2,7 @@ package com.liftoff.project.mapper.impl;
 
 import com.liftoff.project.controller.payu.response.OrderPayUCreatedResponseDTO;
 import com.liftoff.project.controller.payu.response.OrderResponseDTO;
+import com.liftoff.project.controller.payu.response.OrderResponseStatusDTO;
 import com.liftoff.project.mapper.OrderPayUMapper;
 import com.liftoff.project.model.OrderPayU;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class OrderPayUMapperImpl implements OrderPayUMapper {
 
         return OrderPayUCreatedResponseDTO.builder()
                 .uuid(orderPayU.getUuid())
-                .statusCode(orderPayU.getStatusCode())
+                .status(OrderResponseStatusDTO.builder().statusCode(orderPayU.getStatusCode()).build())
                 .redirectUri(orderPayU.getRedirectUri())
                 .orderId(orderPayU.getOrderId())
                 .extOrderId(orderPayU.getExtOrderId())

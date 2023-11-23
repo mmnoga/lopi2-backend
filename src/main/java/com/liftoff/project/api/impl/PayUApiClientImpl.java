@@ -99,7 +99,12 @@ public class PayUApiClientImpl implements PayUApiClient {
                 .build()
                 .toUriString();
 
-//      String requestBody = String.format("grant_type=client_credentials&client_id=%s&client_secret=%s",
+      String requestBody = String.format("grant_type=client_credentials&client_id=%s&client_secret=%s",
+                payUConfig.getClientId(), payUConfig.getClientSecret());
+
+      System.out.println(authUrl);
+
+//        String requestBody = String.format("grant_type=client_credentials&client_id=%s&client_secret=%s",
 //                payUConfig.getClientId(), payUConfig.getClientSecret());
 
 //      HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
@@ -119,6 +124,7 @@ public class PayUApiClientImpl implements PayUApiClient {
 
         OrderResponseDTO responseEntityBody = responseEntity
                 .getBody();
+        System.out.println(responseEntity.getBody());
 
         OrderPayU orderPayU = orderPayUMapper
                 .mapOrderResponseDTOTOrderPayU(responseEntityBody);
