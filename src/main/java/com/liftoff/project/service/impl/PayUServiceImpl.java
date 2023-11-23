@@ -1,10 +1,10 @@
 package com.liftoff.project.service.impl;
 
+import com.liftoff.project.api.PayUApiClient;
 import com.liftoff.project.controller.payu.request.OrderCreateRequestDTO;
-import com.liftoff.project.controller.payu.response.OrderResponseDTO;
+import com.liftoff.project.controller.payu.response.OrderPayUCreatedResponseDTO;
 import com.liftoff.project.controller.payu.response.PayUAuthResponseDTO;
 import com.liftoff.project.controller.payu.response.PaymentMethodResponseDTO;
-import com.liftoff.project.api.PayUApiClient;
 import com.liftoff.project.service.PayUService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ public class PayUServiceImpl implements PayUService {
     }
 
     @Override
-    public OrderResponseDTO submitOrder(
+    public OrderPayUCreatedResponseDTO submitOrder(
             String authorizationHeader,
             OrderCreateRequestDTO orderCreateRequestDTO) {
         return payUApiClient

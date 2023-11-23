@@ -1,7 +1,7 @@
 package com.liftoff.project.api;
 
 import com.liftoff.project.controller.payu.request.OrderCreateRequestDTO;
-import com.liftoff.project.controller.payu.response.OrderResponseDTO;
+import com.liftoff.project.controller.payu.response.OrderPayUCreatedResponseDTO;
 import com.liftoff.project.controller.payu.response.PayUAuthResponseDTO;
 import com.liftoff.project.controller.payu.response.PaymentMethodResponseDTO;
 
@@ -25,7 +25,7 @@ public interface PayUApiClient {
      */
     PaymentMethodResponseDTO getPaymentMethods(String authorizationHeader);
 
-    OrderResponseDTO submitOrder(
+    OrderPayUCreatedResponseDTO submitOrder(
             String authorizationHeader,
             OrderCreateRequestDTO orderCreateRequestDTO);
 
