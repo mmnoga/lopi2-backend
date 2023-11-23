@@ -2,6 +2,8 @@ package com.liftoff.project.api.impl;
 
 import com.liftoff.project.api.PayUApiClient;
 import com.liftoff.project.configuration.payu.PayUConfig;
+import com.liftoff.project.controller.payu.request.OrderCreateRequestDTO;
+import com.liftoff.project.controller.payu.response.OrderResponseDTO;
 import com.liftoff.project.controller.payu.response.PayUAuthResponseDTO;
 import com.liftoff.project.controller.payu.response.PaymentMethodResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -73,6 +75,14 @@ public class PayUApiClientImpl implements PayUApiClient {
                 PaymentMethodResponseDTO.class);
 
         return responseEntity.getBody();
+    }
+
+    @Override
+    public OrderResponseDTO submitOrder(
+            String authorizationHeader,
+            OrderCreateRequestDTO orderCreateRequestDTO) {
+
+        return null;
     }
 
 }

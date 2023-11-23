@@ -1,5 +1,7 @@
 package com.liftoff.project.service;
 
+import com.liftoff.project.controller.payu.request.OrderCreateRequestDTO;
+import com.liftoff.project.controller.payu.response.OrderResponseDTO;
 import com.liftoff.project.controller.payu.response.PayUAuthResponseDTO;
 import com.liftoff.project.controller.payu.response.PaymentMethodResponseDTO;
 
@@ -22,5 +24,9 @@ public interface PayUService {
      * Throws Payu system code if there is an exception during the retrieval process.
      */
     PaymentMethodResponseDTO getPaymentMethods(String authorizationHeader);
+
+    OrderResponseDTO submitOrder(
+            String authorizationHeader,
+            OrderCreateRequestDTO orderCreateRequestDTO);
 
 }
