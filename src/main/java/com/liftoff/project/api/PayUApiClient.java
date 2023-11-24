@@ -25,6 +25,16 @@ public interface PayUApiClient {
      */
     PaymentMethodResponseDTO getPaymentMethods(String authorizationHeader);
 
+
+
+    /**
+     * Retrieves answer for request the creation new Order in PayU system.
+     *
+     * @param authorizationHeader The authorization header containing the access token.
+     * @param orderCreateRequestDTO The request DTO object with data for new Order which is sending to PayU.
+     * @return The response contains the state of new Order in DTO object.
+
+     */
     OrderCreatedResponseDTO submitOrder(
             String authorizationHeader,
             OrderCreateRequestDTO orderCreateRequestDTO);
