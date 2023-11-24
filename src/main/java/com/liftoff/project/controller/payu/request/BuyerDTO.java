@@ -13,5 +13,6 @@ public class BuyerDTO {
     private String phone;
     private String firstName;
     private String lastName;
+    private String language;
 
 }
