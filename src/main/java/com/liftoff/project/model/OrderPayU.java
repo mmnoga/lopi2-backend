@@ -33,7 +33,6 @@ public class OrderPayU {
     @Column(name = "UID")
     private UUID uuid;
 
-
     @Column(name = "STATUS_CODE")
     private String statusCode;
 
@@ -53,6 +52,5 @@ public class OrderPayU {
     @UpdateTimestamp(source = SourceType.DB)
     @Column(name = "UPDATED_AT")
     private Instant updatedAt;
-
 
 }

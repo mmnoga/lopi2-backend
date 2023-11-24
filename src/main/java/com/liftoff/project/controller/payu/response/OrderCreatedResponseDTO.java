@@ -1,18 +1,22 @@
 package com.liftoff.project.controller.payu.response;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderResponseStatusDTO {
+public class OrderCreatedResponseDTO {
 
-    @NotNull(message = "OrderPayU Status Code is required")
-    private String statusCode;
+    private UUID uuid;
+    private StatusDTO status;
+    private String redirectUri;
+    private String orderId;
+    private String extOrderId;
 
 }

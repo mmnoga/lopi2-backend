@@ -1,8 +1,8 @@
 package com.liftoff.project.mapper.impl;
 
-import com.liftoff.project.controller.payu.response.OrderPayUCreatedResponseDTO;
+import com.liftoff.project.controller.payu.response.OrderCreatedResponseDTO;
 import com.liftoff.project.controller.payu.response.OrderResponseDTO;
-import com.liftoff.project.controller.payu.response.OrderResponseStatusDTO;
+import com.liftoff.project.controller.payu.response.StatusDTO;
 import com.liftoff.project.mapper.OrderPayUMapper;
 import com.liftoff.project.model.OrderPayU;
 import lombok.RequiredArgsConstructor;
@@ -14,23 +14,21 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OrderPayUMapperImpl implements OrderPayUMapper {
 
-
     @Override
-    public OrderPayUCreatedResponseDTO mapOrderPayUToOrderPayUCreatedResponseDTO(OrderPayU orderPayU) {
+    public OrderCreatedResponseDTO mapOrderToOrderResponseDTO(OrderPayU orderPayU) {
 
         if (orderPayU == null) {
             return null;
         }
 
-        return OrderPayUCreatedResponseDTO.builder()
+        return OrderCreatedResponseDTO.builder()
                 .uuid(orderPayU.getUuid())
-                .status(OrderResponseStatusDTO.builder().statusCode(orderPayU.getStatusCode()).build())
+                .status(StatusDTO.builder().statusCode(orderPayU.getStatusCode()).build())
                 .redirectUri(orderPayU.getRedirectUri())
                 .orderId(orderPayU.getOrderId())
                 .extOrderId(orderPayU.getExtOrderId())
                 .build();
     }
-
 
     @Override
     public OrderPayU mapOrderResponseDTOTOrderPayU(OrderResponseDTO orderResponseDTO) {
@@ -47,6 +45,5 @@ public class OrderPayUMapperImpl implements OrderPayUMapper {
                 .extOrderId(orderResponseDTO.getExtOrderId())
                 .build();
     }
-
 
 }

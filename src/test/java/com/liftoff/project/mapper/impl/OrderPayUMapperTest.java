@@ -1,13 +1,9 @@
 package com.liftoff.project.mapper.impl;
 
-import com.liftoff.project.controller.order.request.OrderItemRequestDTO;
-import com.liftoff.project.controller.payu.response.OrderPayUCreatedResponseDTO;
+import com.liftoff.project.controller.payu.response.OrderCreatedResponseDTO;
 import com.liftoff.project.controller.payu.response.OrderResponseDTO;
-import com.liftoff.project.controller.payu.response.OrderResponseStatusDTO;
-import com.liftoff.project.controller.product.request.ProductRequestDTO;
+import com.liftoff.project.controller.payu.response.StatusDTO;
 import com.liftoff.project.model.OrderPayU;
-import com.liftoff.project.model.order.Order;
-import com.liftoff.project.model.order.OrderItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -39,10 +35,10 @@ public class OrderPayUMapperTest {
         OrderPayU orderPayU = null;
 
         // When
-        OrderPayUCreatedResponseDTO orderPayUCreatedResponseDTO = orderPayUMapper.mapOrderPayUToOrderPayUCreatedResponseDTO(orderPayU);
+        OrderCreatedResponseDTO orderCreatedResponseDTO = orderPayUMapper.mapOrderToOrderResponseDTO(orderPayU);
 
         // Then
-        assertNull(orderPayUCreatedResponseDTO);
+        assertNull(orderCreatedResponseDTO);
     }
 
     @Test
@@ -59,7 +55,7 @@ public class OrderPayUMapperTest {
 
 
         // When
-        OrderPayUCreatedResponseDTO dto = orderPayUMapper.mapOrderPayUToOrderPayUCreatedResponseDTO(orderPayU);
+        OrderCreatedResponseDTO dto = orderPayUMapper.mapOrderToOrderResponseDTO(orderPayU);
 
         // Then
         assertEquals(orderPayU.getExtOrderId(), dto.getExtOrderId());
@@ -91,7 +87,7 @@ public class OrderPayUMapperTest {
                 .orderId("12345678")
                 .redirectUri("ala ma kota HTTP")
                 .extOrderId("hhhhh")
-                .status(OrderResponseStatusDTO.builder().statusCode("WARNING_CONTINUE_3DS").build())
+                .status(StatusDTO.builder().statusCode("WARNING_CONTINUE_3DS").build())
                 .build();
 
 

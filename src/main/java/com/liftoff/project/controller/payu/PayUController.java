@@ -1,7 +1,7 @@
 package com.liftoff.project.controller.payu;
 
 import com.liftoff.project.controller.payu.request.OrderCreateRequestDTO;
-import com.liftoff.project.controller.payu.response.OrderPayUCreatedResponseDTO;
+import com.liftoff.project.controller.payu.response.OrderCreatedResponseDTO;
 import com.liftoff.project.controller.payu.response.PayUAuthResponseDTO;
 import com.liftoff.project.controller.payu.response.PaymentMethodResponseDTO;
 import com.liftoff.project.service.PayUService;
@@ -52,7 +52,7 @@ public class PayUController {
     @PostMapping("/orders")
     @Operation(summary = "Place an order",
             security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<OrderPayUCreatedResponseDTO> submitOrder(
+    public ResponseEntity<OrderCreatedResponseDTO> submitOrder(
             @Parameter(hidden = true)
             @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader,
             @Valid @RequestBody OrderCreateRequestDTO orderCreateRequestDTO) {

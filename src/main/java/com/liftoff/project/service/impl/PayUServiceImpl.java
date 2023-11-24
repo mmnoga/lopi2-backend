@@ -2,7 +2,7 @@ package com.liftoff.project.service.impl;
 
 import com.liftoff.project.api.PayUApiClient;
 import com.liftoff.project.controller.payu.request.OrderCreateRequestDTO;
-import com.liftoff.project.controller.payu.response.OrderPayUCreatedResponseDTO;
+import com.liftoff.project.controller.payu.response.OrderCreatedResponseDTO;
 import com.liftoff.project.controller.payu.response.PayUAuthResponseDTO;
 import com.liftoff.project.controller.payu.response.PaymentMethodResponseDTO;
 import com.liftoff.project.service.PayUService;
@@ -28,7 +28,7 @@ public class PayUServiceImpl implements PayUService {
     }
 
     @Override
-    public OrderPayUCreatedResponseDTO submitOrder(
+    public OrderCreatedResponseDTO submitOrder(
             String authorizationHeader,
             OrderCreateRequestDTO orderCreateRequestDTO) {
         return payUApiClient

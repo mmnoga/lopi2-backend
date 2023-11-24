@@ -1,5 +1,6 @@
 package com.liftoff.project.controller.payu.response;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,11 +10,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderResponseDTO {
+public class StatusDTO {
 
-    private StatusDTO status;
-    private String redirectUri;
-    private String orderId;
-    private String extOrderId;
+    @NotNull(message = "statusCode is required")
+    private String statusCode;
 
 }

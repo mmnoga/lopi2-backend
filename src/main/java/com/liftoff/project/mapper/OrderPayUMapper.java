@@ -1,6 +1,6 @@
 package com.liftoff.project.mapper;
 
-import com.liftoff.project.controller.payu.response.OrderPayUCreatedResponseDTO;
+import com.liftoff.project.controller.payu.response.OrderCreatedResponseDTO;
 import com.liftoff.project.controller.payu.response.OrderResponseDTO;
 import com.liftoff.project.model.OrderPayU;
 
@@ -13,7 +13,7 @@ public interface OrderPayUMapper {
      * @return The mapped OrderPayUCreatedResponseDTO object.
      */
 
-    OrderPayUCreatedResponseDTO mapOrderPayUToOrderPayUCreatedResponseDTO(OrderPayU orderPayU);
+    OrderCreatedResponseDTO mapOrderToOrderResponseDTO(OrderPayU orderPayU);
 
     /**
      * Maps the OrderPayUCreatedResponseDTO object to the OrderPayU entity.

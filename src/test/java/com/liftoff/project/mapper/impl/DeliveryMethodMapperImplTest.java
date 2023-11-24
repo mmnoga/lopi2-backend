@@ -2,15 +2,10 @@ package com.liftoff.project.mapper.impl;
 
 import com.liftoff.project.controller.order.request.DeliveryMethodRequestDTO;
 import com.liftoff.project.controller.order.response.DeliveryMethodResponseDTO;
-import com.liftoff.project.controller.payu.response.OrderPayUCreatedResponseDTO;
-import com.liftoff.project.controller.payu.response.OrderResponseDTO;
-import com.liftoff.project.controller.payu.response.OrderResponseStatusDTO;
-import com.liftoff.project.model.OrderPayU;
 import com.liftoff.project.model.order.DeliveryMethod;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
