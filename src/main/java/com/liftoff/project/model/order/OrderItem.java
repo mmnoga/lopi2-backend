@@ -33,7 +33,6 @@ public class OrderItem {
     @Column(name = "ID", unique = true)
     private Long id;
 
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ORDER_ID")
     private Order order;

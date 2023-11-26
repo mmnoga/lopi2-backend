@@ -5,6 +5,8 @@ import com.liftoff.project.controller.payu.response.OrderCreatedResponseDTO;
 import com.liftoff.project.controller.payu.response.PayUAuthResponseDTO;
 import com.liftoff.project.controller.payu.response.PaymentMethodResponseDTO;
 
+import java.util.UUID;
+
 public interface PayUService {
 
     /**
@@ -37,5 +39,16 @@ public interface PayUService {
     OrderCreatedResponseDTO addOrder(
             String authorizationHeader,
             OrderCreateRequestDTO orderCreateRequestDTO);
+
+    /**
+     * Processes the payment for the specified order.
+     *
+     * @param authorizationHeader The authorization header containing necessary credentials.
+     * @param orderUuid           The UUID of the order for which the payment is being processed.
+     * @return An OrderCreatedResponseDTO representing the response of the payment process.
+     */
+    OrderCreatedResponseDTO handlePayment(
+            String authorizationHeader,
+            UUID orderUuid);
 
 }

@@ -14,23 +14,14 @@ import java.util.List;
 public class OrderCreateRequestDTO {
 
     private String notifyUrl;
-
     private String customerIp;
-
     private String merchantPosId;
-
     private String description;
-
     private String currencyCode;
-
     private String totalAmount;
-
     private String continueUrl;
-
     private String extOrderId;
-
     private BuyerDTO buyer;
-
     private List<ProductDTO> products;
 
 }

@@ -25,7 +25,6 @@ public interface PayUApiClient {
      */
     PaymentMethodResponseDTO getPaymentMethods(String authorizationHeader);
 
-
     /**
      * Retrieves answer for request the creation new Order in PayU system.
      *

@@ -14,12 +14,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/payu")
@@ -59,9 +62,18 @@ public class PayUController {
 
         return ResponseEntity.ok(payUService
                 .addOrder(authorizationHeader, orderCreateRequestDTO));
-
-
     }
 
+    @PostMapping("/orders/{orderUuid}")
+    @Operation(summary = "Process payment for an order",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<OrderCreatedResponseDTO> handlePayment(
+            @Parameter(hidden = true)
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader,
+            @PathVariable UUID orderUuid) {
+
+        return ResponseEntity.ok(payUService
+                .handlePayment(authorizationHeader, orderUuid));
+    }
 
 }
