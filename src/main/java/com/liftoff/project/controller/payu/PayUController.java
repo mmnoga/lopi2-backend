@@ -58,7 +58,9 @@ public class PayUController {
             @Valid @RequestBody OrderCreateRequestDTO orderCreateRequestDTO) {
 
         return ResponseEntity.ok(payUService
-                .submitOrder(authorizationHeader, orderCreateRequestDTO));
+                .addOrder(authorizationHeader, orderCreateRequestDTO));
+
+
     }
 
 

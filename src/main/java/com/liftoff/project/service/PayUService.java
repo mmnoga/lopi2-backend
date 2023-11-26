@@ -26,7 +26,15 @@ public interface PayUService {
     PaymentMethodResponseDTO getPaymentMethods(String authorizationHeader);
 
 
-    OrderCreatedResponseDTO submitOrder(
+    /**
+     * Retrieves added OrderPayU as OrderCreatedResponseDTO using the provided authorization header.
+     *
+     * @param authorizationHeader   The authorization header containing the access token.
+     * @param orderCreateRequestDTO The OrderCreateRequestDTO object to persist in database and in PayU service too.
+     * @return The response containing added PayU order.
+     * Throws Payu system code if there is an exception during the retrieval process.
+     */
+    OrderCreatedResponseDTO addOrder(
             String authorizationHeader,
             OrderCreateRequestDTO orderCreateRequestDTO);
 

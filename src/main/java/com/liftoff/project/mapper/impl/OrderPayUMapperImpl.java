@@ -8,8 +8,6 @@ import com.liftoff.project.model.OrderPayU;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 @Component
 @RequiredArgsConstructor
 public class OrderPayUMapperImpl implements OrderPayUMapper {
@@ -38,7 +36,7 @@ public class OrderPayUMapperImpl implements OrderPayUMapper {
         }
 
         return OrderPayU.builder()
-                .uuid(UUID.randomUUID())
+                .uuid(null)
                 .statusCode(orderResponseDTO.getStatus().getStatusCode())
                 .redirectUri(orderResponseDTO.getRedirectUri())
                 .orderId(orderResponseDTO.getOrderId())

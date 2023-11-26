@@ -3,13 +3,9 @@ package com.liftoff.project.api.impl;
 import com.liftoff.project.api.PayUApiClient;
 import com.liftoff.project.configuration.payu.PayUConfig;
 import com.liftoff.project.controller.payu.request.OrderCreateRequestDTO;
-import com.liftoff.project.controller.payu.response.OrderCreatedResponseDTO;
 import com.liftoff.project.controller.payu.response.OrderResponseDTO;
 import com.liftoff.project.controller.payu.response.PayUAuthResponseDTO;
 import com.liftoff.project.controller.payu.response.PaymentMethodResponseDTO;
-import com.liftoff.project.mapper.OrderPayUMapper;
-import com.liftoff.project.model.OrderPayU;
-import com.liftoff.project.repository.OrderPayURepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -31,8 +27,7 @@ public class PayUApiClientImpl implements PayUApiClient {
 
     private final RestTemplate restTemplate;
     private final PayUConfig payUConfig;
-    private final OrderPayURepository orderPayURepository;
-    private final OrderPayUMapper orderPayUMapper;
+
 
     @Override
     public PayUAuthResponseDTO getAccessToken() {
@@ -85,7 +80,7 @@ public class PayUApiClientImpl implements PayUApiClient {
     }
 
     @Override
-    public OrderCreatedResponseDTO submitOrder(
+    public OrderResponseDTO submitOrder(
             String authorizationHeader,
             OrderCreateRequestDTO orderCreateRequestDTO) {
 
@@ -108,17 +103,9 @@ public class PayUApiClientImpl implements PayUApiClient {
                 request,
                 OrderResponseDTO.class);
 
-        OrderResponseDTO responseEntityBody = responseEntity
-                .getBody();
+        return responseEntity.getBody();
 
-        OrderPayU orderPayU = orderPayUMapper
-                .mapOrderResponseDTOTOrderPayU(responseEntityBody);
 
-        OrderPayU savedOrderPayU = orderPayURepository
-                .save(orderPayU);
-
-        return orderPayUMapper
-                .mapOrderToOrderResponseDTO(savedOrderPayU);
     }
 
 }
