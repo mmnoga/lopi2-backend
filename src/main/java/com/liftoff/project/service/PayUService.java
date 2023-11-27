@@ -4,6 +4,8 @@ import com.liftoff.project.controller.payu.request.OrderCreateRequestDTO;
 import com.liftoff.project.controller.payu.response.OrderCreatedResponseDTO;
 import com.liftoff.project.controller.payu.response.PayUAuthResponseDTO;
 import com.liftoff.project.controller.payu.response.PaymentMethodResponseDTO;
+import com.liftoff.project.controller.payu.response.ShopDetailsResponseDTO;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.UUID;
 
@@ -49,6 +51,15 @@ public interface PayUService {
      */
     OrderCreatedResponseDTO handlePayment(
             String authorizationHeader,
-            UUID orderUuid);
+            UUID orderUuid,
+            HttpServletRequest request);
+
+    /**
+     * Retrieves shop details based on the provided authorization header.
+     *
+     * @param authorizationHeader The authorization header used to authenticate the request.
+     * @return A ShopDetailsResponseDTO containing details about the shop.
+     */
+    ShopDetailsResponseDTO getShopDetails(String authorizationHeader);
 
 }

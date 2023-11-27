@@ -8,6 +8,7 @@ import com.liftoff.project.controller.payu.response.OrderCreatedResponseDTO;
 import com.liftoff.project.controller.payu.response.OrderResponseDTO;
 import com.liftoff.project.controller.payu.response.PayUAuthResponseDTO;
 import com.liftoff.project.controller.payu.response.PaymentMethodResponseDTO;
+import com.liftoff.project.controller.payu.response.ShopDetailsResponseDTO;
 import com.liftoff.project.mapper.OrderPayUMapper;
 import com.liftoff.project.model.OrderPayU;
 import com.liftoff.project.model.order.Customer;
@@ -16,7 +17,9 @@ import com.liftoff.project.model.order.OrderItem;
 import com.liftoff.project.repository.OrderPayURepository;
 import com.liftoff.project.service.OrderService;
 import com.liftoff.project.service.PayUService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,12 +29,20 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PayUServiceImpl implements PayUService {
 
-    private static final String NOTIFY_URL = "https://your.eshop.com/notify";
-    private static final String CUSTOMER_IP = "127.0.0.1";
-    private static final String MERCHANT_POS_ID = "470913";
-    private static final String DESCRIPTION = "LOPI2 SHOP";
-    private static final String CURRENCY_CODE = "PLN";
-    private static final String BUYER_LANGUAGE = "pl";
+    @Value("${payu.shop-id}")
+    private String shopId;
+
+    @Value("${payu.merchant-pos-id}")
+    private String getMerchantPosId;
+
+    @Value("${payu.notify-url}")
+    private String notifyUrl;
+
+    @Value("${payu.continue-url}")
+    private String continueUrl;
+
+    @Value("${payu.language}")
+    private String buyerLanguage;
 
     private final PayUApiClient payUApiClient;
     private final OrderPayURepository orderPayURepository;
@@ -57,7 +68,7 @@ public class PayUServiceImpl implements PayUService {
 
         OrderPayU orderPayU = orderPayUMapper
                 .mapOrderResponseDTOTOrderPayU(payUApiClient
-               .submitOrder(authorizationHeader, orderCreateRequestDTO));
+                        .submitOrder(authorizationHeader, orderCreateRequestDTO));
 
         orderPayU.setUuid(UUID.randomUUID());
 
@@ -71,7 +82,8 @@ public class PayUServiceImpl implements PayUService {
     @Override
     public OrderCreatedResponseDTO handlePayment(
             String authorizationHeader,
-            UUID orderUuid) {
+            UUID orderUuid,
+            HttpServletRequest request) {
 
         Order order = orderService.getOrderEntityByUuid(orderUuid);
         Customer customer = order.getCustomer();
@@ -85,7 +97,14 @@ public class PayUServiceImpl implements PayUService {
                 convertToPayUFormat(order.getTotalPrice());
 
         OrderCreateRequestDTO orderCreateRequestDTO =
-                buildOrderCreateRequestDTO(buyer, products, totalPriceForPayU);
+                buildOrderCreateRequestDTO(
+                        authorizationHeader,
+                        buyer,
+                        products,
+                        totalPriceForPayU,
+                        request);
+
+        orderCreateRequestDTO.setExtOrderId(orderUuid.toString());
 
         OrderResponseDTO orderResponseDTO =
                 payUApiClient.submitOrder(authorizationHeader, orderCreateRequestDTO);
@@ -97,6 +116,14 @@ public class PayUServiceImpl implements PayUService {
                 .mapOrderToOrderResponseDTO(savedOrderPayU);
     }
 
+    @Override
+    public ShopDetailsResponseDTO getShopDetails(
+            String authorizationHeader) {
+
+        return payUApiClient
+                .getShopDetails(authorizationHeader, shopId);
+    }
+
     private BuyerDTO createBuyerDTO(Customer customer) {
 
         return BuyerDTO.builder()
@@ -104,7 +131,7 @@ public class PayUServiceImpl implements PayUService {
                 .phone(customer.getPhoneNumber())
                 .firstName(customer.getFirstName())
                 .lastName(customer.getLastName())
-                .language(BUYER_LANGUAGE)
+                .language(buyerLanguage)
                 .build();
     }
 
@@ -125,19 +152,27 @@ public class PayUServiceImpl implements PayUService {
     }
 
     private OrderCreateRequestDTO buildOrderCreateRequestDTO(
+            String authorizationHeader,
             BuyerDTO buyer,
             List<ProductDTO> products,
-            String totalAmount) {
+            String totalAmount,
+            HttpServletRequest request) {
+
+        ShopDetailsResponseDTO shopDetails =
+                getShopDetails(authorizationHeader);
+
+        String customerIp = request.getRemoteAddr();
 
         return OrderCreateRequestDTO.builder()
-                .notifyUrl(NOTIFY_URL)
-                .customerIp(CUSTOMER_IP)
-                .merchantPosId(MERCHANT_POS_ID)
-                .description(DESCRIPTION)
-                .currencyCode(CURRENCY_CODE)
+                .notifyUrl(notifyUrl)
+                .customerIp(customerIp)
+                .merchantPosId(getMerchantPosId)
+                .description(shopDetails.getName())
+                .currencyCode(shopDetails.getCurrencyCode())
                 .totalAmount(totalAmount)
                 .buyer(buyer)
                 .products(products)
+                .continueUrl(continueUrl)
                 .build();
     }
 
