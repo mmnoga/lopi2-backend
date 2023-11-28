@@ -5,6 +5,7 @@ import com.liftoff.project.controller.payu.request.BuyerDTO;
 import com.liftoff.project.controller.payu.request.OrderCreateRequestDTO;
 import com.liftoff.project.controller.payu.request.ProductDTO;
 import com.liftoff.project.controller.payu.response.OrderCreatedResponseDTO;
+import com.liftoff.project.controller.payu.response.OrderDetailsResponseDTO;
 import com.liftoff.project.controller.payu.response.OrderResponseDTO;
 import com.liftoff.project.controller.payu.response.PayUAuthResponseDTO;
 import com.liftoff.project.controller.payu.response.PaymentMethodResponseDTO;
@@ -122,6 +123,15 @@ public class PayUServiceImpl implements PayUService {
 
         return payUApiClient
                 .getShopDetails(authorizationHeader, shopId);
+    }
+
+    @Override
+    public OrderDetailsResponseDTO getOrderDetails(
+            String authorizationHeader,
+            String orderId) {
+
+        return payUApiClient
+                .getOrderDetails(authorizationHeader, orderId);
     }
 
     private BuyerDTO createBuyerDTO(Customer customer) {

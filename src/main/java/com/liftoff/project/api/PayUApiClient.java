@@ -1,6 +1,7 @@
 package com.liftoff.project.api;
 
 import com.liftoff.project.controller.payu.request.OrderCreateRequestDTO;
+import com.liftoff.project.controller.payu.response.OrderDetailsResponseDTO;
 import com.liftoff.project.controller.payu.response.OrderResponseDTO;
 import com.liftoff.project.controller.payu.response.PayUAuthResponseDTO;
 import com.liftoff.project.controller.payu.response.PaymentMethodResponseDTO;
@@ -47,5 +48,15 @@ public interface PayUApiClient {
     ShopDetailsResponseDTO getShopDetails(
             String authorizationHeader,
             String shopId);
+
+    /**
+     * Retrieves order details based on the provided authorization header and shop ID.
+     *
+     * @param authorizationHeader The authorization header containing authentication credentials.
+     * @param shopId              The unique identifier of the shop associated with the order.
+     * @return                    An instance of OrderDetailsResponseDTO containing
+     *                            the detailed information about the specified order.
+     */
+    OrderDetailsResponseDTO getOrderDetails(String authorizationHeader, String shopId);
 
 }

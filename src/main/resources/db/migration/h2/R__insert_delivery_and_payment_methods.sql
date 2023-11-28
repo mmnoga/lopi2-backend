@@ -12,4 +12,5 @@ INSERT INTO PAYMENT_METHODS (NAME, DESCRIPTION) VALUES
        ('CREDIT_CARD', 'Karta kredytowa'),
        ('BANK_TRANSFER', 'Przelew bankowy'),
        ('ONLINE_TRANSFER', 'Szybki przelew online'),
-       ('COD', 'Płatność przy odbiorze');
+       ('COD', 'Płatność przy odbiorze'),
+       ('PAYU', 'Płatność PayU');

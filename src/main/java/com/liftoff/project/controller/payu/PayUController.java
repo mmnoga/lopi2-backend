@@ -2,6 +2,7 @@ package com.liftoff.project.controller.payu;
 
 import com.liftoff.project.controller.payu.request.OrderCreateRequestDTO;
 import com.liftoff.project.controller.payu.response.OrderCreatedResponseDTO;
+import com.liftoff.project.controller.payu.response.OrderDetailsResponseDTO;
 import com.liftoff.project.controller.payu.response.PayUAuthResponseDTO;
 import com.liftoff.project.controller.payu.response.PaymentMethodResponseDTO;
 import com.liftoff.project.controller.payu.response.ShopDetailsResponseDTO;
@@ -88,6 +89,18 @@ public class PayUController {
 
         return ResponseEntity.ok(payUService
                 .getShopDetails(authorizationHeader));
+    }
+
+    @GetMapping("/orders/{orderId}")
+    @Operation(summary = "Get an order details",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<OrderDetailsResponseDTO> getOrderDetails(
+            @Parameter(hidden = true)
+            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader,
+            @PathVariable String orderId) {
+
+        return ResponseEntity.ok(payUService
+                .getOrderDetails(authorizationHeader, orderId));
     }
 
 }

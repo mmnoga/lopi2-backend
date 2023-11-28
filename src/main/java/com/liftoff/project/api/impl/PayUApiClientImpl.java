@@ -3,6 +3,7 @@ package com.liftoff.project.api.impl;
 import com.liftoff.project.api.PayUApiClient;
 import com.liftoff.project.configuration.payu.PayUConfig;
 import com.liftoff.project.controller.payu.request.OrderCreateRequestDTO;
+import com.liftoff.project.controller.payu.response.OrderDetailsResponseDTO;
 import com.liftoff.project.controller.payu.response.OrderResponseDTO;
 import com.liftoff.project.controller.payu.response.PayUAuthResponseDTO;
 import com.liftoff.project.controller.payu.response.PaymentMethodResponseDTO;
@@ -133,6 +134,32 @@ public class PayUApiClientImpl implements PayUApiClient {
 
         return responseEntity.getBody();
 
+    }
+
+    @Override
+    public OrderDetailsResponseDTO getOrderDetails(
+            String authorizationHeader,
+            String orderId) {
+
+        String orderDetailsUrl = UriComponentsBuilder
+                .fromUriString(BASE_URL)
+                .path(ORDER_CREATE_URL + "/{orderId}")
+                .buildAndExpand(orderId)
+                .toUriString();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", authorizationHeader);
+        headers.set("Content-Type", "application/json");
+
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+
+        ResponseEntity<OrderDetailsResponseDTO> responseEntity = restTemplate.exchange(
+                orderDetailsUrl,
+                HttpMethod.GET,
+                request,
+                OrderDetailsResponseDTO.class);
+
+        return responseEntity.getBody();
     }
 
 }
