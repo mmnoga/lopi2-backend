@@ -42,14 +42,14 @@ public class RequestFilterConfig implements Filter {
         String requestOrigin = httpRequest.getHeader("Origin");
         String requestMethod = httpRequest.getMethod();
 
-        if (isOriginMatched(requestOrigin, getSupportedOrigins()) &&
-                allowedMethods.contains(requestMethod)) {
+//        if (isOriginMatched(requestOrigin, getSupportedOrigins()) &&
+//                allowedMethods.contains(requestMethod)) {
             LOGGER.info("Adding response headers");
             httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
             httpResponse.setHeader("Access-Control-Allow-Origin", requestOrigin);
             httpResponse.setHeader("Access-Control-Allow-Methods", String.join(", ", allowedMethods));
             httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, x-requested-with, Authorization");
-        }
+//        }
 
         filterChain.doFilter(servletRequest, servletResponse);
     }

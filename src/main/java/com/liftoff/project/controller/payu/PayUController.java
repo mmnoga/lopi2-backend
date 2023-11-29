@@ -3,7 +3,6 @@ package com.liftoff.project.controller.payu;
 import com.liftoff.project.controller.payu.request.OrderCreateRequestDTO;
 import com.liftoff.project.controller.payu.response.OrderCreatedResponseDTO;
 import com.liftoff.project.controller.payu.response.OrderDetailsResponseDTO;
-import com.liftoff.project.controller.payu.response.PayUAuthResponseDTO;
 import com.liftoff.project.controller.payu.response.PaymentMethodResponseDTO;
 import com.liftoff.project.controller.payu.response.ShopDetailsResponseDTO;
 import com.liftoff.project.service.PayUService;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
@@ -35,24 +33,12 @@ public class PayUController {
 
     private final PayUService payUService;
 
-    @GetMapping("/token")
-    @ResponseBody
-    @Operation(summary = "Get an access token")
-    public ResponseEntity<PayUAuthResponseDTO> getAccessToken() {
-
-        return ResponseEntity.ok(payUService
-                .getAccessToken());
-    }
-
     @GetMapping("/payment-methods")
-    @Operation(summary = "Get payment methods",
-            security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<PaymentMethodResponseDTO> getPaymentMethods(
-            @Parameter(hidden = true)
-            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    @Operation(summary = "Get payment methods")
+    public ResponseEntity<PaymentMethodResponseDTO> getPaymentMethods() {
 
         return ResponseEntity.ok(payUService
-                .getPaymentMethods(authorizationHeader));
+                .getPaymentMethods());
     }
 
     @PostMapping("/orders")
@@ -64,43 +50,34 @@ public class PayUController {
             @Valid @RequestBody OrderCreateRequestDTO orderCreateRequestDTO) {
 
         return ResponseEntity.ok(payUService
-                .addOrder(authorizationHeader, orderCreateRequestDTO));
+                .addOrder(orderCreateRequestDTO));
     }
 
     @PostMapping("/orders/{orderUuid}")
-    @Operation(summary = "Process payment for an order",
-            security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Process payment for an order")
     public ResponseEntity<OrderCreatedResponseDTO> handlePayment(
-            @Parameter(hidden = true)
-            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader,
             @PathVariable UUID orderUuid,
             HttpServletRequest request) {
 
         return ResponseEntity.ok(payUService
-                .handlePayment(authorizationHeader, orderUuid, request));
+                .handlePayment(orderUuid, request));
     }
 
     @GetMapping("/shops")
-    @Operation(summary = "Get a shop details",
-            security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<ShopDetailsResponseDTO> getShopDetails(
-            @Parameter(hidden = true)
-            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    @Operation(summary = "Get a shop details")
+    public ResponseEntity<ShopDetailsResponseDTO> getShopDetails() {
 
         return ResponseEntity.ok(payUService
-                .getShopDetails(authorizationHeader));
+                .getShopDetails());
     }
 
     @GetMapping("/orders/{orderId}")
-    @Operation(summary = "Get an order details",
-            security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get an order details")
     public ResponseEntity<OrderDetailsResponseDTO> getOrderDetails(
-            @Parameter(hidden = true)
-            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader,
             @PathVariable String orderId) {
 
         return ResponseEntity.ok(payUService
-                .getOrderDetails(authorizationHeader, orderId));
+                .getOrderDetails(orderId));
     }
 
 }

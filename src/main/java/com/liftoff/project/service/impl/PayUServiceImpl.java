@@ -7,7 +7,6 @@ import com.liftoff.project.controller.payu.request.ProductDTO;
 import com.liftoff.project.controller.payu.response.OrderCreatedResponseDTO;
 import com.liftoff.project.controller.payu.response.OrderDetailsResponseDTO;
 import com.liftoff.project.controller.payu.response.OrderResponseDTO;
-import com.liftoff.project.controller.payu.response.PayUAuthResponseDTO;
 import com.liftoff.project.controller.payu.response.PaymentMethodResponseDTO;
 import com.liftoff.project.controller.payu.response.ShopDetailsResponseDTO;
 import com.liftoff.project.mapper.OrderPayUMapper;
@@ -51,25 +50,17 @@ public class PayUServiceImpl implements PayUService {
     private final OrderService orderService;
 
     @Override
-    public PayUAuthResponseDTO getAccessToken() {
+    public PaymentMethodResponseDTO getPaymentMethods() {
         return payUApiClient
-                .getAccessToken();
+                .getPaymentMethods();
     }
 
     @Override
-    public PaymentMethodResponseDTO getPaymentMethods(String authorizationHeader) {
-        return payUApiClient
-                .getPaymentMethods(authorizationHeader);
-    }
-
-    @Override
-    public OrderCreatedResponseDTO addOrder(
-            String authorizationHeader,
-            OrderCreateRequestDTO orderCreateRequestDTO) {
+    public OrderCreatedResponseDTO addOrder(OrderCreateRequestDTO orderCreateRequestDTO) {
 
         OrderPayU orderPayU = orderPayUMapper
                 .mapOrderResponseDTOTOrderPayU(payUApiClient
-                        .submitOrder(authorizationHeader, orderCreateRequestDTO));
+                        .submitOrder(orderCreateRequestDTO));
 
         orderPayU.setUuid(UUID.randomUUID());
 
@@ -82,7 +73,6 @@ public class PayUServiceImpl implements PayUService {
 
     @Override
     public OrderCreatedResponseDTO handlePayment(
-            String authorizationHeader,
             UUID orderUuid,
             HttpServletRequest request) {
 
@@ -99,7 +89,6 @@ public class PayUServiceImpl implements PayUService {
 
         OrderCreateRequestDTO orderCreateRequestDTO =
                 buildOrderCreateRequestDTO(
-                        authorizationHeader,
                         buyer,
                         products,
                         totalPriceForPayU,
@@ -108,7 +97,7 @@ public class PayUServiceImpl implements PayUService {
         orderCreateRequestDTO.setExtOrderId(orderUuid.toString());
 
         OrderResponseDTO orderResponseDTO =
-                payUApiClient.submitOrder(authorizationHeader, orderCreateRequestDTO);
+                payUApiClient.submitOrder(orderCreateRequestDTO);
 
         OrderPayU orderPayU = getOrderPayU(orderResponseDTO, order);
         OrderPayU savedOrderPayU = orderPayURepository.save(orderPayU);
@@ -118,20 +107,17 @@ public class PayUServiceImpl implements PayUService {
     }
 
     @Override
-    public ShopDetailsResponseDTO getShopDetails(
-            String authorizationHeader) {
+    public ShopDetailsResponseDTO getShopDetails() {
 
         return payUApiClient
-                .getShopDetails(authorizationHeader, shopId);
+                .getShopDetails(shopId);
     }
 
     @Override
-    public OrderDetailsResponseDTO getOrderDetails(
-            String authorizationHeader,
-            String orderId) {
+    public OrderDetailsResponseDTO getOrderDetails(String orderId) {
 
         return payUApiClient
-                .getOrderDetails(authorizationHeader, orderId);
+                .getOrderDetails(orderId);
     }
 
     private BuyerDTO createBuyerDTO(Customer customer) {
@@ -162,14 +148,12 @@ public class PayUServiceImpl implements PayUService {
     }
 
     private OrderCreateRequestDTO buildOrderCreateRequestDTO(
-            String authorizationHeader,
             BuyerDTO buyer,
             List<ProductDTO> products,
             String totalAmount,
             HttpServletRequest request) {
 
-        ShopDetailsResponseDTO shopDetails =
-                getShopDetails(authorizationHeader);
+        ShopDetailsResponseDTO shopDetails = getShopDetails();
 
         String customerIp = request.getRemoteAddr();
 
