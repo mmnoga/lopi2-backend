@@ -1,14 +1,10 @@
-package com.liftoff.project.model.order;
+package com.liftoff.project.model;
 
-import com.liftoff.project.model.Product;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,36 +15,35 @@ import org.hibernate.annotations.SourceType;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Entity
-@Table(name = "ORDER_ITEM")
+@Table(name = "ORDERS_PAYU")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Builder(setterPrefix = "with")
-public class OrderItem {
+@Builder
+public class OrderPayU {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", unique = true)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "ORDER_ID")
-    private Order order;
+    @Column(name = "UID")
+    private UUID uuid;
 
-    @ManyToOne
-    @JoinColumn(name = "PRODUCT_ID")
-    private Product product;
+    @Column(name = "STATUS_CODE")
+    private String statusCode;
 
-    @Column(name = "QUANTITY")
-    private Integer quantity;
+    @Column(name = "REDIRECT_URI")
+    private String redirectUri;
 
-    @Column(name = "PRICE_PER_UNIT")
-    private Double unitPrice;
+    @Column(name = "ORDER_ID")
+    private String orderId;
 
-    @Column(name = "SUBTOTAL")
-    private Double subtotal;
+    @Column(name = "EXT_ORDER_ID")
+    private String extOrderId;
 
     @CreationTimestamp(source = SourceType.DB)
     @Column(name = "CREATED_AT")
